@@ -16,6 +16,32 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@orm/*": [
+        "src/orm/*"
+      ],
+      "@modules/*": [
+        "src/modules/*"
+      ],
+      "@utils/*": [
+        "src/core/utils/*"
+      ],
+      "@complements/*": [
+        "src/core/complements/*"
+      ],
+      "@interfaces/*": [
+        "src/core/interfaces/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@controllers/*": [
+        "src/controllers/*"
+      ],
+    }
   }
 }
