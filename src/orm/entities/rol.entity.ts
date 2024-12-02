@@ -5,6 +5,20 @@ import { EstadoModel } from "src/core/models/estado.model";
 
 @Entity({ name: 'rol' })
 export class RolEntity extends GeneralEntity {
+    public static readonly ROL_ADMINISTRADOR = 'administrador';
+    public static readonly ROL_PROPIETARIO = 'propietario';
+    public static readonly ROL_GERENTE = 'gerente';
+    public static readonly ROL_CAJERO = 'cajero';
+
+    public static readonly ROLES = new Array<string>();
+
+    static {
+        RolEntity.ROLES.push(RolEntity.ROL_ADMINISTRADOR);
+        RolEntity.ROLES.push(RolEntity.ROL_PROPIETARIO);
+        RolEntity.ROLES.push(RolEntity.ROL_GERENTE);
+        RolEntity.ROLES.push(RolEntity.ROL_CAJERO);
+    }
+
     @Column({ length: 20 })
     nombre: string;
 

@@ -11,7 +11,7 @@ export class TyepOrmConfig {
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         port: parseInt(process.env.DB_PORT),
-        entities: ['dist/**/*.entity{.ts,.js}'],
+        entities: [`../../dist/**/*.entity{.ts,.js}`],
         ssl: true,
         extra: {
             ssl: {
