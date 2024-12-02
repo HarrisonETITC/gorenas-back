@@ -17,6 +17,7 @@ export class Mysql1733120155540 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`empleado\` ADD CONSTRAINT \`FK_49778622b1c20506be43d01066b\` FOREIGN KEY (\`sucursal_id\`) REFERENCES \`sucursal\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`empleado\` ADD CONSTRAINT \`FK_3bd74b82a6501fa611f1e8c1c7f\` FOREIGN KEY (\`persona_id\`) REFERENCES \`persona\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`venta\` ADD CONSTRAINT \`FK_3fbf749bbabc70bc63b8f287610\` FOREIGN KEY (\`empleado_id\`) REFERENCES \`empleado\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query('alter table rol add unique (nombre)');
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

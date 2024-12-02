@@ -19,7 +19,7 @@ export class RolEntity extends GeneralEntity {
         RolEntity.ROLES.push(RolEntity.ROL_CAJERO);
     }
 
-    @Column({ length: 20 })
+    @Column({ length: 20, unique: true })
     nombre: string;
 
     @Column({ length: 1, default: EstadoModel.ESTADO_ACTIVO })
