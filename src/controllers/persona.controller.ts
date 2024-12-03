@@ -25,10 +25,10 @@ export class PersonaController {
     }
 
     @Get('info')
-    async informacionPersona(@Query() id: number) {
+    async informacionPersona(@Query('id') id: string) {
         if (AppUtil.verificarVacio(id))
             throw new BadRequestException('El id del usuario es requerido para realizar esta acción');
 
-        return await this.personaService.infoPorIdUsuario(id);
+        return await this.personaService.infoPorIdUsuario(parseInt(id));
     }
 }
