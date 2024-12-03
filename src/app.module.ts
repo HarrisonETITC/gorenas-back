@@ -11,9 +11,6 @@ import { SucursalModule } from '@modules/sucursal.module';
 import { RestauranteModule } from '@modules/restaurante.module';
 import { RolModule } from '@modules/rol.module';
 import { EmpleadoModule } from '@modules/empleado.module';
-import { PersonaController } from './controllers/persona.controller';
-import { RolController } from './controllers/rol.controller';
-import { RolService } from './services/rol.service';
 
 @Module({
   imports: [
