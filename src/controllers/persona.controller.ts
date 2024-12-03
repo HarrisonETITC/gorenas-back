@@ -1,7 +1,7 @@
 import { Roles } from '@complements/decoradores/rol.decorator';
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { BadRequestException, Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { PersonaEntity } from '@orm/entities/persona.entity';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { PersonaService } from '@services/persona.service';
@@ -22,5 +22,13 @@ export class PersonaController {
             throw new BadRequestException(`Los campos 'usuarioId' y 'rolId' son requeridos para realizar esta acción`)
 
         return await this.personaService.crear(nuevo);
+    }
+
+    @Get('info')
+    async informacionPersona(@Query() id: number) {
+        if (AppUtil.verificarVacio(id))
+            throw new BadRequestException('El id del usuario es requerido para realizar esta acción');
+
+        return await this.personaService.infoPorIdUsuario(id);
     }
 }

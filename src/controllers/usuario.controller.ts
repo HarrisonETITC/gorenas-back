@@ -2,7 +2,7 @@ import { Roles } from '@complements/decoradores/rol.decorator';
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { LocalGuard } from '@complements/guards/local.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { UsuarioEntity } from '@orm/entities/usuario.entity';
 import { JwtImplService } from '@services/jwt-impl.service';
@@ -23,8 +23,9 @@ export class UsuarioController {
     @UseGuards(LocalGuard)
     async enviarToken(@Req() req: Request) {
         const ingreso = (req.user as UsuarioEntity);
+        const { pass, ...campos } = ingreso;
 
-        return await this.jwtServiceImpl.generarToken(ingreso);
+        return { token: await this.jwtServiceImpl.generarToken(ingreso), usuario: campos };
     }
 
     @Post('crear')
@@ -37,4 +38,6 @@ export class UsuarioController {
 
         return await this.usuarioServicio.crear(nuevo);
     }
+
+
 }
