@@ -2,7 +2,7 @@ import { Roles } from '@complements/decoradores/rol.decorator';
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { LocalGuard } from '@complements/guards/local.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { UsuarioEntity } from '@orm/entities/usuario.entity';
 import { JwtImplService } from '@services/jwt-impl.service';
@@ -36,7 +36,18 @@ export class UsuarioController {
         if (AppUtil.verificarVacio(nuevo.email) || AppUtil.verificarVacio(nuevo.pass))
             throw new BadRequestException(`Los campos email y pass son obligatorios para poder realizar esta acción.`);
 
-        return await this.usuarioServicio.crear(nuevo);
+        const { pass, ...valores } = await this.usuarioServicio.crear(nuevo);
+
+        return valores;
+    }
+
+    @Get('disponibles')
+    @UseGuards(JwtGuard)
+    async buscarUsuariosDisponibles(
+        @Query('consulta') buscar: string
+    ) {
+        const disponibles = await this.usuarioServicio.buscarDisponibles(buscar);
+        return disponibles;
     }
 
 

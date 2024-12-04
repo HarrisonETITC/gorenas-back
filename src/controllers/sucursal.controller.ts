@@ -1,7 +1,9 @@
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { SucursalEntity } from '@orm/entities/sucursal.entity';
 import { SucursalService } from '@services/sucursal.service';
+import { SucursalMv } from 'src/core/models/sucursal.modelview';
 
 @Controller('sucursal')
 @UseGuards(JwtGuard)
@@ -11,11 +13,18 @@ export class SucursalController {
         private readonly sucursalService: SucursalService
     ) { }
 
+    @Post('crear')
+    async crearSucursal(@Body() nueva: SucursalEntity) {
+        return await this.sucursalService.crear(nueva);
+    }
+
     @Get('todos-restringido')
     async todosConParametros(
-        @Query() userId: string,
-        @Query() rol: string
-    ) {
-        return await this.sucursalService.sucursalesPersona(parseInt(userId), rol);
+        @Query('userId') userId: string,
+        @Query('rol') rol: string
+    ): Promise<Array<SucursalMv>> {
+        return (await this.sucursalService.sucursalesPersona(parseInt(userId), rol)).map(
+            suc => new SucursalMv(suc.id, suc.direccion, suc.estado, suc.mes, suc.creado)
+        );
     }
 }

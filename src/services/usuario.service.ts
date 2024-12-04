@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { GeneralService } from './general/general.service';
 import { UsuarioEntity } from '@orm/entities/usuario.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, Like } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { config } from 'dotenv';
 import { AppUtil } from '@utils/app.util';
@@ -38,5 +38,14 @@ export class UsuarioService extends GeneralService<UsuarioEntity> {
             throw new BadRequestException(`La contraseña brindada no es correcta para el usuario ${info.username}`)
 
         return encontrado;
+    }
+
+    async buscarDisponibles(email: string) {
+        return await this.repositorio
+            .createQueryBuilder('u')
+            .leftJoin('u.persona', 'p')
+            .where('u.email LIKE :email', { email: `%${email}%` })
+            .andWhere('p.id IS NULL')
+            .getMany();
     }
 }
