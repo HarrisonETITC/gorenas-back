@@ -4,6 +4,7 @@ export class SucursalMv {
     estado: string;
     ganancias: number;
     creacion: Date;
+    restauranteNombre: string;
 
     constructor(id: number, direccion: string, estado: string, ganancias: number, creacion: Date) {
         this.id = id;

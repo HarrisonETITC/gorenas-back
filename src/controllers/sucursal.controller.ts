@@ -27,4 +27,11 @@ export class SucursalController {
             suc => new SucursalMv(suc.id, suc.direccion, suc.estado, suc.mes, suc.creado)
         );
     }
+
+    @Get('restaurante-sucursal')
+    async restauratePorSucursal(
+        @Query('sucursalId') id: string
+    ) {
+        return await this.sucursalService.restaurantePorSucursalId(parseInt(id));
+    }
 }
