@@ -9,6 +9,7 @@ import { JwtImplService } from '@services/jwt-impl.service';
 import { UsuarioService } from '@services/usuario.service';
 import { AppUtil } from '@utils/app.util';
 import { Request } from 'express';
+import { get } from 'http';
 
 @Controller('usuario')
 @UseGuards(RolesGuard)
@@ -50,5 +51,14 @@ export class UsuarioController {
         return disponibles;
     }
 
+    @Get('persona')
+    async getByIdPersona(
+        @Query('personaId') id: string
+    ) {
+        const entero = await this.usuarioServicio.buscarPorIdPersona(parseInt(id));
+        const { pass, ...resto } = entero;
+
+        return resto;
+    }
 
 }

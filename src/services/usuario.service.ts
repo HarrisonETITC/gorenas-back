@@ -48,4 +48,8 @@ export class UsuarioService extends GeneralService<UsuarioEntity> {
             .andWhere('p.id IS NULL')
             .getMany();
     }
+
+    async buscarPorIdPersona(id: number) {
+        return await this.repositorio.findOneBy({ persona: { id } });
+    }
 }

@@ -32,5 +32,5 @@ export class RolEntity extends GeneralEntity {
     modificacion: Date;
 
     @OneToOne(() => PersonaEntity, persona => persona.rol)
-    persona?: string;
+    persona?: PersonaEntity;
 }
