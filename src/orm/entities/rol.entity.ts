@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToOne, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, UpdateDateColumn } from "typeorm";
 import { GeneralEntity } from "./general/general.entity";
 import { PersonaEntity } from "./persona.entity";
 import { EstadoModel } from "src/core/models/estado.model";
@@ -31,6 +31,6 @@ export class RolEntity extends GeneralEntity {
     @UpdateDateColumn({ name: 'fecha_modif' })
     modificacion: Date;
 
-    @OneToOne(() => PersonaEntity, persona => persona.rol)
-    persona?: PersonaEntity;
+    @OneToMany(() => PersonaEntity, persona => persona.rol)
+    personas?: Array<PersonaEntity>;
 }

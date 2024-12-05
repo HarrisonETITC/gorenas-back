@@ -38,6 +38,6 @@ export class RolService extends GeneralService<RolEntity> {
     }
 
     async rolByPersonaId(id: number) {
-        return await this.repositorio.findOneBy({ persona: { id } });
+        return await this.repositorio.findOneBy({ personas: { id } });
     }
 }

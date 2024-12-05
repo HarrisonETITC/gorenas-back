@@ -1,6 +1,6 @@
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { SucursalEntity } from '@orm/entities/sucursal.entity';
 import { SucursalService } from '@services/sucursal.service';
 import { SucursalMv } from 'src/core/models/sucursal.modelview';
@@ -33,5 +33,17 @@ export class SucursalController {
         @Query('sucursalId') id: string
     ) {
         return await this.sucursalService.restaurantePorSucursalId(parseInt(id));
+    }
+
+    @Get('id')
+    async getById(
+        @Query('sucursalId') id: string
+    ) {
+        return await this.sucursalService.buscarPorId(parseInt(id));
+    }
+
+    @Put('actualizar')
+    async actualizarSucursal(@Body() editar: SucursalEntity) {
+        return await this.sucursalService.modificar(editar.id, editar);
     }
 }

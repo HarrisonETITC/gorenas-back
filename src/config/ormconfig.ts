@@ -18,6 +18,7 @@ export class TyepOrmConfig {
                 rejectUnauthorized: false
             }
         },
+        synchronize: true,
         logging: ["error", "query"],
         migrations: ['dist/**/*-mysql.js'],
         dropSchema: false,
@@ -40,7 +41,7 @@ export class TyepOrmConfig {
         },
         logging: ["error", "query"],
         synchronize: false,
-        migrationsRun: process.env.ORM_SYNCHRONIZE == 'false',
+        migrationsRun: true,
         migrations: ['dist/**/*-mysql.js'],
         dropSchema: false,
         migrationsTableName: 'migrations'

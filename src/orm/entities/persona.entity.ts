@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { GeneralEntity } from "./general/general.entity";
 import { UsuarioEntity } from "./usuario.entity";
 import { RolEntity } from "./rol.entity";
@@ -50,7 +50,7 @@ export class PersonaEntity extends GeneralEntity {
     @Column({ name: 'rol_id', nullable: true })
     rolId: number;
 
-    @OneToOne(() => RolEntity, rol => rol.persona)
+    @ManyToOne(() => RolEntity, rol => rol.personas)
     @JoinColumn({ name: 'rol_id' })
     rol?: RolEntity;
 

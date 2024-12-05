@@ -45,7 +45,6 @@ export class PersonaController {
         @Query('rol') rol: string
     ) {
         const valores = await this.personaService.personasMostrar(parseInt(userId), rol);
-        console.log(valores)
         return valores;
     }
 
@@ -60,5 +59,12 @@ export class PersonaController {
     @Put('actualizar')
     async actualizarPersona(@Body() persona: PersonaEntity) {
         return await this.personaService.modificar(persona.id, persona);
+    }
+
+    @Get('id')
+    async getById(
+        @Query('personaId') id: string
+    ) {
+        return await this.personaService.buscarPorId(parseInt(id));
     }
 }
