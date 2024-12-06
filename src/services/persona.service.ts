@@ -1,11 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { GeneralService } from './general/general.service';
 import { PersonaEntity } from '@orm/entities/persona.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { PersonaMv } from 'src/core/models/persona.modelview';
 import { UsuarioEntity } from '@orm/entities/usuario.entity';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { SucursalEntity } from '@orm/entities/sucursal.entity';
+import { EmpleadoEntity } from '@orm/entities/empleado.entity';
+import { AppUtil } from '@utils/app.util';
 
 @Injectable()
 export class PersonaService extends GeneralService<PersonaEntity> {
@@ -35,34 +37,15 @@ export class PersonaService extends GeneralService<PersonaEntity> {
     }
 
     async personasMostrar(usuarioId: number, rol: string) {
+        let basico: Array<PersonaEntity> = [];
+        const valores = [];
         if (rol == RolEntity.ROL_ADMINISTRADOR || rol == RolEntity.ROL_PROPIETARIO) {
-            const personas = await this.repositorio.find();
-            const valores = [];
-
-            for (const p of personas) {
-                const data = new PersonaMv();
-                const usuario = await this.source.getRepository(UsuarioEntity).findOne({ where: { persona: { id: p.id } }, select: { id: true, email: true } });
-                const rol = await this.source.getRepository(RolEntity).findOne({ where: { id: p.rolId } });
-                const sucursal = await this.source.getRepository(SucursalEntity).createQueryBuilder("s")
-                    .innerJoinAndSelect("s.empleados", "e")
-                    .where("e.persona_id = :personaId", { personaId: p.id })
-                    .getOne();
-
-                data.id = p.id;
-                data.email = usuario.email;
-                data.nombres = p.nombres;
-                data.apellidos = p.apellidos;
-                data.rol = rol.nombre;
-                data.identificacion = p.identificacion;
-                data.sucursal = sucursal?.direccion ?? '';
-
-                valores.push(data);
-            }
-
-            return valores;
-        }
-
-        if (rol == RolEntity.ROL_GERENTE) {
+            basico = await this.repositorio.createQueryBuilder("p")
+                .innerJoin("p.rol", "r")
+                .orderBy("FIELD(r.nombre, 'administrador', 'propietario', 'gerente', 'cajero')", "ASC")
+                .addOrderBy("p.id", "ASC")
+                .getMany();
+        } else if (rol == RolEntity.ROL_GERENTE) {
             const sucursal = await this.source.getRepository(SucursalEntity)
                 .createQueryBuilder("s")
                 .innerJoin("s.empleados", "e")
@@ -71,35 +54,71 @@ export class PersonaService extends GeneralService<PersonaEntity> {
                 .select("s.id")
                 .getOne();
 
-            return await this.repositorio.createQueryBuilder("p")
+            basico = await this.repositorio.createQueryBuilder("p")
                 .innerJoinAndSelect("p.empleado", "e")
                 .innerJoinAndSelect("e.sucursal", "s")
                 .where("s.id = :sucursalId", { sucursalId: sucursal.id })
                 .getMany();
+        } else {
+            basico.push(await this.repositorio.findOneBy({ usuario: { id: usuarioId } }));
         }
 
-        return await this.repositorio.findOneBy({ usuario: { id: usuarioId } });
-    }
-
-    async getDisponibles(usuarioId: number, rol: string) {
-        if (rol == RolEntity.ROL_ADMINISTRADOR || rol == RolEntity.ROL_PROPIETARIO)
-            return await this.repositorio.createQueryBuilder("p")
-                .leftJoin("p.empleado", "e")
-                .where("e.id IS NULL")
-                .getMany();
-
-        const sucursal = await this.source.getRepository(SucursalEntity)
+        const usuarios = await this.source.getRepository(UsuarioEntity).find({
+            where: {
+                persona: {
+                    id: In(
+                        AppUtil.extraerIds(basico)
+                    )
+                }
+            }, select: { id: true, email: true }
+        });
+        const roles = await this.source.getRepository(RolEntity).find({
+            where: {
+                id: In(
+                    AppUtil.extraerIds(basico, 'rolId')
+                )
+            }
+        });
+        const sucursales = (await this.source.getRepository(SucursalEntity)
             .createQueryBuilder("s")
             .innerJoin("s.empleados", "e")
-            .innerJoin("e.persona", "p")
-            .where("p.usuario_id = :usuarioId", { usuarioId })
-            .select("s.id")
-            .getOne();
+            .where("e.persona_id IN (:...personaIds)", { personaIds: AppUtil.extraerIds(basico) })
+            .getMany());
+        const empleados = (await this.source.getRepository(EmpleadoEntity).findBy({ sucursalId: In(AppUtil.extraerIds(sucursales)), personaId: In(AppUtil.extraerIds(basico)) }));
 
-        return await this.repositorio.createQueryBuilder("p")
-            .innerJoinAndSelect("p.empleado", "e")
-            .where("e.sucursal_id = :sucursalId", { sucursalId: sucursal.id })
+        for (const p of basico) {
+            const data = new PersonaMv();
+            const usuario = usuarios.find(u => u.id == p.usuarioId);
+            const rol = roles.find(r => r.id = p.rolId);
+            const sucursal = sucursales.find(s => s.id == empleados.find(e => e.personaId == p.id)?.sucursalId);
+
+            data.id = p.id;
+            data.email = usuario.email;
+            data.nombres = p.nombres;
+            data.apellidos = p.apellidos;
+            data.rol = rol.nombre;
+            data.identificacion = p.identificacion;
+            data.sucursal = sucursal?.direccion ?? '';
+
+            valores.push(data);
+        }
+
+        return valores;
+    }
+
+    async getDisponibles(usuarioId: number, rol: string, filtro: string) {
+        return await this.repositorio
+            .createQueryBuilder("p")
+            .leftJoin("p.empleado", "e")
+            .innerJoin("p.rol", "r")
+            .where("r.nombre NOT IN (:...roles)", { roles: [RolEntity.ROL_ADMINISTRADOR, RolEntity.ROL_PROPIETARIO] })
+            .andWhere("e.id IS NULL")
+            .andWhere("(p.nombres LIKE :search OR p.apellidos LIKE :search)", { search: `%${filtro}%` })
             .getMany();
+    }
+
+    async buscarPorEmpleadoId(id: number) {
+        return await this.repositorio.findOneBy({ empleado: { id } });
     }
 
 }

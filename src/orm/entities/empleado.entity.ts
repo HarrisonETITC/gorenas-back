@@ -23,10 +23,10 @@ export class EmpleadoEntity extends GeneralEntity {
     @Column({ name: 'persona_id', nullable: true })
     personaId: number;
 
-    @OneToOne(() => PersonaEntity, persona => persona.empleado)
+    @OneToOne(() => PersonaEntity, persona => persona.empleado, { eager: true })
     @JoinColumn({ name: 'persona_id' })
     persona?: PersonaEntity;
 
-    @OneToMany(() => VentaEntity, venta => venta.empleado)
+    @OneToMany(() => VentaEntity, venta => venta.empleado, { eager: true })
     ventas?: Array<VentaEntity>;
 }

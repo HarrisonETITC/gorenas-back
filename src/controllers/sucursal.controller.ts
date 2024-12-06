@@ -46,4 +46,18 @@ export class SucursalController {
     async actualizarSucursal(@Body() editar: SucursalEntity) {
         return await this.sucursalService.modificar(editar.id, editar);
     }
+
+    @Get('disponibles')
+    async getDisponibles(
+        @Query('query') filtro: string
+    ) {
+        return await this.sucursalService.buscarDisponibles(filtro);
+    }
+
+    @Get('empleado-id')
+    async buscarPorempleadoId(
+        @Query('id') id: string
+    ) {
+        return await this.sucursalService.getByEmpleadoId(parseInt(id));
+    }
 }

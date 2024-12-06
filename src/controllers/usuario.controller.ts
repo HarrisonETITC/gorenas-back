@@ -2,14 +2,13 @@ import { Roles } from '@complements/decoradores/rol.decorator';
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { LocalGuard } from '@complements/guards/local.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { UsuarioEntity } from '@orm/entities/usuario.entity';
 import { JwtImplService } from '@services/jwt-impl.service';
 import { UsuarioService } from '@services/usuario.service';
 import { AppUtil } from '@utils/app.util';
 import { Request } from 'express';
-import { get } from 'http';
 
 @Controller('usuario')
 @UseGuards(RolesGuard)
@@ -59,6 +58,42 @@ export class UsuarioController {
         const { pass, ...resto } = entero;
 
         return resto;
+    }
+
+    @Post('actualizar-contrasena')
+    async actualizarContrasena(
+        @Body() data: { id: number, contra: string }
+    ) {
+        return await this.usuarioServicio.cambiarPass(data.id, data.contra);
+    }
+
+    @Get('get-hash')
+    async hash(
+        @Query('valor') asd: string
+    ) {
+        return { hash: await this.usuarioServicio.getHash(asd) }
+    }
+
+    @Get('mostrar')
+    async mostrarUsuarios(
+        @Query('userId') userId: string,
+        @Query('rol') rol: string
+    ) {
+        return await this.usuarioServicio.buscarUsuariosMostrar(parseInt(userId), rol);
+    }
+
+    @Put('actualizar')
+    async actualizarUsuario(@Body() data: UsuarioEntity) {
+        return await this.usuarioServicio.modificar(data.id, data);
+    }
+
+    @Get('id')
+    async buscarPorId(
+        @Query('id') id: string
+    ) {
+        const user = await this.usuarioServicio.buscarPorId(parseInt(id));
+        const { pass, ...campos } = user;
+        return campos;
     }
 
 }

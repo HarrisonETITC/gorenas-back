@@ -1,3 +1,5 @@
+import { GeneralEntity } from "@orm/entities/general/general.entity";
+
 export class AppUtil {
     public static verificarVacio(valor: any): boolean {
         const basic: boolean = (valor === undefined || valor === null);
@@ -13,5 +15,18 @@ export class AppUtil {
         } else {
             return basic;
         }
+    }
+
+    public static extraerIds<T extends GeneralEntity>(data: Array<T>, campo?: string): Array<number> {
+        const unicos = new Set<number>();
+
+        data.forEach(d => {
+            if (!AppUtil.verificarVacio(campo))
+                unicos.add(d[campo])
+            else
+                unicos.add(d.id)
+        });
+
+        return Array.from(unicos);
     }
 }

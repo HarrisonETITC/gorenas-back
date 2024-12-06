@@ -51,9 +51,10 @@ export class PersonaController {
     @Get('disponibles')
     async getDisponibles(
         @Query('userId') userId: string,
-        @Query('rol') rol: string
+        @Query('rol') rol: string,
+        @Query('query') filtro: string
     ) {
-        return await this.personaService.getDisponibles(parseInt(userId), rol);
+        return await this.personaService.getDisponibles(parseInt(userId), rol, filtro);
     }
 
     @Put('actualizar')
@@ -66,5 +67,12 @@ export class PersonaController {
         @Query('personaId') id: string
     ) {
         return await this.personaService.buscarPorId(parseInt(id));
+    }
+
+    @Get('empleadoId')
+    async getByEmpleadoId(
+        @Query('id') id: string
+    ) {
+        return await this.personaService.buscarPorEmpleadoId(parseInt(id));
     }
 }

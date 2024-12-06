@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { GeneralService } from './general/general.service';
-import { DataSource } from 'typeorm';
+import { DataSource, Like } from 'typeorm';
 import { SucursalEntity } from '@orm/entities/sucursal.entity';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { RestauranteEntity } from '@orm/entities/restaurante.entity';
@@ -33,5 +33,13 @@ export class SucursalService extends GeneralService<SucursalEntity> {
             .getOne();
 
         return { nombre: 'Gorenas Centro', id: restaurante.id };
+    }
+
+    async buscarDisponibles(filtro: string) {
+        return await this.repositorio.findBy({ direccion: Like(`%${filtro}%`) });
+    }
+
+    async getByEmpleadoId(id: number) {
+        return await this.repositorio.findOneBy({ empleados: { id } });
     }
 }

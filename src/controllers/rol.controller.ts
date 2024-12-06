@@ -1,5 +1,6 @@
 import { JwtGuard } from '@complements/guards/jwt.guard';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { RolEntity } from '@orm/entities/rol.entity';
 import { RolService } from '@services/rol.service';
 
 @Controller('rol')
@@ -30,5 +31,29 @@ export class RolController {
         @Query('personaId') id: string
     ) {
         return await this.rolService.rolByPersonaId(parseInt(id));
+    }
+
+    @Get('mostrar')
+    async getRoles(
+        @Query('rol') rol: string
+    ): Promise<Array<RolEntity>> {
+        return await this.rolService.mostrar(rol);
+    }
+
+    @Post('crear')
+    async crearRol(@Body() nuevo: RolEntity) {
+        return await this.rolService.crear(nuevo);
+    }
+
+    @Put('actualizar')
+    async actualizarRol(@Body() actualizar: RolEntity) {
+        return await this.rolService.modificar(actualizar.id, actualizar);
+    }
+
+    @Get('id')
+    async getById(
+        @Query('id') id: string
+    ) {
+        return await this.rolService.buscarPorId(parseInt(id));
     }
 }

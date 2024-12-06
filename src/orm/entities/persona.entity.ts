@@ -6,9 +6,9 @@ import { EmpleadoEntity } from "./empleado.entity";
 
 @Entity({ name: 'persona' })
 export class PersonaEntity extends GeneralEntity {
-    public static readonly TIPO_ID_CC = 'CC';
-    public static readonly TIPO_ID_TI = 'TI';
-    public static readonly TIPO_ID_CE = 'CE';
+    public static readonly TIPO_ID_CC = 'C.C';
+    public static readonly TIPO_ID_TI = 'T.I';
+    public static readonly TIPO_ID_CE = 'C.E';
 
     public static readonly RH_OMAS = 'O+';
     public static readonly RH_OMENOS = 'O-';

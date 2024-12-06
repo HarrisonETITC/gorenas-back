@@ -1,8 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { GeneralService } from './general/general.service';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { DataSource, In, Like, Not } from 'typeorm';
 import { Roles } from '@complements/decoradores/rol.decorator';
+import { AppUtil } from '@utils/app.util';
 
 @Injectable()
 export class RolService extends GeneralService<RolEntity> {
@@ -39,5 +40,30 @@ export class RolService extends GeneralService<RolEntity> {
 
     async rolByPersonaId(id: number) {
         return await this.repositorio.findOneBy({ personas: { id } });
+    }
+
+    async mostrar(rol: string) {
+        if ([RolEntity.ROL_ADMINISTRADOR, RolEntity.ROL_PROPIETARIO].includes(rol)) {
+            return await this.repositorio.find();
+        }
+        return this.repositorio.findBy({ nombre: RolEntity.ROL_CAJERO });
+    }
+
+    override async crear(nuevo: RolEntity): Promise<RolEntity> {
+        const buscar = await this.repositorio.findOneBy({ nombre: nuevo.nombre });
+
+        if (!AppUtil.verificarVacio(buscar))
+            throw new BadRequestException(`Ya existe un rol con el nombre '${nuevo.nombre}'`)
+
+        return await this.crear(nuevo);
+    }
+
+    override async modificar(id: number, cambiar: RolEntity): Promise<RolEntity> {
+        const buscar = await this.repositorio.findOneBy({ nombre: cambiar.nombre });
+
+        if (!AppUtil.verificarVacio(buscar) && buscar.nombre != cambiar.nombre)
+            throw new BadRequestException(`Ya existe un rol con el nombre '${cambiar.nombre}'`)
+
+        return await this.repositorio.save(buscar);
     }
 }

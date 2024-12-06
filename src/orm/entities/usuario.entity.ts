@@ -23,4 +23,6 @@ export class UsuarioEntity extends GeneralEntity {
     constructor() {
         super();
     }
+    
+    oldPass?: string;
 }

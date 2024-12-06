@@ -28,6 +28,8 @@ export class SucursalEntity extends GeneralEntity {
     @JoinColumn({ name: 'restaurante_id' })
     restaurante?: RestauranteEntity;
 
-    @OneToMany(() => EmpleadoEntity, empleado => empleado.sucursal)
+    @OneToMany(() => EmpleadoEntity, empleado => empleado.sucursal, { eager: true })
     empleados?: Array<EmpleadoEntity>;
+
+    persona_id?: number;
 }
