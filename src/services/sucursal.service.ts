@@ -19,7 +19,7 @@ export class SucursalService extends GeneralService<SucursalEntity> {
                 .createQueryBuilder('s')
                 .leftJoinAndSelect('s.empleados', 'e')
                 .leftJoinAndSelect('e.persona', 'p')
-                .where('p.usuario_id = :usuarioId', { usuarioId: 1 })
+                .where('p.usuario_id = :usuarioId', { usuarioId: id })
                 .getMany();
 
         return await this.repositorio.find();

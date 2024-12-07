@@ -80,7 +80,7 @@ export class UsuarioService extends GeneralService<UsuarioEntity> {
 
         if ([RolEntity.ROL_ADMINISTRADOR, RolEntity.ROL_PROPIETARIO].includes(rol))
             data = await this.repositorio.find();
-        else if (rol == RolEntity.ROL_CAJERO) {
+        else if (rol == RolEntity.ROL_GERENTE) {
             const sucursal = await this.source.getRepository(SucursalEntity).findOneBy({ empleados: { persona: { usuarioId: id } } });
             data = await this.repositorio.findBy({ persona: { empleado: { sucursalId: sucursal.id } } });
         }

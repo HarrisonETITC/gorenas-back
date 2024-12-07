@@ -89,7 +89,7 @@ export class PersonaService extends GeneralService<PersonaEntity> {
         for (const p of basico) {
             const data = new PersonaMv();
             const usuario = usuarios.find(u => u.id == p.usuarioId);
-            const rol = roles.find(r => r.id = p.rolId);
+            const rol = roles.find(r => r.id == p.rolId);
             const sucursal = sucursales.find(s => s.id == empleados.find(e => e.personaId == p.id)?.sucursalId);
 
             data.id = p.id;

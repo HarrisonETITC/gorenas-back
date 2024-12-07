@@ -23,7 +23,11 @@ export class VentaService extends GeneralService<VentaEntity> {
             info = await this.repositorio.find();
         else {
             const empleado = await this.source.getRepository(EmpleadoEntity).findOneBy({ persona: { usuarioId } });
-            info = await this.repositorio.findBy({ empleado: { sucursalId: empleado.sucursalId } });
+            if (rol == RolEntity.ROL_GERENTE) {
+                info = await this.repositorio.findBy({ empleado: { sucursalId: empleado.sucursalId } });
+            } else {
+                info = await this.repositorio.findBy({ empleado: { sucursalId: empleado.sucursalId, persona: { usuarioId } } })
+            }
         }
 
         const empleados = await this.source.getRepository(EmpleadoEntity).findBy({
@@ -45,7 +49,7 @@ export class VentaService extends GeneralService<VentaEntity> {
         for (const v of info) {
             const emp = empleados.find(e => e.id == v.empleadoId);
             const per = personas.find(p => p.id == emp.personaId);
-            const suc = sucursales.find(s => s.id = emp.sucursalId);
+            const suc = sucursales.find(s => s.id == emp.sucursalId);
             const mv = new VentaMv();
             mv.id = v.id;
             mv.empleado = `${per.nombres} ${per.apellidos}`;
