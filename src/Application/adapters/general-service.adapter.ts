@@ -12,6 +12,7 @@ export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> 
         protected readonly repository: GeneralRepositoryPort<T> & GenerateModelViewPort<T, J>,
         protected readonly mapper: DtoMapperPort<T, U, K>
     ) { }
+
     async getAll(): Promise<T[]> {
         return await this.repository.getAll();
     }

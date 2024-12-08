@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { GeneralEntity } from "./general/general.entity";
 import { UserEntity } from "./user.entity";
-import { RolEntity } from "./rol.entity";
+import { RoleEntity } from "./role.entity";
 import { EmployeeEntity } from "./employee.entity";
 
 @Entity({ name: 'person' })
@@ -41,18 +41,18 @@ export class PersonEntity extends GeneralEntity {
     created: Date;
 
     @Column({ name: 'user_id', nullable: true })
-    userId: number;
+    userId?: number;
 
     @OneToOne(() => UserEntity, user => user.person)
     @JoinColumn({ name: 'user_id' })
     user?: UserEntity;
 
-    @Column({ name: 'rol_id', nullable: true })
-    rolId: number;
+    @Column({ name: 'role_id', nullable: true })
+    roleId?: number;
 
-    @ManyToOne(() => RolEntity, rol => rol.persons)
-    @JoinColumn({ name: 'rol_id' })
-    rol?: RolEntity;
+    @ManyToOne(() => RoleEntity, rol => rol.persons)
+    @JoinColumn({ name: 'role_id' })
+    role?: RoleEntity;
 
     @OneToOne(() => EmployeeEntity, employee => employee.person)
     employee?: EmployeeEntity;

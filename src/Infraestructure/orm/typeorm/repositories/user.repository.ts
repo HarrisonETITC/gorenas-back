@@ -13,7 +13,7 @@ import { AppUtil } from "@utils/app.util";
 export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView> implements UsersPort {
     constructor(
         @Inject(DataSource) source: DataSource,
-        @Inject(USER_ENTITY_MAPPER) private readonly userEntityMapper: EntityMapperPort<UserModel, UserEntity, UserModelView>
+        @Inject(USER_ENTITY_MAPPER) userEntityMapper: EntityMapperPort<UserModel, UserEntity, UserModelView>
     ) {
         super(source, UserEntity, userEntityMapper);
     }
@@ -24,6 +24,6 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
         if (AppUtil.verifyEmpty(finded))
             return null;
 
-        return this.userEntityMapper.fromEntityToDomain(finded);
+        return this.mapper.fromEntityToDomain(finded);
     }
 }

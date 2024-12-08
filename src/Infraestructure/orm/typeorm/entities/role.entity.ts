@@ -3,8 +3,8 @@ import { StateModel } from "@Domain/models/general/state.model";
 import { GeneralEntity } from "./general/general.entity";
 import { PersonEntity } from "./person.entity";
 
-@Entity({ name: 'rol' })
-export class RolEntity extends GeneralEntity {
+@Entity({ name: 'role' })
+export class RoleEntity extends GeneralEntity {
     public static readonly ROL_ADMINISTRATOR = 'administrador';
     public static readonly ROL_PROPIETARY = 'propietario';
     public static readonly ROL_MANAGER = 'gerente';
@@ -13,10 +13,10 @@ export class RolEntity extends GeneralEntity {
     public static readonly ROLES = new Array<string>();
 
     static {
-        RolEntity.ROLES.push(RolEntity.ROL_ADMINISTRATOR);
-        RolEntity.ROLES.push(RolEntity.ROL_PROPIETARY);
-        RolEntity.ROLES.push(RolEntity.ROL_MANAGER);
-        RolEntity.ROLES.push(RolEntity.ROL_CASHIER);
+        RoleEntity.ROLES.push(RoleEntity.ROL_ADMINISTRATOR);
+        RoleEntity.ROLES.push(RoleEntity.ROL_PROPIETARY);
+        RoleEntity.ROLES.push(RoleEntity.ROL_MANAGER);
+        RoleEntity.ROLES.push(RoleEntity.ROL_CASHIER);
     }
 
     @Column({ length: 20, unique: true })
@@ -31,6 +31,6 @@ export class RolEntity extends GeneralEntity {
     @UpdateDateColumn({})
     modified: Date;
 
-    @OneToMany(() => PersonEntity, person => person.rol)
+    @OneToMany(() => PersonEntity, person => person.role)
     persons?: Array<PersonEntity>;
 }

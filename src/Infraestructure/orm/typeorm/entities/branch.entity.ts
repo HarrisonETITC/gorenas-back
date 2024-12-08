@@ -15,7 +15,7 @@ export class BranchEntity extends GeneralEntity {
     @Column({ length: 255, nullable: true })
     address: string;
 
-    @Column({ type: 'decimal', precision: 16, scale: 2, nullable: true })
+    @Column({ type: 'decimal', precision: 16, scale: 2, nullable: true, default: 0 })
     earnings: number;
 
     @CreateDateColumn({})
@@ -25,7 +25,7 @@ export class BranchEntity extends GeneralEntity {
     modified: Date;
 
     @Column({ name: 'restaurant_id', nullable: true })
-    restaurantId: number;
+    restaurantId?: number;
 
     @ManyToOne(() => RestaurantEntity, restaurant => restaurant.branches)
     @JoinColumn({ name: 'restaurant_id' })

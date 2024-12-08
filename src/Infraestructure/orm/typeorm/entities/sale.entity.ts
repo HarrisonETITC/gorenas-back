@@ -11,7 +11,7 @@ export class SaleEntity extends GeneralEntity {
     public static readonly METHOD_PLATAFORMS = 'plataformas';
 
     @Column({ type: 'decimal', precision: 16, scale: 2, nullable: true })
-    ammount: number;
+    amount: number;
 
     @Column({ name: 'paymenth_method', length: 30, nullable: true, default: SaleEntity.METHOD_CASH })
     paymentMethod: string;
@@ -23,7 +23,7 @@ export class SaleEntity extends GeneralEntity {
     modified: Date;
 
     @Column({ name: 'employee_id', nullable: true })
-    employeeId: number;
+    employeeId?: number;
 
     @ManyToOne(() => EmployeeEntity, employee => employee.sales)
     @JoinColumn(({ name: 'employee_id' }))

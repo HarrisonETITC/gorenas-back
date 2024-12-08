@@ -12,8 +12,8 @@ export class SaleBuilder implements IBuilder<SaleModel> {
         this.sale.id = id;
         return this;
     }
-    setAmmount(ammount: number) {
-        this.sale.ammount = ammount;
+    setAmount(amount: number) {
+        this.sale.amount = amount;
         return this;
     }
     setPaymentMethod(paymentMethod: string) {

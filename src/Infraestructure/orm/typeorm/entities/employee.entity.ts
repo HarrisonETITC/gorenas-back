@@ -14,14 +14,14 @@ export class EmployeeEntity extends GeneralEntity {
     state: string;
 
     @Column({ name: 'branch_id', nullable: true })
-    branchId: number;
+    branchId?: number;
 
     @ManyToOne(() => BranchEntity, branch => branch.employees)
     @JoinColumn({ name: 'branch_id' })
     branch?: BranchEntity;
 
     @Column({ name: 'person_id', nullable: true })
-    personId: number;
+    personId?: number;
 
     @OneToOne(() => PersonEntity, person => person.employee)
     @JoinColumn({ name: 'person_id' })

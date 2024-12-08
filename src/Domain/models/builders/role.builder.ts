@@ -1,8 +1,8 @@
 import { IBuilder } from "@Domain/interfaces/builder.interface";
-import { RolModel } from "../rol.model";
+import { RoleModel } from "../role.model";
 
-export class RolBuilder implements IBuilder<RolModel> {
-    private rol: RolModel
+export class RoleBuilder implements IBuilder<RoleModel> {
+    private rol: RoleModel
 
     constructor() {
         this.reset();
@@ -28,12 +28,12 @@ export class RolBuilder implements IBuilder<RolModel> {
         this.rol.modified = modified;
         return this;
     }
-    build(): RolModel {
+    build(): RoleModel {
         const builded = this.rol;
         this.reset();
         return builded;
     }
     reset(): void {
-        this.rol = new RolModel();
+        this.rol = new RoleModel();
     }
 }

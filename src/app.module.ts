@@ -16,7 +16,7 @@ import { BranchModule } from '@Infraestructure/api/modules/branch.module';
 import { EmployeeModule } from '@Infraestructure/api/modules/employee.module';
 import { PersonModule } from '@Infraestructure/api/modules/person.module';
 import { RestaurantModule } from '@Infraestructure/api/modules/restaurant.module';
-import { RolModule } from '@Infraestructure/api/modules/rol.module';
+import { RoleModule } from '@Infraestructure/api/modules/role.module';
 import { SaleModule } from '@Infraestructure/api/modules/sale.module';
 import { AuthModule } from '@Infraestructure/api/modules/auth.module';
 
@@ -35,7 +35,7 @@ import { AuthModule } from '@Infraestructure/api/modules/auth.module';
     EmployeeModule,
     PersonModule,
     RestaurantModule,
-    RolModule,
+    RoleModule,
     SaleModule,
     UserModule,
     AuthModule
