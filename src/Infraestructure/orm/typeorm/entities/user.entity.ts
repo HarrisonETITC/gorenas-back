@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToOne } from "typeorm";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
-import { EstadoModel } from "src/core/models/estado.model";
 import { PersonEntity } from "./person.entity";
+import { StateModel } from "@Domain/models/general/state.model";
 
 @Entity({ name: 'usertable' })
 export class UserEntity extends GeneralEntity {
@@ -11,10 +11,10 @@ export class UserEntity extends GeneralEntity {
     @Column({ length: 255 })
     password: string;
 
-    @Column({ length: 1, default: EstadoModel.ESTADO_ACTIVO })
+    @Column({ length: 1, default: StateModel.STATE_ACTIVE })
     state: string;
 
-    @CreateDateColumn({ name: 'fecha_creacion' })
+    @CreateDateColumn({})
     created: Date;
 
     @OneToOne(() => PersonEntity, person => person.user)

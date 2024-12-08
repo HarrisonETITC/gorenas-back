@@ -13,7 +13,7 @@
     "start:orm": "nest build && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "migration:generate:mysql": "npm run typeorm -- migration:generate src/orm/migrations/mysql/mysql",
+    "migration:generate:mysql": "npm run typeorm -- migration:generate src/Infraestructure/orm/typeorm/migrations/mysql/mysql",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
     "typeorm": "npm run build && npx typeorm -d dist/config/dbconfig.js",

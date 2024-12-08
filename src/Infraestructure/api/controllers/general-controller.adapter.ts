@@ -5,9 +5,9 @@ import { JwtGuard } from "@complements/guards/jwt.guard";
 import { GeneralModel } from "@Domain/models/general/general.model";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { MessageResponse } from "@Domain/types/message-response.type";
-import { Delete, Get, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Delete, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
 
-@UseGuards(JwtGuard)
+
 export class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J> {
 
     constructor(
@@ -20,25 +20,27 @@ export class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = 
     }
 
     @Get(API_ID)
-    async findById(id: string): Promise<J> {
+    async findById(
+        @Query('id') id: string
+    ): Promise<J> {
         const finded = await this.service.getById(parseInt(id));
         return (await this.service.generateModelView([finded]))[0];
     }
 
     @Post(API_CREATE)
-    async create(data: U): Promise<J> {
+    async create(@Body() data: U): Promise<J> {
         const created = await this.service.create(data);
         return (await this.service.generateModelView([created]))[0];
     }
 
     @Put(API_MODIFY)
-    async modify(data: K): Promise<J> {
+    async modify(@Body() data: K): Promise<J> {
         const modified = await this.service.modify(data['id'], data);
         return (await this.service.generateModelView([modified]))[0];
     }
 
     @Delete(API_DELETE)
-    async delete(id: string): Promise<MessageResponse> {
+    async delete(@Query('id') id: string): Promise<MessageResponse> {
         await this.service.delete(parseInt(id));
         return { message: 'Dato eliminado correctamente' };
     }

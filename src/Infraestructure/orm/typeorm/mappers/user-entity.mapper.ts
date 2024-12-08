@@ -3,7 +3,9 @@ import { UserModel } from "@Domain/models/user.model";
 import { UserEntity } from "../entities/user.entity";
 import { UserModelView } from "@Application/model-view/user.mv";
 import { UserBuilder } from "@Domain/models/builders/user.builder";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class UserEntityMapper implements EntityMapperPort<UserModel, UserEntity, UserModelView> {
     fromEntityToDomain(entity: UserEntity): UserModel {
         return new UserBuilder()

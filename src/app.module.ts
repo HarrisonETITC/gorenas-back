@@ -1,38 +1,47 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TyepOrmConfig } from '@config/ormconfig';
+import { TyepOrmConfig } from '@Infraestructure/orm/typeorm/config/ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dbProviders } from '@config/dbconfig';
+import { dbProviders } from '@Infraestructure/orm/typeorm/config/dbconfig';
 import { UsuarioModule } from '@modules/usuario.module';
 import { PersonaModule } from '@modules/persona.module';
 import { VentaModule } from '@modules/venta.module';
 import { SucursalModule } from '@modules/sucursal.module';
 import { RestauranteModule } from '@modules/restaurante.module';
-import { RolModule } from '@modules/rol.module';
+import { RolModule as RM1 } from '@modules/rol.module';
 import { EmpleadoModule } from '@modules/empleado.module';
-import { USER_ENTITY_MAPPER } from '@Application/config/inject-tokens/user.tokens';
-import { UserEntityMapper } from '@Infraestructure/orm/typeorm/mappers/user-entity.mapper';
+import { UserModule } from '@Infraestructure/api/modules/user.module';
+import { BranchModule } from '@Infraestructure/api/modules/branch.module';
+import { EmployeeModule } from '@Infraestructure/api/modules/employee.module';
+import { PersonModule } from '@Infraestructure/api/modules/person.module';
+import { RestaurantModule } from '@Infraestructure/api/modules/restaurant.module';
+import { RolModule } from '@Infraestructure/api/modules/rol.module';
+import { SaleModule } from '@Infraestructure/api/modules/sale.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({ ...TyepOrmConfig.getConfig(), autoLoadEntities: true }),
-    UsuarioModule,
+    /* UsuarioModule,
     PersonaModule,
     VentaModule,
     SucursalModule,
     RestauranteModule,
+    RM1,
+    EmpleadoModule,
+ */
+    BranchModule,
+    EmployeeModule,
+    PersonModule,
+    RestaurantModule,
     RolModule,
-    EmpleadoModule
+    SaleModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    ...dbProviders,
-    {
-      provide: USER_ENTITY_MAPPER,
-      useClass: UserEntityMapper
-    }
+    ...dbProviders
   ],
   exports: [
     ...dbProviders

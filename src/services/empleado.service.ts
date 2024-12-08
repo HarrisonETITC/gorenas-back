@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { GeneralService } from './general/general.service';
 import { EmpleadoEntity } from '@orm/entities/empleado.entity';
 import { DataSource, In, Like, Not } from 'typeorm';
-import source from '@config/dbconfig';
+import source from '@Infraestructure/orm/typeorm/config/dbconfig';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { EmpleadoMv } from 'src/core/models/empleado.modelview';
 import { PersonaEntity } from '@orm/entities/persona.entity';

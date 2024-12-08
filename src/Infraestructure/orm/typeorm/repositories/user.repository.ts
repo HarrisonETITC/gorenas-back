@@ -2,11 +2,12 @@ import { UserModel } from "@Domain/models/user.model";
 import { GeneralRepository } from "./general.repository";
 import { UserEntity } from "../entities/user.entity";
 import { UserModelView } from "@Application/model-view/user.mv";
-import { Inject } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
-import { USER_ENTITY_MAPPER } from "@Application/config/inject-tokens/user.tokens";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
+import { USER_ENTITY_MAPPER } from "@Application/config/user-app.providers";
 
+@Injectable()
 export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView> {
     constructor(
         @Inject(DataSource) source: DataSource,

@@ -2,7 +2,6 @@ import { config } from "dotenv";
 import { DataSourceOptions } from "typeorm";
 
 config();
-
 export class TyepOrmConfig {
     private static readonly optsmysqldev: DataSourceOptions = {
         type: 'mysql',
@@ -11,16 +10,17 @@ export class TyepOrmConfig {
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         port: parseInt(process.env.DB_PORT),
-        entities: [`../../dist/**/*.entity{.ts,.js}`],
+        entities: ['dist/Infraestructure/**/*.entity{.ts,.js}'],
         ssl: true,
         extra: {
             ssl: {
                 rejectUnauthorized: false
             }
         },
-        synchronize: true,
+        synchronize: false,
         logging: ["error", "query"],
-        migrations: ['dist/**/*-mysql.js'],
+        migrationsRun: true,
+        migrations: ['dist/Infraestructure/**/*-mysql.js'],
         dropSchema: false,
         migrationsTableName: 'migrations'
     }
@@ -32,7 +32,7 @@ export class TyepOrmConfig {
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         port: parseInt(process.env.DB_PORT),
-        entities: ['dist/**/*.entity{.ts,.js}'],
+        entities: ['dist/Infraestructure/**/*.entity{.ts,.js}'],
         ssl: true,
         extra: {
             ssl: {
@@ -42,7 +42,7 @@ export class TyepOrmConfig {
         logging: ["error", "query"],
         synchronize: false,
         migrationsRun: true,
-        migrations: ['dist/**/*-mysql.js'],
+        migrations: ['dist/Infraestructure/**/*-mysql.js'],
         dropSchema: false,
         migrationsTableName: 'migrations'
     }

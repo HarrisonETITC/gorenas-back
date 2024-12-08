@@ -17,11 +17,11 @@ export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> 
         return await this.repository.getById(id);
     }
     async create(newObj: U): Promise<T> {
-        const parsed = this.mapper.fromCreateToBase(newObj);
+        const parsed = this.mapper.fromCreateToModel(newObj);
         return await this.repository.create(parsed);
     }
     async modify(id: number, modifyObj: K): Promise<T> {
-        const parsed = this.mapper.fromUpdateToBase(modifyObj);
+        const parsed = this.mapper.fromUpdateToModel(modifyObj);
         return await this.repository.modify(id, parsed);
     }
     async delete(id: number): Promise<void> {
