@@ -3,6 +3,8 @@ import { GeneralModel } from "@Domain/models/general/general.model";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
+import { BadRequestException } from "@nestjs/common";
+import { AppUtil } from "@utils/app.util";
 
 export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralServicePort<T, U, K>, GenerateModelViewPort<T, J> {
 
@@ -14,7 +16,12 @@ export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> 
         return await this.repository.getAll();
     }
     async getById(id: number): Promise<T> {
-        return await this.repository.getById(id);
+        const finded = await this.repository.getById(id);
+
+        if (AppUtil.verifyEmpty(finded))
+            throw new BadRequestException(`No se encontró ningún dato con el id '${id}'`);
+
+        return finded;
     }
     async create(newObj: U): Promise<T> {
         const parsed = this.mapper.fromCreateToModel(newObj);

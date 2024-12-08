@@ -1,4 +1,4 @@
-import { JwtGuard } from '@complements/guards/jwt.guard';
+import { JwtGuard } from '@Application/api/guards/jwt.guard';
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { VentaEntity } from '@orm/entities/venta.entity';
 import { VentaService } from '@services/venta.service';

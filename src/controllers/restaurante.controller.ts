@@ -1,4 +1,4 @@
-import { JwtGuard } from '@complements/guards/jwt.guard';
+import { JwtGuard } from '@Application/api/guards/jwt.guard';
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { RestauranteService } from '@services/restaurante.service';
 

@@ -1,5 +1,5 @@
-import { JwtGuard } from '@complements/guards/jwt.guard';
-import { RolesGuard } from '@complements/guards/rol.guard';
+import { JwtGuard } from '@Application/api/guards/jwt.guard';
+import { RolesGuard } from '@Application/api/guards/rol.guard';
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { SucursalEntity } from '@orm/entities/sucursal.entity';
 import { SucursalService } from '@services/sucursal.service';

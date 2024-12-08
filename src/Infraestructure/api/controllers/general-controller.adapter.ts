@@ -1,13 +1,13 @@
 import { API_ALL, API_CREATE, API_DELETE, API_ID, API_MODIFY } from "@Application/api/endpoint-names";
 import { GeneralControllerPort } from "@Application/ports/general-controller.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
-import { JwtGuard } from "@complements/guards/jwt.guard";
+import { JwtGuard } from "@Application/api/guards/jwt.guard";
 import { GeneralModel } from "@Domain/models/general/general.model";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { MessageResponse } from "@Domain/types/message-response.type";
 import { Body, Delete, Get, Post, Put, Query, UseGuards } from "@nestjs/common";
 
-
+@UseGuards(JwtGuard)
 export class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J> {
 
     constructor(

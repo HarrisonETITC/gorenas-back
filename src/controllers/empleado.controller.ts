@@ -1,4 +1,4 @@
-import { JwtGuard } from '@complements/guards/jwt.guard';
+import { JwtGuard } from '@Application/api/guards/jwt.guard';
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { EmpleadoEntity } from '@orm/entities/empleado.entity';
 import { EmpleadoService } from '@services/empleado.service';

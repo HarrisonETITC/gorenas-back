@@ -9,6 +9,7 @@ import { UserProviders } from "@Infraestructure/orm/typeorm/config/providers/use
         TypeOrmModule.forFeature([UserEntity])
     ],
     controllers: [UserController],
-    providers: UserProviders.concat([])
+    providers: UserProviders.concat([]),
+    exports: UserProviders.concat([])
 })
 export class UserModule { }

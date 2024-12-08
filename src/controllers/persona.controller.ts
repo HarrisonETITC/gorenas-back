@@ -1,6 +1,6 @@
 import { Roles } from '@complements/decoradores/rol.decorator';
-import { JwtGuard } from '@complements/guards/jwt.guard';
-import { RolesGuard } from '@complements/guards/rol.guard';
+import { JwtGuard } from '@Application/api/guards/jwt.guard';
+import { RolesGuard } from '@Application/api/guards/rol.guard';
 import { BadRequestException, Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { PersonaEntity } from '@orm/entities/persona.entity';
 import { PersonaService } from '@services/persona.service';

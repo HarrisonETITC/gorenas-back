@@ -1,18 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { AUTH_MANAGER } from "@Application/config/inject-tokens/auth.tokens";
+import { AuthManagerPort } from "@Application/ports/auth/auth-manager.port";
+import { UserModel } from "@Domain/models/user.model";
+import { Inject, Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { UsuarioEntity } from "@orm/entities/usuario.entity";
-import { UsuarioService } from "@services/usuario.service";
 import { Strategy } from "passport-local";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(
-        private readonly authManejador: UsuarioService
+        @Inject(AUTH_MANAGER) private readonly manager: AuthManagerPort
     ) {
         super();
     }
 
-    async validate(username: string, password: string): Promise<UsuarioEntity> {
-        return await this.authManejador.validarUsuario({ username, password });
+    async validate(username: string, password: string): Promise<UserModel> {
+        return await this.manager.validate(username, password);
     }
 }

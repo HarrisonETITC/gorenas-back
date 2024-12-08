@@ -3,6 +3,7 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GeneralModel } from "@Domain/models/general/general.model";
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
+import { AppUtil } from "@utils/app.util";
 import { DataSource, EntityTarget, Repository } from "typeorm";
 
 export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T> implements GeneralRepositoryPort<T>, GenerateModelViewPort<T, J> {
@@ -17,10 +18,15 @@ export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity =
     }
     async getAll(attrs?: Array<string>): Promise<T[]> {
         const allData = await this.manager.find();
-        return allData.map((data) => this.mapper.fromEntityToDomain(data));
+        return !AppUtil.verifyEmpty(allData) ?
+            allData.map((data) => this.mapper.fromEntityToDomain(data)) : [];
     }
     async getById(id: number, attrs?: Array<string>): Promise<T> {
         const finded = await this.manager.findOneBy({ id: (id as any) });
+
+        if (AppUtil.verifyEmpty(finded))
+            return null;
+
         return this.mapper.fromEntityToDomain(finded);
     }
     async create(obj: T): Promise<T> {
