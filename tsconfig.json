@@ -18,6 +18,21 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@Domain/*": [
+        "src/Domain/*"
+      ],
+      "@Application/*": [
+        "src/Application/*"
+      ],
+      "@Infraestructure/*": [
+        "src/Infraestructure/*"
+      ],
+      "@domain-models/*": [
+        "src/Domain/models/*"
+      ],
+      "@typeorm/*": [
+        "src/Infraestructure/orm/typeorm/*"
+      ],
       "@config/*": [
         "src/config/*"
       ],
@@ -28,7 +43,7 @@
         "src/modules/*"
       ],
       "@utils/*": [
-        "src/core/utils/*"
+        "src/Application/core/utils/*"
       ],
       "@complements/*": [
         "src/core/complements/*"
