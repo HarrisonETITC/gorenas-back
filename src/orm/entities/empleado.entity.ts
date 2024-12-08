@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
-import { GeneralEntity } from "./general/general.entity";
+import { GeneralEntity } from "../../Infraestructure/orm/typeorm/entities/general/general.entity";
 import { EstadoModel } from "src/core/models/estado.model";
 import { SucursalEntity } from "./sucursal.entity";
 import { VentaEntity } from "./venta.entity";

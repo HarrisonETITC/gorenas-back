@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany } from "typeorm";
-import { GeneralEntity } from "./general/general.entity";
+import { GeneralEntity } from "../../Infraestructure/orm/typeorm/entities/general/general.entity";
 import { SucursalEntity } from "./sucursal.entity";
 
 @Entity({ name: 'restaurante' })

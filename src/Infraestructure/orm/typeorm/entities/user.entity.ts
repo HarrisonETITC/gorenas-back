@@ -1,24 +1,24 @@
 import { Column, CreateDateColumn, Entity, OneToOne } from "typeorm";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
 import { EstadoModel } from "src/core/models/estado.model";
-import { PersonaEntity } from "./persona.entity";
+import { PersonEntity } from "./person.entity";
 
-@Entity({ name: 'usuario' })
-export class UsuarioEntity extends GeneralEntity {
+@Entity({ name: 'usertable' })
+export class UserEntity extends GeneralEntity {
     @Column({ length: 200, unique: true })
     email: string;
 
-    @Column({ name: 'contrasena', length: 255 })
-    pass: string;
+    @Column({ length: 255 })
+    password: string;
 
     @Column({ length: 1, default: EstadoModel.ESTADO_ACTIVO })
-    estado: string;
+    state: string;
 
     @CreateDateColumn({ name: 'fecha_creacion' })
-    creado: Date;
+    created: Date;
 
-    @OneToOne(() => PersonaEntity, person => person.usuario)
-    persona?: PersonaEntity;
+    @OneToOne(() => PersonEntity, person => person.user)
+    person?: PersonEntity;
 
     constructor() {
         super();

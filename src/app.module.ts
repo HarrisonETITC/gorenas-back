@@ -11,6 +11,8 @@ import { SucursalModule } from '@modules/sucursal.module';
 import { RestauranteModule } from '@modules/restaurante.module';
 import { RolModule } from '@modules/rol.module';
 import { EmpleadoModule } from '@modules/empleado.module';
+import { USER_ENTITY_MAPPER } from '@Application/config/inject-tokens/user.tokens';
+import { UserEntityMapper } from '@Infraestructure/orm/typeorm/mappers/user-entity.mapper';
 
 @Module({
   imports: [
@@ -26,7 +28,11 @@ import { EmpleadoModule } from '@modules/empleado.module';
   controllers: [AppController],
   providers: [
     AppService,
-    ...dbProviders
+    ...dbProviders,
+    {
+      provide: USER_ENTITY_MAPPER,
+      useClass: UserEntityMapper
+    }
   ],
   exports: [
     ...dbProviders

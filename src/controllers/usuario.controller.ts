@@ -2,7 +2,7 @@ import { Roles } from '@complements/decoradores/rol.decorator';
 import { JwtGuard } from '@complements/guards/jwt.guard';
 import { LocalGuard } from '@complements/guards/local.guard';
 import { RolesGuard } from '@complements/guards/rol.guard';
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { RolEntity } from '@orm/entities/rol.entity';
 import { UsuarioEntity } from '@orm/entities/usuario.entity';
 import { JwtImplService } from '@services/jwt-impl.service';
@@ -30,7 +30,7 @@ export class UsuarioController {
 
     @Post('crear')
     @Roles(RolEntity.ROL_ADMINISTRADOR, RolEntity.ROL_PROPIETARIO, RolEntity.ROL_GERENTE)
-    @UseGuards(JwtGuard)
+    @UseGuards()
     @HttpCode(HttpStatus.CREATED)
     async crearUsuario(@Body() nuevo: UsuarioEntity) {
         if (AppUtil.verificarVacio(nuevo.email) || AppUtil.verificarVacio(nuevo.pass))

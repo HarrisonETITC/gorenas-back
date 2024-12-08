@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, UpdateDateColumn } from "typeorm";
-import { GeneralEntity } from "./general/general.entity";
+import { GeneralEntity } from "../../Infraestructure/orm/typeorm/entities/general/general.entity";
 import { EstadoModel } from "src/core/models/estado.model";
 import { RestauranteEntity } from "./restaurante.entity";
 import { EmpleadoEntity } from "./empleado.entity";

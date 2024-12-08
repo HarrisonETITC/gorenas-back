@@ -1,4 +1,4 @@
-import { GeneralEntity } from "@orm/entities/general/general.entity";
+import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
 import { DataSource, EntityTarget, Repository } from "typeorm";
 
 export class GeneralService<T extends GeneralEntity> {
