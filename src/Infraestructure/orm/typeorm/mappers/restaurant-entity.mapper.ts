@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { RestaurantEntity } from "../entities/restaurant.entity";
 import { RestaurantModelView } from "@Application/model-view/restaurant.mv";
 import { RestaurantBuilder } from "@Domain/models/builders/restaurant-model.builder";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
 export class RestaurantEntityMapper implements EntityMapperPort<RestaurantModel, RestaurantEntity, RestaurantModelView> {

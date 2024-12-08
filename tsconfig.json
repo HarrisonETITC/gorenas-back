@@ -43,7 +43,7 @@
         "src/modules/*"
       ],
       "@utils/*": [
-        "src/core/utils/*"
+        "src/Application/core/utils/*"
       ],
       "@complements/*": [
         "src/core/complements/*"

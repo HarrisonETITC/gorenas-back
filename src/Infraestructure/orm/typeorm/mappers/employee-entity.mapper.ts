@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { EmployeeModelView } from "@Application/model-view/employee.mv";
 import { EmployeeBuilder } from "@Domain/models/builders/employee.builder";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
 export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, EmployeeEntity, EmployeeModelView> {

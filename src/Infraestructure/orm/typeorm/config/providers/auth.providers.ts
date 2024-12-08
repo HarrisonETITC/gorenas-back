@@ -2,8 +2,8 @@ import { AuthManagerAdapter } from "@Application/adapters/auth/auth-manager.adap
 import { BcryptEncrypter } from "@Application/adapters/auth/bcrypt-encrypter.adapter";
 import { JwtServiceAdapter } from "@Application/adapters/auth/jwt-service.adapter";
 import { AUTH_MANAGER, AUTH_SERVICE, ENCRYPTER } from "@Application/config/inject-tokens/auth.tokens";
-import { JwtStrategy } from "@complements/strategies/jwt.strategy";
-import { LocalStrategy } from "@complements/strategies/local.strategy";
+import { JwtStrategy } from "@Application/api/strategies/jwt.strategy";
+import { LocalStrategy } from "@Application/api/strategies/local.strategy";
 import { Provider } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 

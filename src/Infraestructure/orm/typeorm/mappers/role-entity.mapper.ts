@@ -4,7 +4,7 @@ import { RoleEntity } from "../entities/role.entity";
 import { RoleModelView } from "@Application/model-view/role.mv";
 import { RoleModel } from "@Domain/models/role.model";
 import { RoleBuilder } from "@Domain/models/builders/role.builder";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
 export class RoleEntityMapper implements EntityMapperPort<RoleModel, RoleEntity, RoleModelView> {

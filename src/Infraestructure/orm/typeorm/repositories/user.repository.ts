@@ -7,7 +7,7 @@ import { DataSource } from "typeorm";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { USER_ENTITY_MAPPER } from "@Application/config/inject-tokens/user.tokens";
 import { UsersPort } from "@Application/ports/users/Users.port";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
 export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView> implements UsersPort {

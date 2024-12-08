@@ -1,8 +1,8 @@
 
-import { ROL_KEY } from '@complements/decoradores/rol.decorator';
+import { ROL_KEY } from '@Application/core/decorators/rol.decorator';
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AppUtil } from '@utils/app.util';
+import { AppUtil } from '@Application/core/utils/app.util';
 import { Request } from 'express';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class RolesGuard implements CanActivate {
             context.getHandler(),
             context.getClass(),
         ]);
-        if (AppUtil.verificarVacio(requiredRoles)) {
+        if (AppUtil.verifyEmpty(requiredRoles)) {
             return true;
         }
         const request: Request = context.getArgByIndex(0);

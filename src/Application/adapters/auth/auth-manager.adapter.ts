@@ -5,7 +5,7 @@ import { EncrypterPort } from "@Application/ports/encrypter.port";
 import { UsersPort } from "@Application/ports/users/Users.port";
 import { UserModel } from "@Domain/models/user.model";
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
 export class AuthManagerAdapter implements AuthManagerPort {

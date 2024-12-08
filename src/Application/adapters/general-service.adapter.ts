@@ -4,7 +4,7 @@ import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { BadRequestException } from "@nestjs/common";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralServicePort<T, U, K>, GenerateModelViewPort<T, J> {
 

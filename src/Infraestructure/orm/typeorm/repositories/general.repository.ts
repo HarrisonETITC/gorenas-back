@@ -3,7 +3,7 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GeneralModel } from "@Domain/models/general/general.model";
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
-import { AppUtil } from "@utils/app.util";
+import { AppUtil } from "@Application/core/utils/app.util";
 import { DataSource, EntityTarget, Repository } from "typeorm";
 
 export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T> implements GeneralRepositoryPort<T>, GenerateModelViewPort<T, J> {
