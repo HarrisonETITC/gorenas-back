@@ -1,9 +1,8 @@
 import { VALIDATION_SERVICE } from "@Application/config/inject-tokens/auth.tokens";
 import { ValidationServicePort } from "@Application/ports/validation-service.port";
-import { BadRequestException, CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor, Type } from "@nestjs/common";
+import { BadRequestException, CallHandler, ExecutionContext, Inject, Injectable, NestInterceptor } from "@nestjs/common";
 import { Reflector } from '@nestjs/core';
 import { Observable } from "rxjs";
-import { BranchCreateDto } from "@Domain/models/create-dto/branch-create.dto";
 import { Request } from "express";
 
 @Injectable()
@@ -19,10 +18,12 @@ export class ValidationInterceptor implements NestInterceptor {
         const req: Request = context.switchToHttp().getRequest();
         const dto: any = this.reflector.get<any>('typed_body', handler);
 
-        try {
-            await this.validationService.validate(req.body, dto);
-        } catch (error) {
-            throw new BadRequestException(error.message)
+        if (await this.validationService.validateExistingSchema(dto)) {
+            try {
+                await this.validationService.validate(req.body, dto);
+            } catch (error) {
+                throw new BadRequestException(error.message)
+            }
         }
 
         return next.handle();
