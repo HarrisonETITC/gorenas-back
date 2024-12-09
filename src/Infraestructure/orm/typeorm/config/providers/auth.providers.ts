@@ -7,7 +7,7 @@ import { LocalStrategy } from "@Application/api/strategies/local.strategy";
 import { Provider } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { ValidationServiceAdapter } from "@Application/adapters/auth/validation-service.adapter";
-import { ZodValidatorAdapter } from "@Infraestructure/api/validators/zod-validator.adapter";
+import { ZodValidatorAdapter } from "@Infraestructure/api/validators/zod/zod-validator.adapter";
 
 export const AuthProviders: Array<Provider> = [
     JwtService,

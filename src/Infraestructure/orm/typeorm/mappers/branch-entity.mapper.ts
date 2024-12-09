@@ -19,15 +19,16 @@ export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchE
             .build();
     }
     fromDomainToEntity(domain: BranchModel): BranchEntity {
-        return {
-            id: domain.id ?? null,
-            state: domain.state ?? null,
-            name: domain.name ?? null,
-            address: domain.address ?? null,
-            earnings: domain.earnings ?? null,
-            created: domain.created ?? null,
-            modified: domain.modified
-        };
+        const entity = new BranchEntity();
+        entity.id = domain.id ?? null;
+        entity.state = domain.state ?? null;
+        entity.name = domain.name ?? null;
+        entity.address = domain.address ?? null;
+        entity.earnings = domain.earnings ?? null;
+        entity.created = domain.created ?? null;
+        entity.modified = domain.modified ?? null;
+
+        return entity
     }
     fromDomainToMv(domain: BranchModel, extra?: Map<string, string>): BranchModelView {
         return {

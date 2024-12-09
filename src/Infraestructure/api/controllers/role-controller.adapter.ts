@@ -10,7 +10,7 @@ import { ROLE_SERVICE } from "@Application/config/inject-tokens/role.tokens";
 import { ROUTE_ROLE } from "@Application/api/api.routes";
 
 @Controller(ROUTE_ROLE)
-export class RoleController extends GeneralControllerAdapter<RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView> {
+export class RoleController extends GeneralControllerAdapter(RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView) {
     constructor(
         @Inject(ROLE_SERVICE) private readonly roleService: GeneralServicePort<RoleModel, RoleCreateDto, RoleUpdateDto> & GenerateModelViewPort<RoleModel, RoleModelView>
     ) {

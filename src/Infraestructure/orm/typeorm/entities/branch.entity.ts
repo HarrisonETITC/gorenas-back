@@ -1,8 +1,9 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, UpdateDateColumn } from "typeorm";
 import { GeneralEntity } from "@typeorm/entities/general/general.entity";
 import { StateModel } from "@Domain/models/general/state.model";
 import { RestaurantEntity } from "./restaurant.entity";
 import { EmployeeEntity } from "./employee.entity";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Entity({ name: 'branch' })
 export class BranchEntity extends GeneralEntity {
@@ -33,4 +34,17 @@ export class BranchEntity extends GeneralEntity {
 
     @OneToMany(() => EmployeeEntity, employee => employee.branch)
     employees?: Array<EmployeeEntity>;
+
+    @BeforeInsert()
+    private setCreatedDate() {
+        if (AppUtil.verifyEmpty(this.created))
+            this.created = new Date();
+        this.setModifiedDate();
+    }
+
+    @BeforeUpdate()
+    private setModifiedDate() {
+        if (AppUtil.verifyEmpty(this.modified))
+            this.modified = new Date();
+    }
 }

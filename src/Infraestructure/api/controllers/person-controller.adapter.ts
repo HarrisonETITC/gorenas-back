@@ -10,7 +10,7 @@ import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { ROUTE_PERSON } from "@Application/api/api.routes";
 
 @Controller(ROUTE_PERSON)
-export class PersonController extends GeneralControllerAdapter<PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView> {
+export class PersonController extends GeneralControllerAdapter(PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView) {
     constructor(
         @Inject(PERSON_SERVICE) private readonly personService: GeneralServicePort<PersonModel, PersonCreateDto, PersonUpdateDto> & GenerateModelViewPort<PersonModel, PersonModelView>
     ) {

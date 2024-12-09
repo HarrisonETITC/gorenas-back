@@ -1,3 +1,6 @@
+import { Type } from "@nestjs/common";
+
 export interface DtoValidatorPort {
-    validate<T>(data: T, schema: any): Promise<void>;
+    validate(data: any, type: Type<any>): Promise<void>;
+    getSchemaByType(type: Type<any>): Promise<any>;
 }

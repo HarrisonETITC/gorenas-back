@@ -10,7 +10,7 @@ import { SALE_SERVICE } from "@Application/config/inject-tokens/sale.tokens";
 import { ROUTE_SALE } from "@Application/api/api.routes";
 
 @Controller(ROUTE_SALE)
-export class SaleController extends GeneralControllerAdapter<SaleModel, SaleCreateDto, SaleUpdateDto, SaleModelView> {
+export class SaleController extends GeneralControllerAdapter(SaleModel, SaleCreateDto, SaleUpdateDto, SaleModelView) {
     constructor(
         @Inject(SALE_SERVICE) private readonly saleService: GeneralServicePort<SaleModel, SaleCreateDto, SaleUpdateDto> & GenerateModelViewPort<SaleModel, SaleModelView>
     ) {

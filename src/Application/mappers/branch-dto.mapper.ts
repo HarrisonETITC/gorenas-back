@@ -28,11 +28,11 @@ export class BranchDtoMapper implements DtoMapperPort<BranchModel, BranchCreateD
     }
     fromCreateToModel(create: BranchCreateDto, params?: Map<string, string>): BranchModel {
         return new BranchBuilder()
-            .setId(null)
-            .setName(create.name ?? null)
-            .setAddress(create.address ?? null)
-            .setState(create.state ?? null)
-            .setEarnings(create.earnings ?? null)
+            .setId(undefined)
+            .setName(create.name ?? undefined)
+            .setAddress(create.address ?? undefined)
+            .setState(create.state ?? undefined)
+            .setEarnings(create.earnings ?? undefined)
             .build();
     }
     fromUpdateToModel(update: BranchUpdateDto, params?: Map<string, string>): BranchModel {

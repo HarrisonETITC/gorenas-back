@@ -1,4 +1,4 @@
-import { Controller, Inject } from "@nestjs/common";
+import { Body, Controller, Inject, Post } from "@nestjs/common";
 import { GeneralControllerAdapter } from "./general-controller.adapter";
 import { BranchModel } from "@Domain/models/branch.model";
 import { BranchCreateDto } from "@Domain/models/create-dto/branch-create.dto";
@@ -10,7 +10,7 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { ROUTE_BRANCH } from "@Application/api/api.routes";
 
 @Controller(ROUTE_BRANCH)
-export class BranchController extends GeneralControllerAdapter<BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView> {
+export class BranchController extends GeneralControllerAdapter(BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView) {
     constructor(
         @Inject(BRANCH_SERVICE) private readonly branchService: GeneralServicePort<BranchModel, BranchCreateDto, BranchUpdateDto> & GenerateModelViewPort<BranchModel, BranchModelView>
     ) {
