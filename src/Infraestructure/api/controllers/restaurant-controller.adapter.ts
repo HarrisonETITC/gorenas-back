@@ -7,8 +7,9 @@ import { RestaurantModelView } from "@Application/model-view/restaurant.mv";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { RESTAURANT_SERVICE } from "@Application/config/inject-tokens/restaurant.tokens";
+import { ROUTE_RESTAURANT } from "@Application/api/api.routes";
 
-@Controller('restaurant')
+@Controller(ROUTE_RESTAURANT)
 export class RestaurantController extends GeneralControllerAdapter<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto, RestaurantModelView> {
     constructor(
         @Inject(RESTAURANT_SERVICE) private readonly restaurantService: GeneralServicePort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto> & GenerateModelViewPort<RestaurantModel, RestaurantModelView>

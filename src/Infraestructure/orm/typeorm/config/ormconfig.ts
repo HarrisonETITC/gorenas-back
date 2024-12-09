@@ -10,6 +10,7 @@ export class TyepOrmConfig {
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         port: parseInt(process.env.DB_PORT),
+        connectTimeout: 60000,
         entities: ['dist/Infraestructure/**/*.entity{.ts,.js}'],
         ssl: true,
         extra: {
@@ -32,6 +33,7 @@ export class TyepOrmConfig {
         host: process.env.DB_HOST,
         database: process.env.DB_NAME,
         port: parseInt(process.env.DB_PORT),
+        connectTimeout: 60000,
         entities: ['dist/Infraestructure/**/*.entity{.ts,.js}'],
         ssl: true,
         extra: {

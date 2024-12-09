@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TyepOrmConfig } from '@Infraestructure/orm/typeorm/config/ormconfig';
@@ -12,6 +12,9 @@ import { RestaurantModule } from '@Infraestructure/api/modules/restaurant.module
 import { RoleModule } from '@Infraestructure/api/modules/role.module';
 import { SaleModule } from '@Infraestructure/api/modules/sale.module';
 import { AuthModule } from '@Infraestructure/api/modules/auth.module';
+import { API_ROUTES } from '@Application/api/api.routes';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ValidationInterceptor } from '@Application/api/interceptors/validation.interceptor';
 
 @Module({
   imports: [
@@ -28,10 +31,15 @@ import { AuthModule } from '@Infraestructure/api/modules/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    ...dbProviders
+    ...dbProviders,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ValidationInterceptor
+    }
   ],
   exports: [
     ...dbProviders
   ]
 })
-export class AppModule { }
+export class AppModule {
+}
