@@ -1,3 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
 
-export const SetTypeBody = <T>(dto: T) => SetMetadata('typed_body', dto);
+export const TYPED_BODY = 'typed_body';
+export const SetTypedBody = <T>(...dto: T[]) => SetMetadata(TYPED_BODY, dto);

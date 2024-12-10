@@ -4,6 +4,8 @@ import { Injectable, Type } from "@nestjs/common";
 import { ZodError, ZodSchema } from "zod";
 import { BranchCreateSchema } from "./branch/branch-create.schema";
 import { AppUtil } from "@Application/core/utils/app.util";
+import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
+import { IdStringSchema } from "./general/id-string.schema";
 
 @Injectable()
 export class ZodValidatorAdapter implements DtoValidatorPort {
@@ -11,6 +13,7 @@ export class ZodValidatorAdapter implements DtoValidatorPort {
 
     constructor() {
         this.schemas.set(BranchCreateDto, BranchCreateSchema);
+        this.schemas.set(IdStringDto, IdStringSchema);
     }
 
     async validate(data: any, type: Type<any>): Promise<void> {

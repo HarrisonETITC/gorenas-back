@@ -6,7 +6,9 @@ import { GeneralModel } from "@Domain/models/general/general.model";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { MessageResponse } from "@Domain/types/message-response.type";
 import { Body, Delete, Get, Post, Put, Query, Type, UseGuards } from "@nestjs/common";
-import { SetTypeBody } from "@Application/core/decorators/set-type-body.decorator";
+import { SetTypedBody } from "@Application/core/decorators/set-type-body.decorator";
+import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
+import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
     Type<GeneralControllerPort<T, U, K, J>> => {
@@ -24,6 +26,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Get(API_ID)
+        @SetTypedQuery(IdStringDto)
         async findById(
             @Query('id') id: string
         ): Promise<J> {
@@ -32,20 +35,21 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Post(API_CREATE)
-        @SetTypeBody(create)
+        @SetTypedBody(create)
         async create(@Body() data: U): Promise<J> {
             const created = await this.service.create(data);
             return (await this.service.generateModelView([created]))[0];
         }
 
         @Put(API_MODIFY)
-        @SetTypeBody(modify)
+        @SetTypedBody(modify)
         async modify(@Body() data: K): Promise<J> {
             const modified = await this.service.modify(data['id'], data);
             return (await this.service.generateModelView([modified]))[0];
         }
 
         @Delete(API_DELETE)
+        @SetTypedQuery(IdStringDto)
         async delete(@Query('id') id: string): Promise<MessageResponse> {
             await this.service.delete(parseInt(id));
             return { message: 'Dato eliminado correctamente' };
