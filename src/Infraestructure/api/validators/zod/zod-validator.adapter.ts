@@ -6,14 +6,17 @@ import { BranchCreateSchema } from "./branch/branch-create.schema";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
 import { IdStringSchema } from "./general/id-string.schema";
+import { BranchUpdateDto } from "@Domain/models/update-dto/branch-update.dto";
+import { BranchUpdateSchema } from "./branch/branch-update.schema";
 
 @Injectable()
 export class ZodValidatorAdapter implements DtoValidatorPort {
     private readonly schemas = new Map<Type<any>, ZodSchema<any>>();
 
     constructor() {
-        this.schemas.set(BranchCreateDto, BranchCreateSchema);
         this.schemas.set(IdStringDto, IdStringSchema);
+        this.schemas.set(BranchCreateDto, BranchCreateSchema);
+        this.schemas.set(BranchUpdateDto, BranchUpdateSchema);
     }
 
     async validate(data: any, type: Type<any>): Promise<void> {

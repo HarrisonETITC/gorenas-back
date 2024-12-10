@@ -32,8 +32,8 @@ export class AppUtil {
     }
 
     public static findNumberField(assigns: Map<string, string>, fieldName: string) {
-        if (!AppUtil.verifyEmpty(assigns) && !AppUtil.verifyEmpty(assigns.get(fieldName)) && !isNaN(parseInt(assigns.get(fieldName))))
-            return parseInt(assigns.get(fieldName));
+        if (!AppUtil.verifyEmpty(assigns) && !AppUtil.verifyEmpty(assigns.get(fieldName)) && !isNaN(Number(assigns.get(fieldName))))
+            return Number(assigns.get(fieldName));
 
         return null;
     }

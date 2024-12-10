@@ -30,7 +30,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         async findById(
             @Query('id') id: string
         ): Promise<J> {
-            const finded = await this.service.getById(parseInt(id));
+            const finded = await this.service.getById(Number(id));
             return (await this.service.generateModelView([finded]))[0];
         }
 
@@ -51,7 +51,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         @Delete(API_DELETE)
         @SetTypedQuery(IdStringDto)
         async delete(@Query('id') id: string): Promise<MessageResponse> {
-            await this.service.delete(parseInt(id));
+            await this.service.delete(Number(id));
             return { message: 'Dato eliminado correctamente' };
         }
     }
