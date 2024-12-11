@@ -8,6 +8,8 @@ import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
 import { IdStringSchema } from "./general/id-string.schema";
 import { BranchUpdateDto } from "@Domain/models/update-dto/branch-update.dto";
 import { BranchUpdateSchema } from "./branch/branch-update.schema";
+import { EmployeeCreateDto } from "@Domain/models/create-dto/employee-create.dto";
+import { EmployeeCreateSchema } from "./employee/employee-create.schema";
 
 @Injectable()
 export class ZodValidatorAdapter implements DtoValidatorPort {
@@ -17,6 +19,7 @@ export class ZodValidatorAdapter implements DtoValidatorPort {
         this.schemas.set(IdStringDto, IdStringSchema);
         this.schemas.set(BranchCreateDto, BranchCreateSchema);
         this.schemas.set(BranchUpdateDto, BranchUpdateSchema);
+        this.schemas.set(EmployeeCreateDto, EmployeeCreateSchema);
     }
 
     async validate(data: any, type: Type<any>): Promise<void> {
