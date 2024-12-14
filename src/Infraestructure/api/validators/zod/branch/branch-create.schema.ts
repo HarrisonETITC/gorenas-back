@@ -1,5 +1,6 @@
 import { StateModel } from '@Domain/models/general/state.model';
 import { z } from 'zod';
+import { relationStringField, stateField } from '../base/base.fields';
 
 export const BranchCreateSchema = z.object({
     name: z.string()
@@ -9,9 +10,6 @@ export const BranchCreateSchema = z.object({
     earnings: z.number()
         .positive("Las ganancias iniciales de la sucursal no pueden ser negativas")
         .optional(),
-    state: z.string()
-        .refine(s => StateModel.BASIC_STATES.includes(s), `Debe proveer un estado valido para la sucursal: ${StateModel.BASIC_STATES.join(' ó ')}`)
-        .optional(),
-    restaurant: z.string()
-        .min(1, "Debe proveer el restaurante asociado, ya sea el nombre o el id")
+    state: stateField(StateModel.BASIC_STATES, true),
+    restaurant: relationStringField('restaurante')
 })

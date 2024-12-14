@@ -2,6 +2,7 @@ import { AppUtil } from "@Application/core/utils/app.util";
 import { ValidationUtil } from "@Application/core/utils/validation.util";
 import { PersonModel } from "@Domain/models/person.model";
 import { z } from "zod";
+import { relationStringField } from "../base/base.fields";
 
 export const PersonCreateSchema = z.object({
     names: z.string(({ message: "El/Los nombre(s) tiene(n) que ser una cadena de texto" })),
@@ -21,8 +22,6 @@ export const PersonCreateSchema = z.object({
         .optional(),
     born: z.date(({ message: "La fecha de nacimiento tiene que ser una fecha válida" }))
         .optional(),
-    rol: z.string(({ message: "El rol tiene que ser una cadena de texto" }))
-        .refine(s => !AppUtil.verifyEmpty(s), "El rol no puede estar vacío"),
-    person: z.string(({ message: "La persona tiene que ser una cadena de texto" }))
-        .refine(s => !AppUtil.verifyEmpty(s), "La persona no puede estar vacía")
+    rol: relationStringField('rol'),
+    user: relationStringField('usuario')
 })

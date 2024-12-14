@@ -8,5 +8,5 @@ export class PersonCreateDto {
     address?: string;
     born?: Date;
     rol: string;
-    person: string;
+    user: string;
 }

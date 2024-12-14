@@ -11,7 +11,7 @@
 		"--name",
 		"Gorenas-Back"
 	],
-	"postStartCommand": "git config --global core.autocrlf true && service mysql start"
+	"postStartCommand": "git config --global core.autocrlf true"
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	,
 	"features": {}

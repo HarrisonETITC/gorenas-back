@@ -16,6 +16,22 @@ import { PersonCreateDto } from "@Domain/models/create-dto/person-create.dto";
 import { PersonCreateSchema } from "./person/person-create.schema";
 import { PersonUpdateDto } from "@Domain/models/update-dto/person-update.dto";
 import { PersonUpdateSchema } from "./person/person-update.schema";
+import { RestaurantCreateDto } from "@Domain/models/create-dto/restaurant-create.dto";
+import { RestaurantUpdateDto } from "@Domain/models/update-dto/restaurant-update.dto";
+import { RestaurantCreateSchema } from "./restaurant/restaurant-create.schema";
+import { RestaurantUpdateSchema } from "./restaurant/restaurant-update.schema";
+import { RoleCreateDto } from "@Domain/models/create-dto/role-create.dto";
+import { RoleUpdateDto } from "@Domain/models/update-dto/role-update.dto";
+import { RoleCreateSchema } from "./role/role-create.schema";
+import { RoleUpdateSchema } from "./role/role-update.schema";
+import { SaleCreateDto } from "@Domain/models/create-dto/sale-create.dto";
+import { SaleUpdateDto } from "@Domain/models/update-dto/sale-update.dto";
+import { SaleCreateSchema } from "./sale/sale-create.schema";
+import { SaleUpdateSchema } from "./sale/sale-update.schema";
+import { UserCreateDto } from "@Domain/models/create-dto/user-create.dto";
+import { UserUpdateDto } from "@Domain/models/update-dto/user-update.dto";
+import { UserCreateSchema } from "./user/user-create.schema";
+import { UserUpdateSchema } from "./user/user-update.schema";
 
 @Injectable()
 export class ZodValidatorAdapter implements DtoValidatorPort {
@@ -29,6 +45,14 @@ export class ZodValidatorAdapter implements DtoValidatorPort {
         this.schemas.set(EmployeeUpdateDto, EmployeeUpdateSchema);
         this.schemas.set(PersonCreateDto, PersonCreateSchema);
         this.schemas.set(PersonUpdateDto, PersonUpdateSchema);
+        this.schemas.set(RestaurantCreateDto, RestaurantCreateSchema);
+        this.schemas.set(RestaurantUpdateDto, RestaurantUpdateSchema);
+        this.schemas.set(RoleCreateDto, RoleCreateSchema);
+        this.schemas.set(RoleUpdateDto, RoleUpdateSchema);
+        this.schemas.set(SaleCreateDto, SaleCreateSchema);
+        this.schemas.set(SaleUpdateDto, SaleUpdateSchema);
+        this.schemas.set(UserCreateDto, UserCreateSchema);
+        this.schemas.set(UserUpdateDto, UserUpdateSchema);
     }
 
     async validate(data: any, type: Type<any>): Promise<void> {

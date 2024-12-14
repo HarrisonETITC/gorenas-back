@@ -2,10 +2,10 @@ import { AppUtil } from "@Application/core/utils/app.util";
 import { ValidationUtil } from "@Application/core/utils/validation.util";
 import { PersonModel } from "@Domain/models/person.model";
 import { z } from "zod";
+import { idField, relationStringField } from "../base/base.fields";
 
 export const PersonUpdateSchema = z.object({
-    id: z.number(({ message: "El id es obligatorio para poder actualizar los datos de la persona" }))
-        .positive("El id tiene que ser un valor positivo"),
+    id: idField,
     names: z.string(({ message: "El/Los nombre(s) tiene(n) que ser una cadena de texto" }))
         .optional(),
     surnames: z.string({ message: "El/Los apellido(s) tiene(n) que ser una cadena de texto" })
@@ -26,10 +26,6 @@ export const PersonUpdateSchema = z.object({
         .optional(),
     born: z.date(({ message: "La fecha de nacimiento tiene que ser una fecha válida" }))
         .optional(),
-    rol: z.string(({ message: "El rol tiene que ser una cadena de texto" }))
-        .refine(s => !AppUtil.verifyEmpty(s), "El rol no puede estar vacío")
-        .optional(),
-    person: z.string(({ message: "La persona tiene que ser una cadena de texto" }))
-        .refine(s => !AppUtil.verifyEmpty(s), "La persona no puede estar vacía")
-        .optional()
+    rol: relationStringField('rol', true),
+    user: relationStringField('usuario', true)
 })
