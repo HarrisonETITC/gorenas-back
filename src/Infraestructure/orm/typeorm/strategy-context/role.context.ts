@@ -6,7 +6,7 @@ import { Like } from "typeorm";
 import { RoleModel } from "@Domain/models/role.model";
 
 export const RoleCanSeeContext = (role: string): GetDataStrategy<RoleEntity> => {
-    if([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))
+    if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))
         return new RoleAdministratorCanSeeStrategy();
     if (role == RoleModel.ROLE_MANAGER)
         return new RoleManagerCanSeeStrategy();
@@ -34,3 +34,39 @@ class RoleBasicCanSeeStrategy implements GetDataStrategy<RoleEntity> {
         return [];
     }
 }
+
+export const RoleAvailableContext = (role: string): GetDataStrategy<RoleEntity> => {
+    if (RoleModel.ROLE_ADMINISTRATOR == role)
+        return new RoleAdministratorAvailableStrategy();
+    if (RoleModel.ROLE_PROPIETARY == role)
+        return new RolePropietaryAvailableStrategy();
+    if (role == RoleModel.ROLE_MANAGER)
+        return new RoleManagerAvailableStrategy();
+
+    return new RoleBasicCanSeeStrategy();
+}
+
+class RoleAdministratorAvailableStrategy implements GetDataStrategy<RoleEntity> {
+    async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
+        return await repository.manager.findBy({ name: Like(`%${args.query}%`) })
+    }
+}
+
+class RolePropietaryAvailableStrategy implements GetDataStrategy<RoleEntity> {
+    async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
+        return await repository.manager.createQueryBuilder("r")
+            .where("r.name LIKE :query", { query: `%${args.query}%` })
+            .andWhere("r.name NOT IN(...exclude)", { exclude: [RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY] })
+            .getMany();
+    }
+}
+
+class RoleManagerAvailableStrategy implements GetDataStrategy<RoleEntity> {
+    async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
+        return await repository.manager.createQueryBuilder("r")
+            .where("r.name LIKE :query", { query: `%${args.query}%` })
+            .andWhere("r.name NOT IN(...exclude)", { exclude: [RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY, RoleModel.ROLE_MANAGER] })
+            .getMany();
+    }
+}
+

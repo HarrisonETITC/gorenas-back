@@ -33,7 +33,8 @@ export class UserEntityMapper implements EntityMapperPort<UserModel, UserEntity,
             id: domain.id,
             email: domain.email,
             name: extra?.name ?? '',
-            state: domain.state
+            state: domain.state,
+            role: extra?.role ?? ''
         }
 
         return mv;

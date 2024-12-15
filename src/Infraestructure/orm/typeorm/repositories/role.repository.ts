@@ -10,7 +10,7 @@ import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port
 import { RoleTransformParams } from "@Application/core/params/transform/role-transform.params";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
-import { RoleCanSeeContext } from "../strategy-context/role.context";
+import { RoleAvailableContext, RoleCanSeeContext } from "../strategy-context/role.context";
 import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
@@ -23,7 +23,9 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
     }
 
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
-        return [];
+        const data = await RoleAvailableContext(params.role).getData(params, this);
+
+        return AppUtil.transformToIdValue(data, 'id', 'name');
     }
     async getCanSee(params: BasicSearchParams): Promise<RoleModelView[]> {
         const basicRoles = await RoleCanSeeContext(params.role).getData(params, this);
