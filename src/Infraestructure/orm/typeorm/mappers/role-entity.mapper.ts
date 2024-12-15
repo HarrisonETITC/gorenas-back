@@ -5,9 +5,10 @@ import { RoleModelView } from "@Application/model-view/role.mv";
 import { RoleModel } from "@Domain/models/role.model";
 import { RoleBuilder } from "@Domain/models/builders/role.builder";
 import { AppUtil } from "@Application/core/utils/app.util";
+import { RoleTransformParams } from "@Application/core/params/transform/role-transform.params";
 
 @Injectable()
-export class RoleEntityMapper implements EntityMapperPort<RoleModel, RoleEntity, RoleModelView> {
+export class RoleEntityMapper implements EntityMapperPort<RoleModel, RoleEntity, RoleModelView, RoleTransformParams> {
     fromEntityToDomain(entity: RoleEntity): RoleModel {
         return new RoleBuilder()
             .setId(entity.id ?? null)
@@ -24,12 +25,12 @@ export class RoleEntityMapper implements EntityMapperPort<RoleModel, RoleEntity,
             modified: null
         };
     }
-    fromDomainToMv(domain: RoleModel, extra?: Map<string, string>): RoleModelView {
+    fromDomainToMv(domain: RoleModel, extra?: RoleTransformParams): RoleModelView {
         return {
             id: domain.id ?? null,
             name: domain.name,
             state: domain.state,
-            users: AppUtil.findNumberField(extra, 'users')
+            users: extra?.users ?? 0
         };
     }
 }

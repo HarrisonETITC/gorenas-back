@@ -1,3 +1,4 @@
+import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
 
 export class AppUtil {
@@ -27,7 +28,7 @@ export class AppUtil {
             return true
         else if (value instanceof Map)
             return basic || value.size == 0;
-            
+
         return basic;
     }
 
@@ -36,5 +37,18 @@ export class AppUtil {
             return Number(assigns.get(fieldName));
 
         return null;
+    }
+
+    public static transformToIdValue<T>(data: Array<T>, idField: string, valueField: string): Array<IdValue> {
+        if (this.verifyEmpty(data))
+            return [];
+
+        if (this.verifyEmpty(idField) || this.verifyEmpty(valueField)) {
+            throw new Error(`Hace falta uno de los 3 argumentos para realizar el procedimiento: 'idField' ó 'valueField'`);
+        }
+
+        return data.map(val => {
+            return { id: val[idField], value: val[valueField] };
+        })
     }
 }

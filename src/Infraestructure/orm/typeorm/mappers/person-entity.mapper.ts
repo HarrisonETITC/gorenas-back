@@ -4,9 +4,10 @@ import { Injectable } from "@nestjs/common";
 import { PersonEntity } from "../entities/person.entity";
 import { PersonModelView } from "@Application/model-view/person.mv";
 import { PersonBuilder } from "@Domain/models/builders/person.builder";
+import { PersonTransformParams } from "@Application/core/params/transform/person-transform.params";
 
 @Injectable()
-export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonEntity, PersonModelView> {
+export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> {
     fromEntityToDomain(entity: PersonEntity): PersonModel {
         return new PersonBuilder()
             .setId(entity.id ?? null)
@@ -37,15 +38,15 @@ export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonE
 
         return entity;
     }
-    fromDomainToMv(domain: PersonModel, extra?: Map<string, string>): PersonModelView {
+    fromDomainToMv(domain: PersonModel, extra?: PersonTransformParams): PersonModelView {
         const mv: PersonModelView = {
             id: domain.id,
-            email: extra?.get('email') ?? null,
+            email: extra?.email ?? null,
             names: domain.names ?? null,
             surnames: domain.surnames ?? null,
             identification: domain.identification ?? null,
-            branch: extra?.get('branch') ?? null,
-            role: extra?.get('rol') ?? null
+            branch: extra?.branch ?? null,
+            role: extra?.role ?? null
         }
 
         return mv;

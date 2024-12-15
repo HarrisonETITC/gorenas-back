@@ -6,13 +6,13 @@ import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/gen
 import { AppUtil } from "@Application/core/utils/app.util";
 import { DataSource, EntityTarget, Repository } from "typeorm";
 
-export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T> implements GeneralRepositoryPort<T>, GenerateModelViewPort<T, J> {
-    protected manager: Repository<U>;
+export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T, K = T> implements GeneralRepositoryPort<T>, GenerateModelViewPort<T, J> {
+    manager: Repository<U>;
 
     constructor(
         protected source: DataSource,
         entity: EntityTarget<U>,
-        protected mapper: EntityMapperPort<T, U, J>
+        protected mapper: EntityMapperPort<T, U, J, K>
     ) {
         this.manager = source.getRepository(entity);
     }

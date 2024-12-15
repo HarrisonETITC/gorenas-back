@@ -5,9 +5,10 @@ import { RestaurantEntity } from "../entities/restaurant.entity";
 import { RestaurantModelView } from "@Application/model-view/restaurant.mv";
 import { RestaurantBuilder } from "@Domain/models/builders/restaurant-model.builder";
 import { AppUtil } from "@Application/core/utils/app.util";
+import { RestaurantTranformParams } from "@Application/core/params/transform/restaurant-tranform.params";
 
 @Injectable()
-export class RestaurantEntityMapper implements EntityMapperPort<RestaurantModel, RestaurantEntity, RestaurantModelView> {
+export class RestaurantEntityMapper implements EntityMapperPort<RestaurantModel, RestaurantEntity, RestaurantModelView, RestaurantTranformParams> {
     fromEntityToDomain(entity: RestaurantEntity): RestaurantModel {
         return new RestaurantBuilder()
             .setId(entity.id ?? null)
@@ -22,12 +23,12 @@ export class RestaurantEntityMapper implements EntityMapperPort<RestaurantModel,
             address: domain.address ?? null
         };
     }
-    fromDomainToMv(domain: RestaurantModel, extra?: Map<string, string>): RestaurantModelView {
+    fromDomainToMv(domain: RestaurantModel, extra?: RestaurantTranformParams): RestaurantModelView {
         return {
             id: domain.id,
             name: domain.name,
             address: domain.address,
-            branches: AppUtil.findNumberField(extra, 'branches')
+            branches: extra?.branches ?? 0
         };
     }
 }
