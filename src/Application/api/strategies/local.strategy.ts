@@ -1,4 +1,5 @@
 import { AUTH_MANAGER } from "@Application/config/inject-tokens/auth.tokens";
+import { UserModelView } from "@Application/model-view/user.mv";
 import { AuthManagerPort } from "@Application/ports/auth/auth-manager.port";
 import { UserModel } from "@Domain/models/user.model";
 import { Inject, Injectable } from "@nestjs/common";
@@ -13,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         super();
     }
 
-    async validate(username: string, password: string): Promise<UserModel> {
+    async validate(username: string, password: string): Promise<UserModelView> {
         return await this.manager.validate(username, password);
     }
 }

@@ -17,7 +17,7 @@ export class AuthManagerAdapter implements AuthManagerPort {
         @Inject(ENCRYPTER) private readonly encrypter: EncrypterPort
     ) { }
 
-    async validate(username: string, password: string): Promise<UserModel> {
+    async validate(username: string, password: string): Promise<UserModelView> {
         if (AppUtil.verifyEmpty(username) || AppUtil.verifyEmpty(password))
             throw new BadRequestException(`Debe proveer los valores de email y contraseña para poder realizar esta acción`)
 
@@ -26,6 +26,6 @@ export class AuthManagerAdapter implements AuthManagerPort {
         if (!(await this.encrypter.compare(password, user.password)))
             throw new BadRequestException(`La contraseña ingresada para el usuario '${username}' no es correcta.`);
 
-        return this.usersService.generateModelView([user])[0];
+        return (await this.usersService.generateModelView([user]))[0];
     }
 }

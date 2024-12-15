@@ -56,7 +56,7 @@ class RolePropietaryAvailableStrategy implements GetDataStrategy<RoleEntity> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return await repository.manager.createQueryBuilder("r")
             .where("r.name LIKE :query", { query: `%${args.query}%` })
-            .andWhere("r.name NOT IN(...exclude)", { exclude: [RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY] })
+            .andWhere("r.name NOT IN(:exclude)", { exclude: [RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY] })
             .getMany();
     }
 }

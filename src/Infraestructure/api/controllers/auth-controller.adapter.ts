@@ -21,7 +21,7 @@ export class AuthController implements AuthControllerPort {
     @Post('authenticate')
     @UseGuards(LocalGuard)
     async authenticate(@Req() req: Request): Promise<TokenResponse> {
-        const user = (req.user as UserModel);
+        const user = (req.user as UserModelView);
 
         return {
             token: await this.authService.generateToken(user)

@@ -1,5 +1,5 @@
-import { UserModel } from "@Domain/models/user.model";
+import { UserModelView } from "@Application/model-view/user.mv";
 
 export interface AuthManagerPort {
-    validate(username: string, password: string): Promise<UserModel>;
+    validate(username: string, password: string): Promise<UserModelView>;
 }
