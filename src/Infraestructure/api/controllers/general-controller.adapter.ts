@@ -12,11 +12,14 @@ import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decor
 import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
+import { RolesGuard } from "@Application/api/guards/rol.guard";
+import { Roles } from "@Application/core/decorators/role.decorator";
+import { RoleModel } from "@Domain/models/role.model";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
     Type<GeneralControllerPort<T, U, K, J>> => {
 
-    @UseGuards(JwtGuard)
+    @UseGuards(JwtGuard, RolesGuard)
     class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, GetAvailableCanSeePort<J> {
 
         constructor(
@@ -59,6 +62,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Get('available')
+        @Roles(RoleModel.BASE_ROLES)
         @SetTypedQuery(BasicSearchParams)
         async getAvailable(@Query() params: BasicSearchParams): Promise<Array<IdValue>> {
             return (await this.service.getAvailable(params))

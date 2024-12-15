@@ -32,6 +32,8 @@ import { UserCreateDto } from "@Domain/models/create-dto/user-create.dto";
 import { UserUpdateDto } from "@Domain/models/update-dto/user-update.dto";
 import { UserCreateSchema } from "./user/user-create.schema";
 import { UserUpdateSchema } from "./user/user-update.schema";
+import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
+import { BasicSearchSchema } from "./general/basic-search.schema";
 
 @Injectable()
 export class ZodValidatorAdapter implements DtoValidatorPort {
@@ -53,6 +55,7 @@ export class ZodValidatorAdapter implements DtoValidatorPort {
         this.schemas.set(SaleUpdateDto, SaleUpdateSchema);
         this.schemas.set(UserCreateDto, UserCreateSchema);
         this.schemas.set(UserUpdateDto, UserUpdateSchema);
+        this.schemas.set(BasicSearchParams, BasicSearchSchema);
     }
 
     async validate(data: any, type: Type<any>): Promise<void> {
@@ -63,7 +66,7 @@ export class ZodValidatorAdapter implements DtoValidatorPort {
             await this.schemas.get(type).parse(data);
         } catch (e) {
             if (e instanceof ZodError) {
-                const errorMessages = e.errors.map(error => error.message).join(', ');
+                const errorMessages = e.errors.map(error => error.message).join(' : ');
                 throw new Error(errorMessages);
             }
 
