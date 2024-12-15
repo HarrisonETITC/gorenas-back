@@ -34,7 +34,7 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
             .addSelect("COUNT(p.id)", "usedBy")
             .groupBy("r.id")
             .addGroupBy("r.name")
-            .getMany();
+            .getRawMany();
 
         return basicRoles.map(r => {
             const info = infoRoles.find(sub => sub.id == r.id);
