@@ -60,4 +60,9 @@ export class SucursalController {
     ) {
         return await this.sucursalService.getByEmpleadoId(parseInt(id));
     }
+
+    @Get('scripts')
+    async getScripts() {
+        return { script: await this.sucursalService.generateScript('sucursal') };
+    }
 }

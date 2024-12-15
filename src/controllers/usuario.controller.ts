@@ -96,4 +96,8 @@ export class UsuarioController {
         return campos;
     }
 
+    @Get('scripts')
+    async getScripts() {
+        return {script: await this.usuarioServicio.generateScript('usuario')}
+    }
 }

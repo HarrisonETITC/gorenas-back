@@ -34,4 +34,9 @@ export class VentaController {
     ) {
         return await this.ventaService.buscarPorId(parseInt(id));
     }
+
+    @Get('scripts')
+    async getScripts() {
+        return { script: await this.ventaService.generateScript('venta') };
+    }
 }

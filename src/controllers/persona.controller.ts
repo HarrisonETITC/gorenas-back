@@ -75,4 +75,9 @@ export class PersonaController {
     ) {
         return await this.personaService.buscarPorEmpleadoId(parseInt(id));
     }
+
+    @Get('scripts')
+    async getScripts() {
+        return { script: await this.personaService.generateScript('persona') };
+    }
 }

@@ -50,4 +50,9 @@ export class EmpleadoController {
     ) {
         return await this.empleadoService.buscarPorId(parseInt(id));
     }
+
+    @Get('scripts')
+    async getScripts() {
+        return { script: await this.empleadoService.generateScript('empleado') };
+    }
 }

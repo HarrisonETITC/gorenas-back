@@ -56,4 +56,9 @@ export class RolController {
     ) {
         return await this.rolService.buscarPorId(parseInt(id));
     }
+
+    @Get('scripts')
+    async getScripts() {
+        return { script: await this.rolService.generateScript('rol') };
+    }
 }

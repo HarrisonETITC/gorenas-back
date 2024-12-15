@@ -18,4 +18,9 @@ export class RestauranteController {
             }
         })
     }
+
+    @Get('scripts')
+    async getScripts() {
+        return { script: await this.restauranteService.generateScript('restaurante') };
+    }
 }

@@ -73,4 +73,26 @@ export class VentaService extends GeneralService<VentaEntity> {
         await this.source.getRepository(SucursalEntity).save(sucursal);
         return await this.modificar(id, cambiar);
     }
+
+    async generateScript(tableName: string): Promise<string> {
+        const data = await this.repositorio.find();
+        let script = '';
+        data.forEach(single => {
+            const cols = Object.keys(single);
+            const values = Object.values(single).map(val => {
+                if (typeof val === 'string')
+                    return `'${val.replace(/'/g, "''")}'`;
+                if (val instanceof Date) {
+                    return `'${val.toISOString().slice(0, 19).replace('T', ' ')}'`;
+                }
+                return val;
+            }
+            );
+
+            const insertStatement = `INSERT INTO ${tableName} (${cols.join(', ')}) VALUES (${values.join(', ')});\n`;
+            script = insertStatement;
+        });
+
+        return script;
+    }
 }
