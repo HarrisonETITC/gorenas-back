@@ -9,15 +9,18 @@ import { Body, Delete, Get, Post, Put, Query, Type, UseGuards } from "@nestjs/co
 import { SetTypedBody } from "@Application/core/decorators/set-type-body.decorator";
 import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
 import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
+import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
+import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
     Type<GeneralControllerPort<T, U, K, J>> => {
 
     @UseGuards(JwtGuard)
-    class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J> {
+    class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, GetAvailableCanSeePort<J> {
 
         constructor(
-            private readonly service: GeneralServicePort<T, U, K> & GenerateModelViewPort<T, J>
+            private readonly service: GeneralServicePort<T, U, K> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J>
         ) { }
 
         @Get(API_ALL)
@@ -53,6 +56,18 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         async delete(@Query('id') id: string): Promise<MessageResponse> {
             await this.service.delete(Number(id));
             return { message: 'Dato eliminado correctamente' };
+        }
+
+        @Get('available')
+        @SetTypedQuery(BasicSearchParams)
+        async getAvailable(@Query() params: BasicSearchParams): Promise<Array<IdValue>> {
+            return (await this.service.getAvailable(params))
+        }
+
+        @Get('can-see')
+        @SetTypedQuery(BasicSearchParams)
+        async getCanSee(@Query() params: BasicSearchParams): Promise<Array<J>> {
+            return (await this.service.getCanSee(params));
         }
     }
 

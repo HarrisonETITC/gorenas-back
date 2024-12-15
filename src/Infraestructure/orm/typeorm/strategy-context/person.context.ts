@@ -5,7 +5,7 @@ import { PersonRepository } from "../repositories/person.repository"
 import { RoleModel } from "@Domain/models/role.model"
 import { BranchEntity } from "../entities/branch.entity"
 
-export const PersonsCanSeeContext = (role: string): GetDataStrategy<PersonEntity> => {
+export const PersonCanSeeContext = (role: string): GetDataStrategy<PersonEntity> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))
         return new AdministratorStrategy();
     if (role == RoleModel.ROLE_MANAGER)
@@ -15,7 +15,7 @@ export const PersonsCanSeeContext = (role: string): GetDataStrategy<PersonEntity
 }
 
 export class AdministratorStrategy implements GetDataStrategy<PersonEntity> {
-    async getData<U extends BasicSearchParams>(args: U, repository: PersonRepository): Promise<PersonEntity[]> {
+    async getData(args: BasicSearchParams, repository: PersonRepository): Promise<PersonEntity[]> {
         return await repository.manager.createQueryBuilder("p")
             .innerJoin("p.role", "r")
             .orderBy(`FIELD(r.name, '${RoleModel.ROLE_ADMINISTRATOR}', '${RoleModel.ROLE_PROPIETARY}', '${RoleModel.ROLE_MANAGER}', '${RoleModel.ROLE_CASHIER}')`, "ASC")

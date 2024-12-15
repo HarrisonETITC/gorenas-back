@@ -34,17 +34,4 @@ export class BranchEntity extends GeneralEntity {
 
     @OneToMany(() => EmployeeEntity, employee => employee.branch)
     employees?: Array<EmployeeEntity>;
-
-    @BeforeInsert()
-    private setCreatedDate() {
-        if (AppUtil.verifyEmpty(this.created))
-            this.created = new Date();
-        this.setModifiedDate();
-    }
-
-    @BeforeUpdate()
-    private setModifiedDate() {
-        if (AppUtil.verifyEmpty(this.modified))
-            this.modified = new Date();
-    }
 }

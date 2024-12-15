@@ -4,7 +4,6 @@ import { Injectable } from "@nestjs/common";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { EmployeeModelView } from "@Application/model-view/employee.mv";
 import { EmployeeBuilder } from "@Domain/models/builders/employee.builder";
-import { AppUtil } from "@Application/core/utils/app.util";
 import { EmployeeTransformParams } from "@Application/core/params/transform/employee-transform.params";
 
 @Injectable()

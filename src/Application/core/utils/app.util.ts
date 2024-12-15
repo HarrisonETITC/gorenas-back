@@ -3,16 +3,16 @@ import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/gen
 
 export class AppUtil {
     public static extractIds<T extends GeneralEntity>(data: Array<T>, field?: string): Array<number> {
-        const unicos = new Set<number>();
+        const uniques = new Set<number>();
 
         data.forEach(d => {
             if (!AppUtil.verifyEmpty(field))
-                unicos.add(d[field])
+                uniques.add(d[field])
             else
-                unicos.add(d.id)
+                uniques.add(d.id)
         });
 
-        return Array.from(unicos);
+        return Array.from(uniques);
     }
 
     public static verifyEmpty(value: any): boolean {
