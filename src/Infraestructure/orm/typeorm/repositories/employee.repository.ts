@@ -9,7 +9,7 @@ import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
-import { EmployeeAvailableContext, EmployeeCanSeeContext } from "../strategy-context/employee-context";
+import { EmployeeAvailableContext, EmployeeCanSeeContext } from "../strategy-context/employee.context";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { RoleModel } from "@Domain/models/role.model";
 import { PersonEntity } from "../entities/person.entity";

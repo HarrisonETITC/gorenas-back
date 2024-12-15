@@ -10,7 +10,7 @@ import { BranchTransformParams } from "@Application/core/params/transform/branch
 import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
-import { BranchCanSeeContext } from "../strategy-context/branch-context";
+import { BranchCanSeeContext } from "../strategy-context/branch.context";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { RestaurantEntity } from "../entities/restaurant.entity";
 
