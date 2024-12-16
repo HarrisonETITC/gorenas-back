@@ -6,7 +6,7 @@ import { RoleModelView } from "@Application/model-view/role.mv";
 import { DataSource } from "typeorm";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { ROLE_ENTITY_MAPPER } from "@Application/config/inject-tokens/role.tokens";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { RoleTransformParams } from "@Application/core/params/transform/role-transform.params";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
@@ -16,8 +16,10 @@ import { AppUtil } from "@Application/core/utils/app.util";
 @Injectable()
 export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, RoleModelView, RoleTransformParams> implements GetAvailableCanSeePort<RoleModelView> {
     constructor(
-        @Inject(DataSource) protected source: DataSource,
-        @Inject(ROLE_ENTITY_MAPPER) protected mapper: EntityMapperPort<RoleModel, RoleEntity, RoleModelView, RoleTransformParams>
+        @Inject(DataSource)
+        protected source: DataSource,
+        @Inject(ROLE_ENTITY_MAPPER)
+        protected mapper: EntityMapperPort<RoleModel, RoleEntity, RoleModelView, RoleTransformParams>
     ) {
         super(source, RoleEntity, mapper);
     }

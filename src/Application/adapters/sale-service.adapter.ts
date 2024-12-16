@@ -8,15 +8,17 @@ import { SALE_DTO_MAPPER, SALE_REPOSITORY } from "@Application/config/inject-tok
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Injectable()
 export class SaleServiceAdapter extends GeneralServiceAdapter<SaleModel, SaleCreateDto, SaleUpdateDto, SaleModelView> implements GetAvailableCanSeePort<SaleModelView> {
     constructor(
-        @Inject(SALE_REPOSITORY) private readonly saleRepository: GeneralRepositoryPort<SaleModel> & GenerateModelViewPort<SaleModel, SaleModelView> & GetAvailableCanSeePort<SaleModelView>,
-        @Inject(SALE_DTO_MAPPER) private readonly saleMapper: DtoMapperPort<SaleModel, SaleCreateDto, SaleUpdateDto>
+        @Inject(SALE_REPOSITORY)
+        private readonly saleRepository: GeneralRepositoryPort<SaleModel> & GenerateModelViewPort<SaleModel, SaleModelView> & GetAvailableCanSeePort<SaleModelView>,
+        @Inject(SALE_DTO_MAPPER)
+        private readonly saleMapper: DtoMapperPort<SaleModel, SaleCreateDto, SaleUpdateDto>
     ) {
         super(saleRepository, saleMapper);
     }

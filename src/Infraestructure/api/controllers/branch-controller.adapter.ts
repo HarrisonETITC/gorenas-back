@@ -12,7 +12,8 @@ import { ROUTE_BRANCH } from "@Application/api/api.routes";
 @Controller(ROUTE_BRANCH)
 export class BranchController extends GeneralControllerAdapter(BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView) {
     constructor(
-        @Inject(BRANCH_SERVICE) private readonly branchService: GeneralServicePort<BranchModel, BranchCreateDto, BranchUpdateDto> & GenerateModelViewPort<BranchModel, BranchModelView>
+        @Inject(BRANCH_SERVICE)
+        private readonly branchService: GeneralServicePort<BranchModel, BranchCreateDto, BranchUpdateDto> & GenerateModelViewPort<BranchModel, BranchModelView>
     ) {
         super(branchService)
     }

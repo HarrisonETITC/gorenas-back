@@ -10,8 +10,10 @@ import { RESTAURANT_ENTITY_MAPPER } from "@Application/config/inject-tokens/rest
 @Injectable()
 export class RestaurantRepository extends GeneralRepository<RestaurantModel, RestaurantEntity, RestaurantModelView> {
     constructor(
-        @Inject(DataSource) protected source: DataSource,
-        @Inject(RESTAURANT_ENTITY_MAPPER) protected mapper: EntityMapperPort<RestaurantModel, RestaurantEntity, RestaurantModelView>
+        @Inject(DataSource)
+        protected source: DataSource,
+        @Inject(RESTAURANT_ENTITY_MAPPER)
+        protected mapper: EntityMapperPort<RestaurantModel, RestaurantEntity, RestaurantModelView>
     ) {
         super(source, RestaurantEntity, mapper);
     }

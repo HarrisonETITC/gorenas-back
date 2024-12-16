@@ -10,15 +10,17 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { UsersPort } from "@Application/ports/users/Users.port";
 import { AppUtil } from "@Application/core/utils/app.util";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Injectable()
 export class UserServiceAdapter extends GeneralServiceAdapter<UserModel, UserCreateDto, UserUpdateDto, UserModelView> implements UsersPort, GetAvailableCanSeePort<UserModelView> {
     constructor(
-        @Inject(USER_REPOSITORY) private readonly userRepository: GeneralRepositoryPort<UserModel> & GenerateModelViewPort<UserModel, UserModelView> & UsersPort & GetAvailableCanSeePort<UserModelView>,
-        @Inject(USER_DTO_MAPPER) private readonly userMapper: DtoMapperPort<UserModel, UserCreateDto, UserUpdateDto>
+        @Inject(USER_REPOSITORY)
+        private readonly userRepository: GeneralRepositoryPort<UserModel> & GenerateModelViewPort<UserModel, UserModelView> & UsersPort & GetAvailableCanSeePort<UserModelView>,
+        @Inject(USER_DTO_MAPPER)
+        private readonly userMapper: DtoMapperPort<UserModel, UserCreateDto, UserUpdateDto>
     ) {
         super(userRepository, userMapper);
     }

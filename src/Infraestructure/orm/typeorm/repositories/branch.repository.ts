@@ -7,7 +7,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { BRANCH_ENTITY_MAPPER } from "@Application/config/inject-tokens/branch.tokens";
 import { BranchTransformParams } from "@Application/core/params/transform/branch-transform.params";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { BranchCanSeeContext } from "../strategy-context/branch.context";
@@ -17,8 +17,10 @@ import { RestaurantEntity } from "../entities/restaurant.entity";
 @Injectable()
 export class BranchRepository extends GeneralRepository<BranchModel, BranchEntity, BranchModelView, BranchTransformParams> implements GetAvailableCanSeePort<BranchModelView> {
     constructor(
-        @Inject(DataSource) readonly source: DataSource,
-        @Inject(BRANCH_ENTITY_MAPPER) mapper: EntityMapperPort<BranchModel, BranchEntity, BranchModelView, BranchTransformParams>
+        @Inject(DataSource)
+        readonly source: DataSource,
+        @Inject(BRANCH_ENTITY_MAPPER)
+        mapper: EntityMapperPort<BranchModel, BranchEntity, BranchModelView, BranchTransformParams>
     ) {
         super(source, BranchEntity, mapper);
     }
