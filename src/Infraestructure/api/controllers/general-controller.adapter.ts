@@ -9,49 +9,51 @@ import { Body, Delete, Get, Post, Put, Query, Type, UseGuards } from "@nestjs/co
 import { SetTypedBody } from "@Application/core/decorators/set-type-body.decorator";
 import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
 import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { RolesGuard } from "@Application/api/guards/rol.guard";
 import { Roles } from "@Application/core/decorators/role.decorator";
 import { RoleModel } from "@Domain/models/role.model";
+import { DataResponse } from "@Domain/interfaces/data-response.interface";
+import { ControllerAvailableCanSeePort } from "@Application/ports/controller-available-cansee.port";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
-    Type<GeneralControllerPort<T, U, K, J> & GetAvailableCanSeePort<J>> => {
+    Type<GeneralControllerPort<T, U, K, J> & ControllerAvailableCanSeePort<J>> => {
 
     @UseGuards(JwtGuard, RolesGuard)
-    class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, GetAvailableCanSeePort<J> {
+    class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, ControllerAvailableCanSeePort<J> {
 
         constructor(
             private readonly service: GeneralServicePort<T, U, K> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J>
         ) { }
 
         @Get(API_ALL)
-        async findAll(): Promise<J[]> {
-            return await this.service.generateModelView(await this.service.getAll());
+        async findAll(): Promise<DataResponse<Array<J>>> {
+            return { data: (await this.service.generateModelView(await this.service.getAll())) };
         }
 
         @Get(API_ID)
         @SetTypedQuery(IdStringDto)
         async findById(
             @Query('id') id: string
-        ): Promise<J> {
+        ): Promise<DataResponse<J>> {
             const finded = await this.service.getById(Number(id));
-            return (await this.service.generateModelView([finded]))[0];
+            return { data: (await this.service.generateModelView([finded]))[0] };
         }
 
         @Post(API_CREATE)
         @SetTypedBody(create)
-        async create(@Body() data: U): Promise<J> {
+        async create(@Body() data: U): Promise<DataResponse<J>> {
             const created = await this.service.create(data);
-            return (await this.service.generateModelView([created]))[0];
+            return { data: (await this.service.generateModelView([created]))[0] };
         }
 
         @Put(API_MODIFY)
         @SetTypedBody(modify)
-        async modify(@Body() data: K): Promise<J> {
+        async modify(@Body() data: K): Promise<DataResponse<J>> {
             const modified = await this.service.modify(data['id'], data);
-            return (await this.service.generateModelView([modified]))[0];
+            return { data: (await this.service.generateModelView([modified]))[0] };
         }
 
         @Delete(API_DELETE)
@@ -64,14 +66,14 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         @Get('available')
         @Roles(RoleModel.BASE_ROLES)
         @SetTypedQuery(BasicSearchParams)
-        async getAvailable(@Query() params: BasicSearchParams): Promise<Array<IdValue>> {
-            return (await this.service.getAvailable(params))
+        async getAvailable(@Query() params: BasicSearchParams): Promise<DataResponse<Array<IdValue>>> {
+            return { data: (await this.service.getAvailable(params)) };
         }
 
         @Get('can-see')
         @SetTypedQuery(BasicSearchParams)
-        async getCanSee(@Query() params: BasicSearchParams): Promise<Array<J>> {
-            return (await this.service.getCanSee(params));
+        async getCanSee(@Query() params: BasicSearchParams): Promise<DataResponse<Array<J>>> {
+            return { data: (await this.service.getCanSee(params)) };
         }
     }
 

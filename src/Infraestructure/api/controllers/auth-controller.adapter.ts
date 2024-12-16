@@ -14,8 +14,10 @@ import { Request } from "express";
 export class AuthController implements AuthControllerPort {
 
     constructor(
-        @Inject(AUTH_SERVICE) private readonly authService: AuthServicePort,
-        @Inject(ENCRYPTER) private readonly encrypter: EncrypterPort
+        @Inject(AUTH_SERVICE)
+        private readonly authService: AuthServicePort,
+        @Inject(ENCRYPTER)
+        private readonly encrypter: EncrypterPort
     ) { }
 
     @Post('authenticate')

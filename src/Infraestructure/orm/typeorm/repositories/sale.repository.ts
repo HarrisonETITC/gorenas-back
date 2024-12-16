@@ -7,7 +7,7 @@ import { DataSource, In } from "typeorm";
 import { SALE_ENTITY_MAPPER } from "@Application/config/inject-tokens/sale.tokens";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { SaleTransformParams } from "@Application/core/params/transform/sale-transform.params";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { SaleCanSeeContext } from "../strategy-context/sale.context";
@@ -19,8 +19,10 @@ import { BranchEntity } from "../entities/branch.entity";
 @Injectable()
 export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, SaleModelView, SaleTransformParams> implements GetAvailableCanSeePort<SaleModelView> {
     constructor(
-        @Inject(DataSource) public source: DataSource,
-        @Inject(SALE_ENTITY_MAPPER) protected mapper: EntityMapperPort<SaleModel, SaleEntity, SaleModelView, SaleTransformParams>
+        @Inject(DataSource)
+        public source: DataSource,
+        @Inject(SALE_ENTITY_MAPPER)
+        protected mapper: EntityMapperPort<SaleModel, SaleEntity, SaleModelView, SaleTransformParams>
     ) {
         super(source, SaleEntity, mapper);
     }

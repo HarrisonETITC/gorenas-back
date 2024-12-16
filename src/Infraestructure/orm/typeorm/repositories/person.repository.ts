@@ -6,7 +6,7 @@ import { PersonModelView } from "@Application/model-view/person.mv";
 import { DataSource, In } from "typeorm";
 import { PERSON_ENTITY_MAPPER } from "@Application/config/inject-tokens/person.tokens";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { RoleModel } from "@Domain/models/role.model";
 import { AppUtil } from "@Application/core/utils/app.util";
@@ -21,8 +21,10 @@ import { PersonTransformParams } from "@Application/core/params/transform/person
 @Injectable()
 export class PersonRepository extends GeneralRepository<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> implements GetAvailableCanSeePort<PersonModelView> {
     constructor(
-        @Inject(DataSource) readonly source: DataSource,
-        @Inject(PERSON_ENTITY_MAPPER) personEntityMapper: EntityMapperPort<PersonModel, PersonEntity, PersonModelView, PersonTransformParams>
+        @Inject(DataSource)
+        readonly source: DataSource,
+        @Inject(PERSON_ENTITY_MAPPER)
+        personEntityMapper: EntityMapperPort<PersonModel, PersonEntity, PersonModelView, PersonTransformParams>
     ) {
         super(source, PersonEntity, personEntityMapper);
     }

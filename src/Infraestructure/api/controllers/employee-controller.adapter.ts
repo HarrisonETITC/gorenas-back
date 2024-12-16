@@ -12,7 +12,8 @@ import { ROUTE_EMPLOYEE } from "@Application/api/api.routes";
 @Controller(ROUTE_EMPLOYEE)
 export class EmployeeController extends GeneralControllerAdapter(EmployeeModel, EmployeeCreateDto, EmployeeUpdateDto, EmployeeModelView) {
     constructor(
-        @Inject(EMPLOYEE_SERVICE) private readonly employeeService: GeneralServicePort<EmployeeModel, EmployeeCreateDto, EmployeeUpdateDto> & GenerateModelViewPort<EmployeeModel, EmployeeModelView>
+        @Inject(EMPLOYEE_SERVICE)
+        private readonly employeeService: GeneralServicePort<EmployeeModel, EmployeeCreateDto, EmployeeUpdateDto> & GenerateModelViewPort<EmployeeModel, EmployeeModelView>
     ) {
         super(employeeService)
     }

@@ -8,12 +8,13 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { PERSON_SERVICE } from "@Application/config/inject-tokens/person.tokens";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { ROUTE_PERSON } from "@Application/api/api.routes";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 
 @Controller(ROUTE_PERSON)
 export class PersonController extends GeneralControllerAdapter(PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView) {
     constructor(
-        @Inject(PERSON_SERVICE) private readonly personService: GeneralServicePort<PersonModel, PersonCreateDto, PersonUpdateDto> & GenerateModelViewPort<PersonModel, PersonModelView> & GetAvailableCanSeePort<PersonModelView>
+        @Inject(PERSON_SERVICE)
+        private readonly personService: GeneralServicePort<PersonModel, PersonCreateDto, PersonUpdateDto> & GenerateModelViewPort<PersonModel, PersonModelView> & GetAvailableCanSeePort<PersonModelView>
     ) {
         super(personService)
     }

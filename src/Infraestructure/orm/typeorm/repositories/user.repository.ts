@@ -11,7 +11,7 @@ import { AppUtil } from "@Application/core/utils/app.util";
 import { UserTransformParams } from "@Application/core/params/transform/users-transform.params";
 import { RoleEntity } from "../entities/role.entity";
 import { PersonEntity } from "../entities/person.entity";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { UserCanSeeContext } from "../strategy-context/user.context";
@@ -19,8 +19,10 @@ import { UserCanSeeContext } from "../strategy-context/user.context";
 @Injectable()
 export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams> implements UsersPort, GetAvailableCanSeePort<UserModelView> {
     constructor(
-        @Inject(DataSource) public source: DataSource,
-        @Inject(USER_ENTITY_MAPPER) userEntityMapper: EntityMapperPort<UserModel, UserEntity, UserModelView, UserTransformParams>
+        @Inject(DataSource)
+        public source: DataSource,
+        @Inject(USER_ENTITY_MAPPER)
+        userEntityMapper: EntityMapperPort<UserModel, UserEntity, UserModelView, UserTransformParams>
     ) {
         super(source, UserEntity, userEntityMapper);
     }

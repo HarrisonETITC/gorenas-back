@@ -15,13 +15,15 @@ import { RolesGuard } from "@Application/api/guards/rol.guard";
 import { Roles } from "@Application/core/decorators/role.decorator";
 import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
 import { RoleModel } from "@Domain/models/role.model";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { DataResponse } from "@Domain/interfaces/data-response.interface";
 
 @Controller(ROUTE_USER)
 @UseGuards(JwtGuard, RolesGuard)
 export class UserController extends GeneralControllerAdapter(UserModel, UserCreateDto, UserUpdateDto, UserModelView) {
     constructor(
-        @Inject(USER_SERVICE) private readonly userService: GeneralServicePort<UserModel, UserCreateDto, UserUpdateDto> & GenerateModelViewPort<UserModel, UserModelView> & GetAvailableCanSeePort<UserModelView>
+        @Inject(USER_SERVICE)
+        private readonly userService: GeneralServicePort<UserModel, UserCreateDto, UserUpdateDto> & GenerateModelViewPort<UserModel, UserModelView> & GetAvailableCanSeePort<UserModelView>
     ) {
         super(userService);
     }
@@ -29,7 +31,7 @@ export class UserController extends GeneralControllerAdapter(UserModel, UserCrea
     @Get('available')
     @Roles([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_MANAGER, RoleModel.ROLE_PROPIETARY])
     @SetTypedQuery(BasicSearchParams)
-    override async getAvailable(@Query() params: BasicSearchParams): Promise<Array<IdValue>> {
-        return (await this.userService.getAvailable(params))
+    override async getAvailable(@Query() params: BasicSearchParams): Promise<DataResponse<Array<IdValue>>> {
+        return { data: (await this.userService.getAvailable(params)) }
     }
 }

@@ -12,8 +12,10 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 @Injectable()
 export class RestaurantServiceAdapter extends GeneralServiceAdapter<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto, RestaurantModelView> {
     constructor(
-        @Inject(RESTAURANT_REPOSITORY) private readonly restaurantRepository: GeneralRepositoryPort<RestaurantModel> & GenerateModelViewPort<RestaurantModel, RestaurantModelView>,
-        @Inject(RESTAURANT_DTO_MAPPER) private readonly restaurantMapper: DtoMapperPort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto>
+        @Inject(RESTAURANT_REPOSITORY)
+        private readonly restaurantRepository: GeneralRepositoryPort<RestaurantModel> & GenerateModelViewPort<RestaurantModel, RestaurantModelView>,
+        @Inject(RESTAURANT_DTO_MAPPER)
+        private readonly restaurantMapper: DtoMapperPort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto>
     ) {
         super(restaurantRepository,restaurantMapper);
     }

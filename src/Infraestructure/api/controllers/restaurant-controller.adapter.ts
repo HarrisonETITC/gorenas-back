@@ -12,7 +12,8 @@ import { ROUTE_RESTAURANT } from "@Application/api/api.routes";
 @Controller(ROUTE_RESTAURANT)
 export class RestaurantController extends GeneralControllerAdapter(RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto, RestaurantModelView) {
     constructor(
-        @Inject(RESTAURANT_SERVICE) private readonly restaurantService: GeneralServicePort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto> & GenerateModelViewPort<RestaurantModel, RestaurantModelView>
+        @Inject(RESTAURANT_SERVICE)
+        private readonly restaurantService: GeneralServicePort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto> & GenerateModelViewPort<RestaurantModel, RestaurantModelView>
     ) {
         super(restaurantService)
     }

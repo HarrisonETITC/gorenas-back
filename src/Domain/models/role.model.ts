@@ -2,7 +2,6 @@ import { GeneralModel } from "./general/general.model";
 import { StateModel } from "./general/state.model";
 
 export class RoleModel implements GeneralModel, StateModel {
-
     public static readonly ROLE_ADMINISTRATOR = 'administrador';
     public static readonly ROLE_PROPIETARY = 'propietario';
     public static readonly ROLE_MANAGER = 'gerente';

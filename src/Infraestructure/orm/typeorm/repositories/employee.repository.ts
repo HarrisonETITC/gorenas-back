@@ -6,7 +6,7 @@ import { EmployeeModelView } from "@Application/model-view/employee.mv";
 import { DataSource, In } from "typeorm";
 import { EMPLOYEE_ENTITY_MAPPER } from "@Application/config/inject-tokens/employee.tokens";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
-import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { EmployeeAvailableContext, EmployeeCanSeeContext } from "../strategy-context/employee.context";
@@ -20,8 +20,10 @@ import { EmployeeTransformParams } from "@Application/core/params/transform/empl
 @Injectable()
 export class EmployeeRepository extends GeneralRepository<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams> implements GetAvailableCanSeePort<EmployeeModelView> {
     constructor(
-        @Inject(DataSource) protected source: DataSource,
-        @Inject(EMPLOYEE_ENTITY_MAPPER) protected mapper: EntityMapperPort<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams>
+        @Inject(DataSource)
+        protected source: DataSource,
+        @Inject(EMPLOYEE_ENTITY_MAPPER)
+        protected mapper: EntityMapperPort<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams>
     ) {
         super(source, EmployeeEntity, mapper);
     }
