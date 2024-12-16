@@ -6,6 +6,7 @@ import { AuthControllerPort } from "@Application/ports/auth/auth-controller.port
 import { AuthServicePort } from "@Application/ports/auth/auth-service.port";
 import { EncrypterPort } from "@Application/ports/encrypter.port";
 import { UserModel } from "@Domain/models/user.model";
+import { AuthResponse } from "@Domain/types/auth-response.type";
 import { TokenResponse } from "@Domain/types/token-response.type";
 import { Controller, Get, Inject, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { Request } from "express";
@@ -20,11 +21,12 @@ export class AuthController implements AuthControllerPort {
 
     @Post('authenticate')
     @UseGuards(LocalGuard)
-    async authenticate(@Req() req: Request): Promise<TokenResponse> {
+    async authenticate(@Req() req: Request): Promise<AuthResponse> {
         const user = (req.user as UserModelView);
 
         return {
-            token: await this.authService.generateToken(user)
+            token: await this.authService.generateToken(user),
+            userId: user.id
         }
     }
 
