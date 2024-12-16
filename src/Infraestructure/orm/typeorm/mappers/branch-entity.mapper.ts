@@ -4,9 +4,10 @@ import { BranchBuilder } from "@Domain/models/builders/branch.builder";
 import { BranchModel } from "@Domain/models/branch.model";
 import { BranchEntity } from "../entities/branch.entity";
 import { BranchModelView } from "@Application/model-view/branch.mv";
+import { BranchTransformParams } from "@Application/core/params/transform/branch-transform.params";
 
 @Injectable()
-export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchEntity, BranchModelView> {
+export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchEntity, BranchModelView, BranchTransformParams> {
     fromEntityToDomain(entity: BranchEntity): BranchModel {
         return new BranchBuilder()
             .setId(entity.id ?? null)
@@ -19,17 +20,18 @@ export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchE
             .build();
     }
     fromDomainToEntity(domain: BranchModel): BranchEntity {
-        return {
-            id: domain.id ?? null,
-            state: domain.state ?? null,
-            name: domain.name ?? null,
-            address: domain.address ?? null,
-            earnings: domain.earnings ?? null,
-            created: domain.created ?? null,
-            modified: domain.modified
-        };
+        const entity = new BranchEntity();
+        entity.id = domain.id ?? null;
+        entity.state = domain.state ?? null;
+        entity.name = domain.name ?? null;
+        entity.address = domain.address ?? null;
+        entity.earnings = domain.earnings ?? null;
+        entity.created = domain.created ?? null;
+        entity.modified = domain.modified ?? null;
+
+        return entity
     }
-    fromDomainToMv(domain: BranchModel, extra?: Map<string, string>): BranchModelView {
+    fromDomainToMv(domain: BranchModel, extra?: BranchTransformParams): BranchModelView {
         return {
             id: domain.id ?? null,
             name: domain.name ?? null,
@@ -37,7 +39,7 @@ export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchE
             state: domain.state ?? null,
             earnings: domain.earnings ?? null,
             created: domain.created ?? null,
-            restaurantName: extra?.get('restaurantName') ?? null
+            restaurantName: extra?.restaurantName ?? null
         };
     }
 }

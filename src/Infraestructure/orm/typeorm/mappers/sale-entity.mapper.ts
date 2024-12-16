@@ -4,9 +4,10 @@ import { Injectable } from "@nestjs/common";
 import { SaleEntity } from "../entities/sale.entity";
 import { SaleModelView } from "@Application/model-view/sale.mv";
 import { SaleBuilder } from "@Domain/models/builders/sale.builder";
+import { SaleTransformParams } from "@Application/core/params/transform/sale-transform.params";
 
 @Injectable()
-export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity, SaleModelView> {
+export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity, SaleModelView, SaleTransformParams> {
     fromEntityToDomain(entity: SaleEntity): SaleModel {
         return new SaleBuilder()
             .setId(entity.id ?? null)
@@ -25,12 +26,12 @@ export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity,
             modified: domain.modified ?? null
         };
     }
-    fromDomainToMv(domain: SaleModel, extra?: Map<string, string>): SaleModelView {
+    fromDomainToMv(domain: SaleModel, extra?: SaleTransformParams): SaleModelView {
         return {
             id: domain.id ?? null,
-            amount: domain.amount,
-            employee: extra?.get('employee') ?? null,
-            branch: extra?.get('branch') ?? null,
+            amount: +domain.amount,
+            employee: extra?.employee ?? '',
+            branch: extra?.branch ?? '',
             method: domain.paymentMethod,
             created: domain.created
         };

@@ -3,4 +3,5 @@ export class UserModelView {
     email: string;
     name: string;
     state: string;
+    role: string;
 }

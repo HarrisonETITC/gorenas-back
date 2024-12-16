@@ -4,10 +4,10 @@ import { Injectable } from "@nestjs/common";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { EmployeeModelView } from "@Application/model-view/employee.mv";
 import { EmployeeBuilder } from "@Domain/models/builders/employee.builder";
-import { AppUtil } from "@Application/core/utils/app.util";
+import { EmployeeTransformParams } from "@Application/core/params/transform/employee-transform.params";
 
 @Injectable()
-export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, EmployeeEntity, EmployeeModelView> {
+export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams> {
     fromEntityToDomain(entity: EmployeeEntity): EmployeeModel {
         return new EmployeeBuilder()
             .setId(entity.id ?? null)
@@ -18,18 +18,18 @@ export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, Emp
     fromDomainToEntity(domain: EmployeeModel): EmployeeEntity {
         return {
             id: domain.id ?? null,
-            salary: domain.salary?? null,
-            state: domain.state?? null
+            salary: domain.salary ?? null,
+            state: domain.state ?? null
         };
     }
-    fromDomainToMv(domain: EmployeeModel, extra?: Map<string, string>): EmployeeModelView {
+    fromDomainToMv(domain: EmployeeModel, extra?: EmployeeTransformParams): EmployeeModelView {
         return {
             id: domain.id ?? null,
-            name: extra?.get('name')?? null,
-            user: extra?.get('user')?? null,
-            branch: extra?.get('branch')?? null,
-            sales: AppUtil.findNumberField(extra, 'sales'),
-            salesAmmounth: AppUtil.findNumberField(extra, 'salesAmmounth')
+            name: extra?.name ?? null,
+            user: extra?.user ?? null,
+            branch: extra?.branch ?? null,
+            sales: extra?.sales ?? null,
+            salesAmmounth: extra?.salesAmmounth ?? null
         };
     }
 }

@@ -1,17 +1,18 @@
+import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
 
 export class AppUtil {
     public static extractIds<T extends GeneralEntity>(data: Array<T>, field?: string): Array<number> {
-        const unicos = new Set<number>();
+        const uniques = new Set<number>();
 
         data.forEach(d => {
             if (!AppUtil.verifyEmpty(field))
-                unicos.add(d[field])
+                uniques.add(d[field])
             else
-                unicos.add(d.id)
+                uniques.add(d.id)
         });
 
-        return Array.from(unicos);
+        return Array.from(uniques);
     }
 
     public static verifyEmpty(value: any): boolean {
@@ -27,14 +28,27 @@ export class AppUtil {
             return true
         else if (value instanceof Map)
             return basic || value.size == 0;
-            
+
         return basic;
     }
 
     public static findNumberField(assigns: Map<string, string>, fieldName: string) {
-        if (!AppUtil.verifyEmpty(assigns) && !AppUtil.verifyEmpty(assigns.get(fieldName)) && !isNaN(parseInt(assigns.get(fieldName))))
-            return parseInt(assigns.get(fieldName));
+        if (!AppUtil.verifyEmpty(assigns) && !AppUtil.verifyEmpty(assigns.get(fieldName)) && !isNaN(Number(assigns.get(fieldName))))
+            return Number(assigns.get(fieldName));
 
         return null;
+    }
+
+    public static transformToIdValue<T>(data: Array<T>, idField: string, valueField: string): Array<IdValue> {
+        if (this.verifyEmpty(data))
+            return [];
+
+        if (this.verifyEmpty(idField) || this.verifyEmpty(valueField)) {
+            throw new Error(`Hace falta uno de los 3 argumentos para realizar el procedimiento: 'idField' ó 'valueField'`);
+        }
+
+        return data.map(val => {
+            return { id: val[idField], value: val[valueField] };
+        })
     }
 }

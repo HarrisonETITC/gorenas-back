@@ -37,7 +37,7 @@ export class BranchBuilder implements IBuilder<BranchModel> {
         return this;
     }
     build(): BranchModel {
-        const builded = new BranchModel();
+        const builded = this.branch;
         this.reset();
         return builded;
     }
