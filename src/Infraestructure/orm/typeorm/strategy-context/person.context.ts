@@ -30,7 +30,7 @@ export class ManagerStrategy implements GetDataStrategy<PersonEntity> {
             .createQueryBuilder("s")
             .innerJoin("s.employees", "e")
             .innerJoin("e.person", "p")
-            .where("p.userId = :userId", { userId: args.id })
+            .where("p.userId = :userId", { userId: args.userId })
             .select("s.id")
             .getOne();
 
@@ -44,6 +44,6 @@ export class ManagerStrategy implements GetDataStrategy<PersonEntity> {
 
 export class CashierStrategy implements GetDataStrategy<PersonEntity> {
     async getData(args: BasicSearchParams, repository: PersonRepository): Promise<PersonEntity[]> {
-        return [await repository.manager.findOneBy({ userId: args.id })];
+        return [await repository.manager.findOneBy({ userId: args.userId })];
     }
 }

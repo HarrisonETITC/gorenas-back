@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Query } from "@nestjs/common";
+import { Controller, Inject } from "@nestjs/common";
 import { GeneralControllerAdapter } from "./general-controller.adapter";
 import { PersonModel } from "@Domain/models/person.model";
 import { PersonCreateDto } from "@Domain/models/create-dto/person-create.dto";
@@ -9,8 +9,6 @@ import { PERSON_SERVICE } from "@Application/config/inject-tokens/person.tokens"
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { ROUTE_PERSON } from "@Application/api/api.routes";
 import { GetAvailableCanSeePort } from "@Application/ports/cansee-available.port";
-import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
-import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 
 @Controller(ROUTE_PERSON)
 export class PersonController extends GeneralControllerAdapter(PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView) {
@@ -18,32 +16,5 @@ export class PersonController extends GeneralControllerAdapter(PersonModel, Pers
         @Inject(PERSON_SERVICE) private readonly personService: GeneralServicePort<PersonModel, PersonCreateDto, PersonUpdateDto> & GenerateModelViewPort<PersonModel, PersonModelView> & GetAvailableCanSeePort<PersonModelView>
     ) {
         super(personService)
-    }
-
-    @Get('available')
-    @SetTypedQuery(BasicSearchParams)
-    async getAvailable(
-        @Query('userId') userId: string,
-        @Query('role') role: string,
-        @Query('query') query?: string
-    ) {
-        return await this.personService.getAvailable({
-            id: +userId,
-            role,
-            query
-        })
-    }
-
-    @Get('show')
-    @SetTypedQuery(BasicSearchParams)
-    async getShowPersons(
-        @Query('userId') userId: string,
-        @Query('role') role: string
-    ) {
-        return await this.personService.getCanSee({
-            id: +userId,
-            role,
-            query: null
-        })
     }
 }

@@ -1,5 +1,5 @@
 export class BasicSearchParams {
-    id: number;
+    userId: number;
     role: string;
     query?: string;
 }

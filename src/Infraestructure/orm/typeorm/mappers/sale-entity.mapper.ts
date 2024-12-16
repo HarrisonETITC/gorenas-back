@@ -29,7 +29,7 @@ export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity,
     fromDomainToMv(domain: SaleModel, extra?: SaleTransformParams): SaleModelView {
         return {
             id: domain.id ?? null,
-            amount: domain.amount,
+            amount: +domain.amount,
             employee: extra?.employee ?? '',
             branch: extra?.branch ?? '',
             method: domain.paymentMethod,

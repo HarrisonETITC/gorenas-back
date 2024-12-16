@@ -17,7 +17,7 @@ export class BaseStrategy implements GetDataStrategy<BranchEntity> {
             .createQueryBuilder('s')
             .leftJoinAndSelect('s.employees', 'e')
             .leftJoinAndSelect('e.person', 'p')
-            .where('p.user_id = :userId', { userId: args.id })
+            .where('p.user_id = :userId', { userId: args.userId })
             .getMany();
     }
 }

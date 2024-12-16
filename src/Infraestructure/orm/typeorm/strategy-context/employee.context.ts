@@ -22,7 +22,7 @@ class AdministratorStrategy implements GetDataStrategy<EmployeeEntity> {
 
 class ManagerStrategy implements GetDataStrategy<EmployeeEntity> {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
-        const manager = await repository.manager.findOneBy({ person: { userId: args.id } });
+        const manager = await repository.manager.findOneBy({ person: { userId: args.userId } });
 
         return await repository.manager.findBy({ branchId: manager.branchId });
     }
@@ -30,7 +30,7 @@ class ManagerStrategy implements GetDataStrategy<EmployeeEntity> {
 
 class BasicStrategy implements GetDataStrategy<EmployeeEntity> {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
-        return await repository.manager.findBy({ person: { userId: args.id } });
+        return await repository.manager.findBy({ person: { userId: args.userId } });
     }
 }
 
@@ -55,7 +55,7 @@ class AdministratorAvailableStrategy implements GetDataStrategy<EmployeeEntity> 
 
 class ManagerAvailableStrategy implements GetDataStrategy<EmployeeEntity> {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
-        const manager = await repository.manager.findOneBy({ person: { userId: args.id } });
+        const manager = await repository.manager.findOneBy({ person: { userId: args.userId } });
         return await repository.manager.createQueryBuilder("e")
             .innerJoinAndSelect("e.person", "p")
             .where("(p.names LIKE :names OR p.surnames LIKE :surnames)", { names: `%${args.query}%`, surnames: `%${args.query}%` })
@@ -66,6 +66,6 @@ class ManagerAvailableStrategy implements GetDataStrategy<EmployeeEntity> {
 
 class BasicAvailableStrategy implements GetDataStrategy<EmployeeEntity> {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
-        return await repository.manager.findBy({ person: { userId: args.id } });
+        return await repository.manager.findBy({ person: { userId: args.userId } });
     }
 }

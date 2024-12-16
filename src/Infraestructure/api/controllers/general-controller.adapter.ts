@@ -17,7 +17,7 @@ import { Roles } from "@Application/core/decorators/role.decorator";
 import { RoleModel } from "@Domain/models/role.model";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
-    Type<GeneralControllerPort<T, U, K, J>> => {
+    Type<GeneralControllerPort<T, U, K, J> & GetAvailableCanSeePort<J>> => {
 
     @UseGuards(JwtGuard, RolesGuard)
     class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, GetAvailableCanSeePort<J> {
