@@ -4,8 +4,8 @@ import { Injectable, Type } from "@nestjs/common";
 import { ZodError, ZodSchema } from "zod";
 import { BranchCreateSchema } from "./branch/branch-create.schema";
 import { AppUtil } from "@Application/core/utils/app.util";
-import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
-import { IdStringSchema } from "./general/id-string.schema";
+import { UserIdStringDto } from "@Domain/models/general/dto/user-id-string.dto";
+import { UserIdStringSchema } from "./general/user-id-string.schema";
 import { BranchUpdateDto } from "@Domain/models/update-dto/branch-update.dto";
 import { BranchUpdateSchema } from "./branch/branch-update.schema";
 import { EmployeeCreateDto } from "@Domain/models/create-dto/employee-create.dto";
@@ -34,13 +34,14 @@ import { UserCreateSchema } from "./user/user-create.schema";
 import { UserUpdateSchema } from "./user/user-update.schema";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { BasicSearchSchema } from "./general/basic-search.schema";
+import { ValidationException } from "@Application/api/exceptions/validation.exception";
 
 @Injectable()
 export class ZodValidatorAdapter implements DtoValidatorPort {
     private readonly schemas = new Map<Type<any>, ZodSchema<any>>();
 
     constructor() {
-        this.schemas.set(IdStringDto, IdStringSchema);
+        this.schemas.set(UserIdStringDto, UserIdStringSchema);
         this.schemas.set(BranchCreateDto, BranchCreateSchema);
         this.schemas.set(BranchUpdateDto, BranchUpdateSchema);
         this.schemas.set(EmployeeCreateDto, EmployeeCreateSchema);
@@ -66,8 +67,7 @@ export class ZodValidatorAdapter implements DtoValidatorPort {
             await this.schemas.get(type).parse(data);
         } catch (e) {
             if (e instanceof ZodError) {
-                const errorMessages = e.errors.map(error => error.message).join(' : ');
-                throw new Error(errorMessages);
+                throw new ValidationException('', e.errors.map(e => e.message));
             }
 
             throw new Error(e.message);

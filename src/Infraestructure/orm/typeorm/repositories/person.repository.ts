@@ -17,9 +17,12 @@ import { RoleEntity } from "../entities/role.entity";
 import { BranchEntity } from "../entities/branch.entity";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { PersonTransformParams } from "@Application/core/params/transform/person-transform.params";
+import { PersonsPort } from "@Application/ports/persons/persons.port";
 
 @Injectable()
-export class PersonRepository extends GeneralRepository<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> implements GetAvailableCanSeePort<PersonModelView> {
+export class PersonRepository extends GeneralRepository<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> implements
+    GetAvailableCanSeePort<PersonModelView>,
+    PersonsPort {
     constructor(
         @Inject(DataSource)
         readonly source: DataSource,
@@ -72,6 +75,45 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
                 branch: branches.find(s => s.id == employees.find(e => e.personId == p.id)?.branchId)?.name ?? '',
                 email: users.find(u => u.id == p.userId)?.email ?? '',
                 role: roles.find(r => r.id == p.roleId)?.name ?? ''
+            });
+        });
+    }
+    async getByUserId(id: number): Promise<PersonModelView> {
+        const finded = await this.manager.findOneBy({ userId: id });
+        if (AppUtil.verifyEmpty(finded))
+            return null;
+
+        return (await this.generateModelView([finded]))[0];
+    }
+    override async generateModelView(models: PersonModel[]): Promise<PersonModelView[]> {
+        const users = await this.source.getRepository(UserEntity).find({
+            where: {
+                person: {
+                    id: In(
+                        AppUtil.extractIds(models)
+                    )
+                }
+            }, select: { id: true, email: true }
+        });
+        const roles = await this.source.getRepository(RoleEntity).find({
+            where: {
+                id: In(
+                    AppUtil.extractIds(models, 'roleId')
+                )
+            }
+        });
+        const branches = (await this.source.getRepository(BranchEntity)
+            .createQueryBuilder("s")
+            .innerJoin("s.employees", "e")
+            .where("e.person_id IN (:...personsId)", { personsId: AppUtil.extractIds(models) })
+            .getMany());
+        const employees = (await this.source.getRepository(EmployeeEntity).findBy({ branchId: In(AppUtil.extractIds(branches)), personId: In(AppUtil.extractIds(models)) }));
+
+        return models.map(p => {
+            return this.mapper.fromDomainToMv(p, {
+                branch: branches.find(s => s.id == employees.find(e => e.personId == p.id)?.branchId)?.name ?? '',
+                email: users.find(u => u.id == p['userId'])?.email ?? '',
+                role: roles.find(r => r.id == p['roleId'])?.name ?? ''
             });
         });
     }

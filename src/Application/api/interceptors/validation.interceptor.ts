@@ -9,6 +9,7 @@ import { TYPED_QUERY } from "@Application/core/decorators/set-type-query.decorat
 import { TYPED_PARAM } from "@Application/core/decorators/set-type-param.decorator";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { UserModelView } from "@Application/model-view/user.mv";
+import { ValidationException } from "../exceptions/validation.exception";
 
 @Injectable()
 export class ValidationInterceptor implements NestInterceptor {
@@ -52,6 +53,9 @@ export class ValidationInterceptor implements NestInterceptor {
                 try {
                     await this.validationService.validate(data, single);
                 } catch (error) {
+                    if (error instanceof ValidationException)
+                        throw new ValidationException(error.message, error.errors);
+
                     throw new BadRequestException(error.message)
                 }
             }

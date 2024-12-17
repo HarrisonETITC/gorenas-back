@@ -7,7 +7,6 @@ import { AuthServicePort } from "@Application/ports/auth/auth-service.port";
 import { EncrypterPort } from "@Application/ports/encrypter.port";
 import { UserModel } from "@Domain/models/user.model";
 import { AuthResponse } from "@Domain/types/auth-response.type";
-import { TokenResponse } from "@Domain/types/token-response.type";
 import { Controller, Get, Inject, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { Request } from "express";
 

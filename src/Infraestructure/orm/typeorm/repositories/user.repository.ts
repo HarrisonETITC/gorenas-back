@@ -6,7 +6,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { DataSource, In } from "typeorm";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { USER_ENTITY_MAPPER } from "@Application/config/inject-tokens/user.tokens";
-import { UsersPort } from "@Application/ports/users/Users.port";
+import { UsersPort } from "@Application/ports/users/users.port";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { UserTransformParams } from "@Application/core/params/transform/users-transform.params";
 import { RoleEntity } from "../entities/role.entity";

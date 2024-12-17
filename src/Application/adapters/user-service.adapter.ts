@@ -8,7 +8,7 @@ import { USER_DTO_MAPPER, USER_REPOSITORY } from "@Application/config/inject-tok
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
-import { UsersPort } from "@Application/ports/users/Users.port";
+import { UsersPort } from "@Application/ports/users/users.port";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";

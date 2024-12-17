@@ -1,3 +1,4 @@
+import { ValidationException } from "@Application/api/exceptions/validation.exception";
 import { VALIDATOR } from "@Application/config/inject-tokens/auth.tokens";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { DtoValidatorPort } from "@Application/ports/dto-validator.port";
@@ -13,6 +14,9 @@ export class ValidationServiceAdapter implements ValidationServicePort {
         try {
             await this.validator.validate(data, type);
         } catch (error) {
+            if (error instanceof ValidationException)
+                throw new ValidationException('Se han encontrado los siguientes errores de validación', error.errors);
+
             throw new BadRequestException(error.message);
         }
     }

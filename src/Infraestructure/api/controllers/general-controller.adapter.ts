@@ -7,7 +7,7 @@ import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { MessageResponse } from "@Domain/types/message-response.type";
 import { Body, Delete, Get, Post, Put, Query, Type, UseGuards } from "@nestjs/common";
 import { SetTypedBody } from "@Application/core/decorators/set-type-body.decorator";
-import { IdStringDto } from "@Domain/models/general/dto/id-string.dto";
+import { UserIdStringDto } from "@Domain/models/general/dto/user-id-string.dto";
 import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
@@ -34,7 +34,6 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Get(API_ID)
-        @SetTypedQuery(IdStringDto)
         async findById(
             @Query('id') id: string
         ): Promise<DataResponse<J>> {
@@ -57,7 +56,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Delete(API_DELETE)
-        @SetTypedQuery(IdStringDto)
+        @SetTypedQuery(UserIdStringDto)
         async delete(@Query('id') id: string): Promise<MessageResponse> {
             await this.service.delete(Number(id));
             return { message: 'Dato eliminado correctamente' };

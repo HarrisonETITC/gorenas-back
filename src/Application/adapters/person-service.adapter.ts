@@ -11,12 +11,18 @@ import { PERSON_DTO_MAPPER, PERSON_REPOSITORY } from "@Application/config/inject
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
+import { PersonsPort } from "@Application/ports/persons/persons.port";
 
 @Injectable()
-export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView> implements GetAvailableCanSeePort<PersonModelView> {
+export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView> implements
+    GetAvailableCanSeePort<PersonModelView>,
+    PersonsPort {
     constructor(
         @Inject(PERSON_REPOSITORY)
-        private readonly personRepository: GeneralRepositoryPort<PersonModel> & GenerateModelViewPort<PersonModel, PersonModelView> & GetAvailableCanSeePort<PersonModelView>,
+        private readonly personRepository: GeneralRepositoryPort<PersonModel>
+            & GenerateModelViewPort<PersonModel, PersonModelView>
+            & GetAvailableCanSeePort<PersonModelView>
+            & PersonsPort,
         @Inject(PERSON_DTO_MAPPER)
         private readonly personMapper: DtoMapperPort<PersonModel, PersonCreateDto, PersonUpdateDto>
     ) {
@@ -28,5 +34,8 @@ export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, Per
     }
     async getCanSee(params: BasicSearchParams): Promise<PersonModelView[]> {
         return await this.personRepository.getCanSee(params);
+    }
+    async getByUserId(id: number): Promise<PersonModelView> {
+        return await this.personRepository.getByUserId(id);
     }
 }

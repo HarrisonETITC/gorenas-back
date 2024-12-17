@@ -2,7 +2,7 @@ import { ENCRYPTER } from "@Application/config/inject-tokens/auth.tokens";
 import { USER_SERVICE } from "@Application/config/inject-tokens/user.tokens";
 import { AuthManagerPort } from "@Application/ports/auth/auth-manager.port";
 import { EncrypterPort } from "@Application/ports/encrypter.port";
-import { UsersPort } from "@Application/ports/users/Users.port";
+import { UsersPort } from "@Application/ports/users/users.port";
 import { UserModel } from "@Domain/models/user.model";
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { AppUtil } from "@Application/core/utils/app.util";
