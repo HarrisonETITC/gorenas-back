@@ -15,6 +15,7 @@ import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { UserCanSeeContext } from "../strategy-context/user.context";
+import { PermissionEntity } from "../entities/permission.entity";
 
 @Injectable()
 export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams> implements UsersPort, GetAvailableCanSeePort<UserModelView> {
@@ -58,6 +59,9 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
         const roles = await this.source.getRepository(RoleEntity).findBy({
             persons: { userId: In(AppUtil.extractIds(models)) }
         });
+        const permissions = await this.source.getRepository(PermissionEntity).findBy({
+            role: { id: In(AppUtil.extractIds(roles)) }
+        })
         const persons = await this.source.getRepository(PersonEntity).findBy({
             userId: In(AppUtil.extractIds(models))
         })
@@ -65,10 +69,12 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
         return models.map(u => {
             const person = persons.find(p => p.userId == u.id);
             const role = roles.find(r => person.roleId == r.id);
+            const perms = permissions.filter(p => p.roleId == role.id)?.map(p => p.name);
 
             return this.mapper.fromDomainToMv(u, {
                 name: `${person.names} ${person.surnames}`,
-                role: role.name
+                role: role.name,
+                permissions: perms ?? []
             })
         })
     }

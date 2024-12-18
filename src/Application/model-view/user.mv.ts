@@ -4,4 +4,5 @@ export class UserModelView {
     name: string;
     state: string;
     role: string;
+    permissions: Array<string>;
 }

@@ -6,13 +6,16 @@ export const ROUTE_PERSON = 'person';
 export const ROUTE_RESTAURANT = 'restaurant';
 export const ROUTE_ROLE = 'role';
 export const ROUTE_SALE = 'sale';
+export const ROUTE_PERMISSION = 'permission';
 
-export const API_ROUTES = [ROUTE_USER,
+export const API_ROUTES = [
+    ROUTE_USER,
     ROUTE_AUTH,
     ROUTE_BRANCH,
     ROUTE_EMPLOYEE,
     ROUTE_PERSON,
     ROUTE_RESTAURANT,
     ROUTE_ROLE,
-    ROUTE_SALE
+    ROUTE_SALE,
+    ROUTE_PERMISSION
 ];

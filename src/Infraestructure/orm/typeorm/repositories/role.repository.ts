@@ -14,7 +14,8 @@ import { RoleAvailableContext, RoleCanSeeContext } from "../strategy-context/rol
 import { AppUtil } from "@Application/core/utils/app.util";
 
 @Injectable()
-export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, RoleModelView, RoleTransformParams> implements GetAvailableCanSeePort<RoleModelView> {
+export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, RoleModelView, RoleTransformParams>
+    implements GetAvailableCanSeePort<RoleModelView> {
     constructor(
         @Inject(DataSource)
         protected source: DataSource,

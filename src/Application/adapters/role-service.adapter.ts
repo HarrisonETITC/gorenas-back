@@ -13,10 +13,13 @@ import { BasicSearchParams } from "@Application/core/params/search/basic-search.
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Injectable()
-export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView> implements GetAvailableCanSeePort<RoleModelView> {
+export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView>
+    implements GetAvailableCanSeePort<RoleModelView> {
     constructor(
         @Inject(ROLE_REPOSITORY)
-        private readonly roleRepository: GeneralRepositoryPort<RoleModel> & GenerateModelViewPort<RoleModel, RoleModelView> & GetAvailableCanSeePort<RoleModelView>,
+        private readonly roleRepository: GeneralRepositoryPort<RoleModel>
+            & GenerateModelViewPort<RoleModel, RoleModelView>
+            & GetAvailableCanSeePort<RoleModelView>,
         @Inject(ROLE_DTO_MAPPER)
         private readonly roleMapper: DtoMapperPort<RoleModel, RoleCreateDto, RoleUpdateDto>
     ) {
