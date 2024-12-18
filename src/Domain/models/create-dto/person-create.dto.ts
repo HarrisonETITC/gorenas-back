@@ -7,6 +7,6 @@ export class PersonCreateDto {
     rh?: string;
     address?: string;
     born?: Date;
-    rol: string;
+    role: string;
     user: string;
 }

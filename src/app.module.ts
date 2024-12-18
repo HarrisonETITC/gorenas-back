@@ -14,6 +14,7 @@ import { SaleModule } from '@Infraestructure/api/modules/sale.module';
 import { AuthModule } from '@Infraestructure/api/modules/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ValidationInterceptor } from '@Application/api/interceptors/validation.interceptor';
+import { PermissionModule } from '@Infraestructure/api/modules/permission.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { ValidationInterceptor } from '@Application/api/interceptors/validation.
     RoleModule,
     SaleModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    PermissionModule
   ],
   controllers: [AppController],
   providers: [

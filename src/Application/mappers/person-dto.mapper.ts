@@ -17,7 +17,7 @@ export class PersonDtoMapper implements DtoMapperPort<PersonModel, PersonCreateD
             rh: base.rh ?? null,
             address: base.address ?? null,
             born: base.born ?? null,
-            rol: params?.get('rol') ?? null,
+            role: params?.get('rol') ?? null,
             user: params?.get('person') ?? null,
         };
         return create;

@@ -9,7 +9,8 @@ export class PermissionDtoMapper implements DtoMapperPort<PermissionModel, Permi
     fromModelToCreate(base: PermissionModel, params?: Map<string, string>): PermissionCreateDto {
         return {
             name: base.name,
-            created: base.created
+            created: base.created,
+            role: ''
         }
     }
     fromModelToUpdate(base: PermissionModel, params?: Map<string, string>): PermissionUpdateDto {

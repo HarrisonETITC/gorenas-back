@@ -4,14 +4,19 @@ import { PermissionEntity } from "../entities/permission.entity";
 import { PermissionModelView } from "@Application/model-view/permission.mv";
 import { PermissionTransformParams } from "@Application/core/params/transform/permission-transform.params";
 import { Inject, Injectable } from "@nestjs/common";
-import { DataSource, In } from "typeorm";
+import { DataSource, In, Like } from "typeorm";
 import { PERMISSION_ENTITY_MAPPER } from "@Application/config/inject-tokens/permission.tokens";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { RoleEntity } from "../entities/role.entity";
 import { AppUtil } from "@Application/core/utils/app.util";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
+import { IdValue } from "@Domain/interfaces/id-value.interface";
+import { PermissionSearchParams } from "@Application/core/params/search/permission-search.params";
 
 @Injectable()
-export class PermissionRepository extends GeneralRepository<PermissionModel, PermissionEntity, PermissionModelView, PermissionTransformParams> {
+export class PermissionRepository extends GeneralRepository<PermissionModel, PermissionEntity, PermissionModelView, PermissionTransformParams>
+    implements GetAvailableCanSeePort<PermissionModelView> {
     constructor(
         @Inject(DataSource)
         protected readonly source: DataSource,
@@ -27,5 +32,15 @@ export class PermissionRepository extends GeneralRepository<PermissionModel, Per
         return models.map(
             p => this.mapper.fromDomainToMv(p, { role: roles.find(r => r.id == p['roleId'])?.name ?? '' })
         );
+    }
+    async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
+        throw new Error("Method not implemented.");
+    }
+    async getCanSee(params: PermissionSearchParams): Promise<PermissionModelView[]> {
+        const baseModels = await this.manager.findBy({
+            role: { name: Like(`%${AppUtil.verifyEmpty(params.roleName) ? '' : params.roleName}%`) }
+        });
+
+        return await this.generateModelView(baseModels);
     }
 }
