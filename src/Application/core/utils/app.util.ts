@@ -39,16 +39,53 @@ export class AppUtil {
         return null;
     }
 
-    public static transformToIdValue<T>(data: Array<T>, idField: string, valueField: string): Array<IdValue> {
+    public static transformToIdValue<T>(data: Array<T>, idField: string, valueFields: Array<string>, separator?: string): Array<IdValue> {
         if (this.verifyEmpty(data))
             return [];
 
-        if (this.verifyEmpty(idField) || this.verifyEmpty(valueField)) {
+        if (this.verifyEmpty(idField) || this.verifyEmpty(valueFields)) {
             throw new Error(`Hace falta uno de los 3 argumentos para realizar el procedimiento: 'idField' ó 'valueField'`);
         }
 
+        separator = this.verifyEmpty(separator) ? ' ' : separator;
+
         return data.map(val => {
-            return { id: val[idField], value: val[valueField] };
+            return { id: val[idField], value: valueFields.map(v => val[v]).join(separator) };
         })
+    }
+
+    public static verifyChanges<T, U = T>(obj: T, compare: U): boolean {
+        for (const key of Object.keys(obj)) {
+            if (this.verifyEmpty(compare[key]))
+                delete obj[key];
+        }
+
+        for (const key of Object.keys(compare)) {
+            if (this.verifyEmpty(obj[key]))
+                delete compare[key];
+        }
+
+        return this.verifyChangesSimple(obj, compare);
+    }
+
+    public static verifyChangesSimple<T, U = T>(obj: T, compare: U): boolean {
+        const objKeys = Object.keys(obj);
+        const compareKeys = Object.keys(compare);
+
+        if (objKeys.length !== compareKeys.length) {
+            return true;
+        }
+
+        return JSON.stringify(obj) !== JSON.stringify(compare);
+    }
+
+    public static assignChangedValues<T, U = T>(actValue: T, updateWith: U): T {
+        for (const key of Object.keys(actValue)) {
+            const val = actValue[key];
+            if (!this.verifyEmpty(updateWith[key]) && this.verifyChangesSimple(val, updateWith[key]))
+                actValue[key] = updateWith[key];
+        }
+
+        return actValue;
     }
 }

@@ -42,7 +42,7 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
             .andWhere("(p.names LIKE :search OR p.surnames LIKE :search)", { search: `%${params.query}%` })
             .getMany();
 
-        return AppUtil.transformToIdValue(baseData, 'id', 'names');
+        return AppUtil.transformToIdValue(baseData, 'id', ['names', 'surnames']);
     }
     async getCanSee(params: BasicSearchParams): Promise<Array<PersonModelView>> {
         const basic = await PersonCanSeeContext(params.role).getData(params, this);

@@ -28,7 +28,7 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
         const data = await RoleAvailableContext(params.role).getData(params, this);
 
-        return AppUtil.transformToIdValue(data, 'id', 'name');
+        return AppUtil.transformToIdValue(data, 'id', ['name']);
     }
     async getCanSee(params: BasicSearchParams): Promise<RoleModelView[]> {
         const basicRoles = await RoleCanSeeContext(params.role).getData(params, this);

@@ -30,7 +30,7 @@ export class BranchRepository extends GeneralRepository<BranchModel, BranchEntit
             .where("(b.name LIKE :search OR b.address LIKE :search)", { search: `%${params.query ?? ''}%` })
             .getMany();
 
-        return AppUtil.transformToIdValue(data, 'id', 'name');
+        return AppUtil.transformToIdValue(data, 'id', ['name', 'address'], '-');
     }
     async getCanSee(params: BasicSearchParams): Promise<BranchModelView[]> {
         const data = await BranchCanSeeContext(params.role).getData(params, this);
