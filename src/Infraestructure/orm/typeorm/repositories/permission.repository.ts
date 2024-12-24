@@ -4,7 +4,7 @@ import { PermissionEntity } from "../entities/permission.entity";
 import { PermissionModelView } from "@Application/model-view/permission.mv";
 import { PermissionTransformParams } from "@Application/core/params/transform/permission-transform.params";
 import { Inject, Injectable } from "@nestjs/common";
-import { DataSource, In, Like } from "typeorm";
+import { DataSource, FindOptionsWhere, In, Like } from "typeorm";
 import { PERMISSION_ENTITY_MAPPER } from "@Application/config/inject-tokens/permission.tokens";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { RoleEntity } from "../entities/role.entity";
@@ -37,9 +37,23 @@ export class PermissionRepository extends GeneralRepository<PermissionModel, Per
         throw new Error("Method not implemented.");
     }
     async getCanSee(params: PermissionSearchParams): Promise<PermissionModelView[]> {
-        const baseModels = await this.manager.findBy({
-            role: { name: Like(`%${AppUtil.verifyEmpty(params.roleName) ? '' : params.roleName}%`) }
-        });
+        const searchParams: FindOptionsWhere<PermissionEntity> = {};
+        if (!AppUtil.verifyEmpty(params.roleName)) {
+            searchParams.role = { name: Like(`%${params.roleName}%`) };
+        }
+        if (!AppUtil.verifyEmpty(params.module) || !AppUtil.verifyEmpty(params.permission)) {
+            let search = '';
+            if (!AppUtil.verifyEmpty(params.module) && AppUtil.verifyEmpty(params.permission))
+                search = `${params.module}%`;
+            if (AppUtil.verifyEmpty(params.module) && !AppUtil.verifyEmpty(params.permission))
+                search = `%${params.permission}%`;
+            if (!AppUtil.verifyEmpty(params.module) && !AppUtil.verifyEmpty(params.permission))
+                search = `%${params.module}:${params.permission}%`;
+
+            searchParams.name = Like(search);
+        }
+
+        const baseModels = await this.manager.findBy(searchParams);
 
         return await this.generateModelView(baseModels);
     }

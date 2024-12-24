@@ -14,6 +14,7 @@ import { DataResponse } from "@Domain/interfaces/data-response.interface";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { Roles } from "@Application/core/decorators/role.decorator";
 import { RoleModel } from "@Domain/models/role.model";
+import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Controller(ROUTE_PERMISSION)
 export class PermissionController extends GeneralControllerAdapter(PermissionModel, PermissionCreateDto, PermissionUpdateDto, PermissionModelView) {
@@ -31,5 +32,13 @@ export class PermissionController extends GeneralControllerAdapter(PermissionMod
     @Roles([RoleModel.ROLE_ADMINISTRATOR])
     override async getCanSee(@Query() params: PermissionSearchParams): Promise<DataResponse<Array<PermissionModelView>>> {
         return { data: (await this.service.getCanSee(params)) };
+    }
+
+
+    @Get('available')
+    @Roles(RoleModel.BASE_ROLES)
+    @SetTypedQuery(PermissionSearchParams)
+    override async getAvailable(@Query() params: PermissionSearchParams): Promise<DataResponse<Array<IdValue>>> {
+        return { data: (await this.service.getAvailable(params)) };
     }
 }
