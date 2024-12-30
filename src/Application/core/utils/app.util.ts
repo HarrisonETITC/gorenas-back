@@ -16,7 +16,7 @@ export class AppUtil {
     }
 
     public static verifyEmpty(value: any): boolean {
-        const basic: boolean = (value === undefined || value === null);
+        const basic: boolean = this.verifyEmptySimple(value);
         const emptyObject = {};
         if (typeof value === 'string')
             return basic || value === '' || value === "" || value === ``;
@@ -30,6 +30,10 @@ export class AppUtil {
             return basic || value.size == 0;
 
         return basic;
+    }
+
+    public static verifyEmptySimple(value: any): boolean {
+        return value === undefined || value === null;
     }
 
     public static findNumberField(assigns: Map<string, string>, fieldName: string) {

@@ -13,6 +13,7 @@ import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { BranchCanSeeContext } from "../strategy-context/branch.context";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { RestaurantEntity } from "../entities/restaurant.entity";
+import { BranchSearchParams } from "@Application/core/params/search/branch-search.params";
 
 @Injectable()
 export class BranchRepository extends GeneralRepository<BranchModel, BranchEntity, BranchModelView, BranchTransformParams> implements GetAvailableCanSeePort<BranchModelView> {
@@ -32,7 +33,7 @@ export class BranchRepository extends GeneralRepository<BranchModel, BranchEntit
 
         return AppUtil.transformToIdValue(data, 'id', ['name', 'address'], '-');
     }
-    async getCanSee(params: BasicSearchParams): Promise<BranchModelView[]> {
+    async getCanSee(params: BranchSearchParams): Promise<BranchModelView[]> {
         const data = await BranchCanSeeContext(params.role).getData(params, this);
         const restaurant = await this.source.getRepository(RestaurantEntity).findOneBy({ id: data[0]?.restaurantId ?? 0 });
 
