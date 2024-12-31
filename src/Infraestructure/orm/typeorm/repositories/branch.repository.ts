@@ -2,7 +2,7 @@ import { BranchModel } from "@Domain/models/branch.model";
 import { GeneralRepository } from "./general.repository";
 import { BranchEntity } from "../entities/branch.entity";
 import { BranchModelView } from "@Application/model-view/branch.mv";
-import { DataSource } from "typeorm";
+import { DataSource, SelectQueryBuilder } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { BRANCH_ENTITY_MAPPER } from "@Application/config/inject-tokens/branch.tokens";
@@ -14,9 +14,11 @@ import { BranchCanSeeContext } from "../strategy-context/branch.context";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { RestaurantEntity } from "../entities/restaurant.entity";
 import { BranchSearchParams } from "@Application/core/params/search/branch-search.params";
+import { ProcessFilterPort } from "../ports/process-filter.port";
 
 @Injectable()
-export class BranchRepository extends GeneralRepository<BranchModel, BranchEntity, BranchModelView, BranchTransformParams> implements GetAvailableCanSeePort<BranchModelView> {
+export class BranchRepository extends GeneralRepository<BranchModel, BranchEntity, BranchModelView, BranchTransformParams>
+    implements GetAvailableCanSeePort<BranchModelView>, ProcessFilterPort<BranchEntity> {
     constructor(
         @Inject(DataSource)
         readonly source: DataSource,
@@ -40,5 +42,17 @@ export class BranchRepository extends GeneralRepository<BranchModel, BranchEntit
         return data.map(d => this.mapper.fromDomainToMv(d, {
             restaurantName: restaurant?.name ?? ''
         }));
+    }
+    async processFilter(query: SelectQueryBuilder<BranchEntity>, filter: BranchSearchParams): Promise<void> {
+        if (!AppUtil.verifyEmptySimple(filter.address))
+            query.andWhere('s.address LIKE :address', { address: `%${filter.address}%` });
+        if (!AppUtil.verifyEmptySimple(filter.name))
+            query.andWhere('s.name LIKE :name', { name: `%${filter.name}%` });
+        if (!AppUtil.verifyEmpty(filter.earningsLessThan))
+            query.andWhere('s.earnings < :less', { less: filter.earningsLessThan });
+        if (!AppUtil.verifyEmpty(filter.earningsGreatherThan))
+            query.andWhere('s.earnings > :greather', { greather: filter.earningsGreatherThan });
+
+        query.addOrderBy('s.earnings', "DESC");
     }
 }
