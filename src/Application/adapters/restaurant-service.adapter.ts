@@ -8,15 +8,18 @@ import { RESTAURANT_DTO_MAPPER, RESTAURANT_REPOSITORY } from "@Application/confi
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 
 @Injectable()
 export class RestaurantServiceAdapter extends GeneralServiceAdapter<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto, RestaurantModelView> {
     constructor(
         @Inject(RESTAURANT_REPOSITORY)
-        private readonly restaurantRepository: GeneralRepositoryPort<RestaurantModel> & GenerateModelViewPort<RestaurantModel, RestaurantModelView>,
+        private readonly restaurantRepository: GeneralRepositoryPort<RestaurantModel, RestaurantModelView>
+            & GenerateModelViewPort<RestaurantModel, RestaurantModelView>
+            & GetAvailableCanSeePort<RestaurantModelView>,
         @Inject(RESTAURANT_DTO_MAPPER)
         private readonly restaurantMapper: DtoMapperPort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto>
     ) {
-        super(restaurantRepository,restaurantMapper);
+        super(restaurantRepository, restaurantMapper);
     }
 }

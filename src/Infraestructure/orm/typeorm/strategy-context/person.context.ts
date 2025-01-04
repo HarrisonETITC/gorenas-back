@@ -4,8 +4,9 @@ import { BasicSearchParams } from "@Application/core/params/search/basic-search.
 import { PersonRepository } from "../repositories/person.repository"
 import { RoleModel } from "@Domain/models/role.model"
 import { BranchEntity } from "../entities/branch.entity"
+import { PersonModelView } from "@Application/model-view/person.mv"
 
-export const PersonCanSeeContext = (role: string): GetDataStrategy<PersonEntity> => {
+export const PersonCanSeeContext = (role: string): GetDataStrategy<PersonEntity, PersonModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))
         return new AdministratorStrategy();
     if (role == RoleModel.ROLE_MANAGER)
@@ -14,7 +15,7 @@ export const PersonCanSeeContext = (role: string): GetDataStrategy<PersonEntity>
     return new CashierStrategy();
 }
 
-export class AdministratorStrategy implements GetDataStrategy<PersonEntity> {
+export class AdministratorStrategy implements GetDataStrategy<PersonEntity, PersonModelView> {
     async getData(args: BasicSearchParams, repository: PersonRepository): Promise<PersonEntity[]> {
         return await repository.manager.createQueryBuilder("p")
             .innerJoin("p.role", "r")
@@ -24,7 +25,7 @@ export class AdministratorStrategy implements GetDataStrategy<PersonEntity> {
     }
 }
 
-export class ManagerStrategy implements GetDataStrategy<PersonEntity> {
+export class ManagerStrategy implements GetDataStrategy<PersonEntity, PersonModelView> {
     async getData(args: BasicSearchParams, repository: PersonRepository): Promise<PersonEntity[]> {
         const branch = await repository.source.getRepository(BranchEntity)
             .createQueryBuilder("s")
@@ -42,7 +43,7 @@ export class ManagerStrategy implements GetDataStrategy<PersonEntity> {
     }
 }
 
-export class CashierStrategy implements GetDataStrategy<PersonEntity> {
+export class CashierStrategy implements GetDataStrategy<PersonEntity, PersonModelView> {
     async getData(args: BasicSearchParams, repository: PersonRepository): Promise<PersonEntity[]> {
         return [await repository.manager.findOneBy({ userId: args.userId })];
     }

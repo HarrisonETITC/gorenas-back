@@ -12,8 +12,6 @@ import { RestaurantModule } from '@Infraestructure/api/modules/restaurant.module
 import { RoleModule } from '@Infraestructure/api/modules/role.module';
 import { SaleModule } from '@Infraestructure/api/modules/sale.module';
 import { AuthModule } from '@Infraestructure/api/modules/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ValidationInterceptor } from '@Application/api/interceptors/validation.interceptor';
 import { PermissionModule } from '@Infraestructure/api/modules/permission.module';
 
 @Module({
@@ -32,11 +30,7 @@ import { PermissionModule } from '@Infraestructure/api/modules/permission.module
   controllers: [AppController],
   providers: [
     AppService,
-    ...dbProviders,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ValidationInterceptor
-    }
+    ...dbProviders
   ],
   exports: [
     ...dbProviders

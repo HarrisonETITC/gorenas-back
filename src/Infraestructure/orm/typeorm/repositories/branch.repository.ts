@@ -2,7 +2,7 @@ import { BranchModel } from "@Domain/models/branch.model";
 import { GeneralRepository } from "./general.repository";
 import { BranchEntity } from "../entities/branch.entity";
 import { BranchModelView } from "@Application/model-view/branch.mv";
-import { DataSource, SelectQueryBuilder } from "typeorm";
+import { DataSource, In, SelectQueryBuilder } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { BRANCH_ENTITY_MAPPER } from "@Application/config/inject-tokens/branch.tokens";
@@ -42,6 +42,23 @@ export class BranchRepository extends GeneralRepository<BranchModel, BranchEntit
         return data.map(d => this.mapper.fromDomainToMv(d, {
             restaurantName: restaurant?.name ?? ''
         }));
+    }
+    async getIdValueMany(ids: Array<IdValue>, query?: SelectQueryBuilder<BranchEntity>): Promise<Array<IdValue>> {
+        if (AppUtil.verifyEmpty(ids))
+            return [];
+
+        let data = [];
+
+        if (AppUtil.verifyEmpty(query)) {
+            data = await this.manager.find({
+                where: { id: In(AppUtil.extractIds(ids)) },
+                select: { id: true, name: true, address: true }
+            });
+        } else {
+            data = await query.select('id').addSelect('name').addSelect('address').getMany();
+        }
+
+        return AppUtil.transformToIdValue(data, 'id', ['name', 'address'], '-');
     }
     async processFilter(query: SelectQueryBuilder<BranchEntity>, filter: BranchSearchParams): Promise<void> {
         if (!AppUtil.verifyEmptySimple(filter.address))

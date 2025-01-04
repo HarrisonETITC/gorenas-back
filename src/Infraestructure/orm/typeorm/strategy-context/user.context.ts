@@ -4,8 +4,9 @@ import { RoleModel } from "@Domain/models/role.model";
 import { UserRepository } from "../repositories/user.repository";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { BranchEntity } from "../entities/branch.entity";
+import { UserModelView } from "@Application/model-view/user.mv";
 
-export const UserCanSeeContext = (role: string): GetDataStrategy<UserEntity> => {
+export const UserCanSeeContext = (role: string): GetDataStrategy<UserEntity, UserModelView> => {
     if (RoleModel.ROLE_ADMINISTRATOR == role)
         return new UserAdministratorCanSeeStrategy();
     if (RoleModel.ROLE_PROPIETARY == role)
@@ -16,13 +17,13 @@ export const UserCanSeeContext = (role: string): GetDataStrategy<UserEntity> => 
     return new UserBasicCanSeeStrategy();
 }
 
-class UserAdministratorCanSeeStrategy implements GetDataStrategy<UserEntity> {
+class UserAdministratorCanSeeStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         return await repository.manager.find();
     }
 }
 
-class UserPropietaryCanSeeStrategy implements GetDataStrategy<UserEntity> {
+class UserPropietaryCanSeeStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         return await repository.manager.createQueryBuilder("u")
             .innerJoin("u.person", "p")
@@ -32,24 +33,24 @@ class UserPropietaryCanSeeStrategy implements GetDataStrategy<UserEntity> {
     }
 }
 
-class UserManagerCanSeeStrategy implements GetDataStrategy<UserEntity> {
+class UserManagerCanSeeStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         const branch = await repository.source.getRepository(BranchEntity).findOneBy({ employees: { person: { userId: args.userId } } });
         return await repository.manager.findBy({ person: { employee: { branchId: branch.id } } });
     }
 }
 
-class UserBasicCanSeeStrategy implements GetDataStrategy<UserEntity> {
+class UserBasicCanSeeStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         return [await repository.manager.findOneBy({ id: args.userId })];
     }
 }
 
-export const UserAvailableContext = (role: string): GetDataStrategy<UserEntity> => {
+export const UserAvailableContext = (role: string): GetDataStrategy<UserEntity, UserModelView> => {
     return null;
 }
 
-class UserAdministratorAvailableStrategy implements GetDataStrategy<UserEntity> {
+class UserAdministratorAvailableStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         return await repository.manager
             .createQueryBuilder('u')
@@ -60,7 +61,7 @@ class UserAdministratorAvailableStrategy implements GetDataStrategy<UserEntity> 
     }
 }
 
-class UserPropietaryAvailableStrategy implements GetDataStrategy<UserEntity> {
+class UserPropietaryAvailableStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         return await repository.manager
             .createQueryBuilder('u')
@@ -73,7 +74,7 @@ class UserPropietaryAvailableStrategy implements GetDataStrategy<UserEntity> {
     }
 }
 
-class UserManagerAvailableStrategy implements GetDataStrategy<UserEntity> {
+class UserManagerAvailableStrategy implements GetDataStrategy<UserEntity, UserModelView> {
     async getData(args: BasicSearchParams, repository: UserRepository): Promise<UserEntity[]> {
         const branch = await repository.source.getRepository(BranchEntity).findOneBy({ employees: { person: { userId: args.userId } } });
 

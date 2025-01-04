@@ -4,8 +4,9 @@ import { BasicSearchParams } from "@Application/core/params/search/basic-search.
 import { SaleRepository } from "../repositories/sale.repository";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { RoleModel } from "@Domain/models/role.model";
+import { SaleModelView } from "@Application/model-view/sale.mv";
 
-export const SaleCanSeeContext = (role: string): GetDataStrategy<SaleEntity> => {
+export const SaleCanSeeContext = (role: string): GetDataStrategy<SaleEntity, SaleModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))
         return new SaleAdministratorCanSeeStrategy();
     if (RoleModel.ROLE_MANAGER == role)
@@ -14,20 +15,20 @@ export const SaleCanSeeContext = (role: string): GetDataStrategy<SaleEntity> => 
     return new SaleBasicCanSeeStrategy();
 }
 
-class SaleAdministratorCanSeeStrategy implements GetDataStrategy<SaleEntity> {
+class SaleAdministratorCanSeeStrategy implements GetDataStrategy<SaleEntity, SaleModelView> {
     async getData(args: BasicSearchParams, repository: SaleRepository): Promise<SaleEntity[]> {
         return await repository.manager.find();
     }
 }
 
-class SaleManagerCanSeeStrategy implements GetDataStrategy<SaleEntity> {
+class SaleManagerCanSeeStrategy implements GetDataStrategy<SaleEntity, SaleModelView> {
     async getData(args: BasicSearchParams, repository: SaleRepository): Promise<SaleEntity[]> {
         const employee = await repository.source.getRepository(EmployeeEntity).findOneBy({ person: { userId: args.userId } });
         return await repository.manager.findBy({ employee: { branchId: employee.branchId } });
     }
 }
 
-class SaleBasicCanSeeStrategy implements GetDataStrategy<SaleEntity> {
+class SaleBasicCanSeeStrategy implements GetDataStrategy<SaleEntity, SaleModelView> {
     async getData(args: BasicSearchParams, repository: SaleRepository): Promise<SaleEntity[]> {
         return await repository.manager.findBy({ employee: { person: { userId: args.userId } } });
     }

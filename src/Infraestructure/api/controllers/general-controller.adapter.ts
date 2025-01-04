@@ -17,6 +17,7 @@ import { Roles } from "@Application/core/decorators/role.decorator";
 import { RoleModel } from "@Domain/models/role.model";
 import { DataResponse } from "@Domain/interfaces/data-response.interface";
 import { ControllerAvailableCanSeePort } from "@Application/ports/controller-available-cansee.port";
+import { ValuesSearchParams } from "@Application/core/params/search/values-search.params";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
     Type<GeneralControllerPort<T, U, K, J> & ControllerAvailableCanSeePort<J>> => {
@@ -25,7 +26,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
     class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, ControllerAvailableCanSeePort<J> {
 
         constructor(
-            private readonly service: GeneralServicePort<T, U, K> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J>
+            private readonly service: GeneralServicePort<T, U, K, J> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J>
         ) { }
 
         @Get(API_ALL)
@@ -38,7 +39,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
             @Query('id') id: string
         ): Promise<DataResponse<J>> {
             const finded = await this.service.getById(Number(id));
-            return { data: (await this.service.generateModelView([finded]))[0] };
+            return { data: finded };
         }
 
         @Post(API_CREATE)
@@ -73,6 +74,12 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         @SetTypedQuery(BasicSearchParams)
         async getCanSee(@Query() params: BasicSearchParams): Promise<DataResponse<Array<J>>> {
             return { data: (await this.service.getCanSee(params)) };
+        }
+
+        @Get('id-value')
+        @SetTypedQuery(ValuesSearchParams)
+        async getIdValueMany(@Query() params: ValuesSearchParams): Promise<DataResponse<Array<IdValue>>> {
+            return { data: (await this.service.getIdValueMany(params.values)) };
         }
     }
 

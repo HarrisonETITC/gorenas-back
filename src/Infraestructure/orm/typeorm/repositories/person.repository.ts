@@ -78,6 +78,9 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
             });
         });
     }
+    async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
+        return [];
+    }
     async getByUserId(id: number): Promise<PersonModelView> {
         const finded = await this.manager.findOneBy({ userId: id });
         if (AppUtil.verifyEmpty(finded))

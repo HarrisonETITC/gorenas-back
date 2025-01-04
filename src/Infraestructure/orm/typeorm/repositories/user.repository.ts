@@ -55,6 +55,9 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
 
         return await this.generateModelView(data);
     }
+    async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
+        return [];
+    }
     override async generateModelView(models: UserModel[]): Promise<UserModelView[]> {
         const roles = await this.source.getRepository(RoleEntity).findBy({
             persons: { userId: In(AppUtil.extractIds(models)) }

@@ -9,12 +9,9 @@ import { ROLE_DTO_MAPPER, ROLE_REPOSITORY } from "@Application/config/inject-tok
 import { Inject, Injectable } from "@nestjs/common";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
-import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
-import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Injectable()
-export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView>
-    implements GetAvailableCanSeePort<RoleModelView> {
+export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView> {
     constructor(
         @Inject(ROLE_REPOSITORY)
         private readonly roleRepository: GeneralRepositoryPort<RoleModel>
@@ -24,12 +21,5 @@ export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCre
         private readonly roleMapper: DtoMapperPort<RoleModel, RoleCreateDto, RoleUpdateDto>
     ) {
         super(roleRepository, roleMapper);
-    }
-
-    async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
-        return await this.roleRepository.getAvailable(params);
-    }
-    async getCanSee(params: BasicSearchParams): Promise<RoleModelView[]> {
-        return await this.roleRepository.getCanSee(params);
     }
 }

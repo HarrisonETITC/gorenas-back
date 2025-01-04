@@ -6,7 +6,8 @@ import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/gen
 import { AppUtil } from "@Application/core/utils/app.util";
 import { DataSource, EntityTarget, Repository } from "typeorm";
 
-export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T, K = T> implements GeneralRepositoryPort<T>, GenerateModelViewPort<T, J> {
+export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T, K = T> implements
+    GeneralRepositoryPort<T, J>, GenerateModelViewPort<T, J> {
     manager: Repository<U>;
 
     constructor(
@@ -21,13 +22,14 @@ export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity =
         return !AppUtil.verifyEmpty(allData) ?
             allData.map((data) => this.mapper.fromEntityToDomain(data)) : [];
     }
-    async getById(id: number, attrs?: Array<string>): Promise<T> {
+    async getById(id: number, attrs?: Array<string>): Promise<J> {
         const finded = await this.manager.findOneBy({ id: (id as any) });
+        const parsed = this.mapper.fromEntityToDomain(finded);
 
         if (AppUtil.verifyEmpty(finded))
             return null;
 
-        return this.mapper.fromEntityToDomain(finded);
+        return (await this.generateModelView(([parsed])))[0];
     }
     async create(obj: T): Promise<T> {
         const created = this.manager.create(this.mapper.fromDomainToEntity(obj));

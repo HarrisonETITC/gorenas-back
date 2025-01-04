@@ -9,24 +9,16 @@ import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
-import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
-import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Injectable()
-export class BranchServiceAdapter extends GeneralServiceAdapter<BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView> implements GetAvailableCanSeePort<BranchModelView> {
+export class BranchServiceAdapter extends GeneralServiceAdapter<BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView> {
     constructor(
         @Inject(BRANCH_REPOSITORY)
-        private readonly branchRepository: GeneralRepositoryPort<BranchModel> & GenerateModelViewPort<BranchModel, BranchModelView> & GetAvailableCanSeePort<BranchModelView>,
+        private readonly branchRepository: GeneralRepositoryPort<BranchModel, BranchModelView>
+            & GenerateModelViewPort<BranchModel, BranchModelView> & GetAvailableCanSeePort<BranchModelView>,
         @Inject(BRANCH_DTO_MAPPER)
         private readonly branchMapper: DtoMapperPort<BranchModel, BranchCreateDto, BranchUpdateDto>
     ) {
         super(branchRepository, branchMapper);
-    }
-
-    async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
-        return await this.branchRepository.getAvailable(params);
-    }
-    async getCanSee(params: BasicSearchParams): Promise<BranchModelView[]> {
-        return await this.branchRepository.getCanSee(params);
     }
 }

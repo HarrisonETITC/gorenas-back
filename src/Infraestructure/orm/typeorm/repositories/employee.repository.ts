@@ -18,7 +18,8 @@ import { BranchEntity } from "../entities/branch.entity";
 import { EmployeeTransformParams } from "@Application/core/params/transform/employee-transform.params";
 
 @Injectable()
-export class EmployeeRepository extends GeneralRepository<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams> implements GetAvailableCanSeePort<EmployeeModelView> {
+export class EmployeeRepository extends GeneralRepository<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams> implements
+    GetAvailableCanSeePort<EmployeeModelView> {
     constructor(
         @Inject(DataSource)
         protected source: DataSource,
@@ -75,5 +76,8 @@ export class EmployeeRepository extends GeneralRepository<EmployeeModel, Employe
             })
         })
 
+    }
+    async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
+        throw new Error("Method not implemented.");
     }
 }

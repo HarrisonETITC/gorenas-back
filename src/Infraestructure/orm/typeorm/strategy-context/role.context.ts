@@ -4,8 +4,9 @@ import { BasicSearchParams } from "@Application/core/params/search/basic-search.
 import { RoleRepository } from "../repositories/role.repository";
 import { Like } from "typeorm";
 import { RoleModel } from "@Domain/models/role.model";
+import { RoleModelView } from "@Application/model-view/role.mv";
 
-export const RoleCanSeeContext = (role: string): GetDataStrategy<RoleEntity> => {
+export const RoleCanSeeContext = (role: string): GetDataStrategy<RoleEntity, RoleModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))
         return new RoleAdministratorCanSeeStrategy();
     if (role == RoleModel.ROLE_MANAGER)
@@ -14,13 +15,13 @@ export const RoleCanSeeContext = (role: string): GetDataStrategy<RoleEntity> => 
     return new RoleBasicCanSeeStrategy();
 }
 
-class RoleAdministratorCanSeeStrategy implements GetDataStrategy<RoleEntity> {
+class RoleAdministratorCanSeeStrategy implements GetDataStrategy<RoleEntity, RoleModelView> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return await repository.manager.findBy({ name: Like(`%${args.query ?? ''}%`) })
     }
 }
 
-class RoleManagerCanSeeStrategy implements GetDataStrategy<RoleEntity> {
+class RoleManagerCanSeeStrategy implements GetDataStrategy<RoleEntity, RoleModelView> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return await repository.manager.createQueryBuilder("r")
             .where("r.name NOT IN (:...excludedValues)", { excludedValues: [RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY, RoleModel.ROLE_MANAGER] })
@@ -29,13 +30,13 @@ class RoleManagerCanSeeStrategy implements GetDataStrategy<RoleEntity> {
     }
 }
 
-class RoleBasicCanSeeStrategy implements GetDataStrategy<RoleEntity> {
+class RoleBasicCanSeeStrategy implements GetDataStrategy<RoleEntity, RoleModelView> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return [];
     }
 }
 
-export const RoleAvailableContext = (role: string): GetDataStrategy<RoleEntity> => {
+export const RoleAvailableContext = (role: string): GetDataStrategy<RoleEntity, RoleModelView> => {
     if (RoleModel.ROLE_ADMINISTRATOR == role)
         return new RoleAdministratorAvailableStrategy();
     if (RoleModel.ROLE_PROPIETARY == role)
@@ -46,13 +47,13 @@ export const RoleAvailableContext = (role: string): GetDataStrategy<RoleEntity> 
     return new RoleBasicCanSeeStrategy();
 }
 
-class RoleAdministratorAvailableStrategy implements GetDataStrategy<RoleEntity> {
+class RoleAdministratorAvailableStrategy implements GetDataStrategy<RoleEntity, RoleModelView> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return await repository.manager.findBy({ name: Like(`%${args.query}%`) })
     }
 }
 
-class RolePropietaryAvailableStrategy implements GetDataStrategy<RoleEntity> {
+class RolePropietaryAvailableStrategy implements GetDataStrategy<RoleEntity, RoleModelView> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return await repository.manager.createQueryBuilder("r")
             .where("r.name LIKE :query", { query: `%${args.query}%` })
@@ -61,7 +62,7 @@ class RolePropietaryAvailableStrategy implements GetDataStrategy<RoleEntity> {
     }
 }
 
-class RoleManagerAvailableStrategy implements GetDataStrategy<RoleEntity> {
+class RoleManagerAvailableStrategy implements GetDataStrategy<RoleEntity, RoleModelView> {
     async getData(args: BasicSearchParams, repository: RoleRepository): Promise<RoleEntity[]> {
         return await repository.manager.createQueryBuilder("r")
             .where("r.name LIKE :query", { query: `%${args.query}%` })

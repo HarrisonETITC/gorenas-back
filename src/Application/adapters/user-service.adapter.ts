@@ -11,14 +11,13 @@ import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { UsersPort } from "@Application/ports/users/users.port";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
-import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
-import { IdValue } from "@Domain/interfaces/id-value.interface";
 
 @Injectable()
-export class UserServiceAdapter extends GeneralServiceAdapter<UserModel, UserCreateDto, UserUpdateDto, UserModelView> implements UsersPort, GetAvailableCanSeePort<UserModelView> {
+export class UserServiceAdapter extends GeneralServiceAdapter<UserModel, UserCreateDto, UserUpdateDto, UserModelView> implements UsersPort {
     constructor(
         @Inject(USER_REPOSITORY)
-        private readonly userRepository: GeneralRepositoryPort<UserModel> & GenerateModelViewPort<UserModel, UserModelView> & UsersPort & GetAvailableCanSeePort<UserModelView>,
+        private readonly userRepository: GeneralRepositoryPort<UserModel, UserModelView>
+            & GenerateModelViewPort<UserModel, UserModelView> & UsersPort & GetAvailableCanSeePort<UserModelView>,
         @Inject(USER_DTO_MAPPER)
         private readonly userMapper: DtoMapperPort<UserModel, UserCreateDto, UserUpdateDto>
     ) {
@@ -32,11 +31,5 @@ export class UserServiceAdapter extends GeneralServiceAdapter<UserModel, UserCre
             throw new BadRequestException(`No existe un usuario con el email '${email}'`);
 
         return finded;
-    }
-    async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
-        return await this.userRepository.getAvailable(params);
-    }
-    async getCanSee(params: BasicSearchParams): Promise<UserModelView[]> {
-        return await this.userRepository.getCanSee(params);
     }
 }

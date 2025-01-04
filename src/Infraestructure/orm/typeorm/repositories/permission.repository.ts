@@ -26,6 +26,14 @@ export class PermissionRepository extends GeneralRepository<PermissionModel, Per
         super(source, PermissionEntity, mapper);
     }
 
+    override async getById(id: number, attrs?: Array<string>): Promise<PermissionModelView> {
+        const finded = await this.manager.findOneBy({ id });
+
+        if (AppUtil.verifyEmpty(finded))
+            return null;
+
+        return (await this.generateModelView([finded]))[0];
+    }
     override async generateModelView(models: PermissionModel[]): Promise<PermissionModelView[]> {
         const roles = await this.source.getRepository(RoleEntity).findBy({ id: In(AppUtil.extractIds(models, 'roleId')) });
 
@@ -56,5 +64,8 @@ export class PermissionRepository extends GeneralRepository<PermissionModel, Per
         const baseModels = await this.manager.findBy(searchParams);
 
         return await this.generateModelView(baseModels);
+    }
+    async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
+        return [];
     }
 }

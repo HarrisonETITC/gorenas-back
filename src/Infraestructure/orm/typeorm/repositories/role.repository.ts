@@ -24,7 +24,7 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
     ) {
         super(source, RoleEntity, mapper);
     }
-
+    
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
         const data = await RoleAvailableContext(params.role).getData(params, this);
 
@@ -47,5 +47,14 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
                 users: +(info['usedBy'] ?? 0)
             })
         })
+    }
+    async getIdValueMany(values: Array<string>): Promise<Array<IdValue>> {
+        const builder = this.manager.createQueryBuilder("r");
+
+        for (const val of values) {
+            builder.orWhere("r.name = :name", { name: val });
+        }
+
+        return AppUtil.transformToIdValue((await builder.getMany()), 'id', ['name']);
     }
 }

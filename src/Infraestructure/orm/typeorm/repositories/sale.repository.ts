@@ -47,4 +47,7 @@ export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, Sal
             })
         })
     }
+    async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
+        return [];
+    }
 }
