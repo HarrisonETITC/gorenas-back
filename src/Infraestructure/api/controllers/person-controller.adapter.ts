@@ -28,7 +28,7 @@ export class PersonController extends GeneralControllerAdapter(PersonModel, Pers
 
     @Get('infoByUserId')
     @SetTypedQuery(UserIdStringDto)
-    async getByUserId(@Query('id') id: number): Promise<DataResponse<PersonModelView>> {
+    async getByUserId(@Query('userId') id: number): Promise<DataResponse<PersonModelView>> {
         return { data: (await this.personService.getByUserId(+id)) };
     }
 }

@@ -1,6 +1,5 @@
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { Injectable } from "@nestjs/common";
-import { BranchBuilder } from "@Domain/models/builders/branch.builder";
 import { BranchModel } from "@Domain/models/branch.model";
 import { BranchEntity } from "../entities/branch.entity";
 import { BranchModelView } from "@Application/model-view/branch.mv";
@@ -9,15 +8,15 @@ import { BranchTransformParams } from "@Application/core/params/transform/branch
 @Injectable()
 export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchEntity, BranchModelView, BranchTransformParams> {
     fromEntityToDomain(entity: BranchEntity): BranchModel {
-        return new BranchBuilder()
-            .setId(entity.id ?? null)
-            .setState(entity.state ?? null)
-            .setName(entity.name ?? null)
-            .setAddress(entity.address ?? null)
-            .setEarnings(entity.earnings ?? null)
-            .setCreated(entity.created ?? null)
-            .setModified(entity.modified ?? null)
-            .build();
+        return {
+            id: entity.id ?? null,
+            state: entity.state ?? null,
+            name: entity.name ?? null,
+            address: entity.address ?? null,
+            earnings: entity.earnings ?? null,
+            created: entity.created ?? null,
+            modified: entity.modified ?? null
+        }
     }
     fromDomainToEntity(domain: BranchModel): BranchEntity {
         const entity = new BranchEntity();

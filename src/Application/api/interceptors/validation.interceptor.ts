@@ -32,7 +32,7 @@ export class ValidationInterceptor implements NestInterceptor {
         if (AppUtil.verifyEmpty(req.query))
             req.query = {};
         req.query['role'] = user.role;
-        req.query['id'] = `${user.id}`;
+        req.query['userId'] = `${user.id}`;
 
         for (let i = 0; i < total.length; i++) {
             const types = total[i];
