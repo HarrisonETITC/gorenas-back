@@ -9,7 +9,7 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -19,43 +19,43 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@Domain/*": [
-        "src/Domain/*"
+        "Domain/*"
       ],
       "@Application/*": [
-        "src/Application/*"
+        "Application/*"
       ],
       "@Infraestructure/*": [
-        "src/Infraestructure/*"
+        "Infraestructure/*"
       ],
       "@domain-models/*": [
-        "src/Domain/models/*"
+        "Domain/models/*"
       ],
       "@typeorm/*": [
-        "src/Infraestructure/orm/typeorm/*"
+        "Infraestructure/orm/typeorm/*"
       ],
       "@config/*": [
-        "src/config/*"
+        "config/*"
       ],
       "@orm/*": [
-        "src/orm/*"
+        "orm/*"
       ],
       "@modules/*": [
-        "src/modules/*"
+        "modules/*"
       ],
       "@utils/*": [
-        "src/Application/core/utils/*"
+        "Application/core/utils/*"
       ],
       "@complements/*": [
-        "src/core/complements/*"
+        "core/complements/*"
       ],
       "@interfaces/*": [
-        "src/core/interfaces/*"
+        "core/interfaces/*"
       ],
       "@services/*": [
-        "src/services/*"
+        "services/*"
       ],
       "@controllers/*": [
-        "src/controllers/*"
+        "controllers/*"
       ],
     }
   }

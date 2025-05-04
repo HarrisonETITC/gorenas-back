@@ -11,7 +11,7 @@ export class TyepOrmConfig {
         database: process.env.DB_NAME,
         port: Number(process.env.DB_PORT),
         connectTimeout: 60000,
-        entities: ['dist/Infraestructure/**/*.entity{.ts,.js}'],
+        entities: ['dist/Infraestructure/**/*.entity.js'],
         ssl: true,
         extra: {
             ssl: {
