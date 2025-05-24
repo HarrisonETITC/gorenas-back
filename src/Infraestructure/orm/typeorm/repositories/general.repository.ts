@@ -24,11 +24,11 @@ export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity =
     }
     async getById(id: number, attrs?: Array<string>): Promise<J> {
         const finded = await this.manager.findOneBy({ id: (id as any) });
-        const parsed = this.mapper.fromEntityToDomain(finded);
-
+        
         if (AppUtil.verifyEmpty(finded))
             return null;
-
+        
+        const parsed = this.mapper.fromEntityToDomain(finded);
         return (await this.generateModelView(([parsed])))[0];
     }
     async create(obj: T): Promise<T> {

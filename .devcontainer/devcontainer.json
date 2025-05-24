@@ -14,7 +14,18 @@
 	"postStartCommand": "git config --global core.autocrlf true"
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	,
-	"features": {}
+	"features": {
+		
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"SonarSource.sonarlint-vscode"
+			]
+		}
+	}
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
