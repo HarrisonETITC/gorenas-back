@@ -43,7 +43,7 @@ export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, Sal
 
             return this.mapper.fromDomainToMv(s, {
                 branch: branch?.name ?? '',
-                employee: `${person.names} ${person.surnames}`
+                employee: `${(person?.names ?? '')} ${(person?.surnames ?? '')}`
             })
         })
     }

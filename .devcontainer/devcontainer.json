@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
 	"name": "Gorenas-Bakend",
-	"image": "harrison237/node-nest:mysql-v1",
+	"image": "harrison237/node-nest:v3",
 	"forwardPorts": [
 		3000,
 		3306
@@ -11,12 +11,9 @@
 		"--name",
 		"Gorenas-Back"
 	],
-	"postStartCommand": "git config --global core.autocrlf true"
+	"postCreateCommand": "git config --global core.autocrlf true"
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	,
-	"features": {
-		
-	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
