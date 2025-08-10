@@ -24,10 +24,10 @@ export class AppUtil {
             return basic || isNaN(value);
         else if (value instanceof Array)
             return basic || value.length <= 0;
-        else if (value === emptyObject)
-            return true
         else if (value instanceof Map)
             return basic || value.size == 0;
+        else if (typeof value === 'object')
+            return basic || Object.keys(value).length === 0;
 
         return basic;
     }
@@ -48,7 +48,7 @@ export class AppUtil {
             return [];
 
         if (this.verifyEmpty(idField) || this.verifyEmpty(valueFields)) {
-            throw new Error(`Hace falta uno de los 3 argumentos para realizar el procedimiento: 'idField' ó 'valueField'`);
+            throw new Error(`Hace falta uno de los 2 argumentos para realizar el procedimiento: 'idField' ó 'valueField'`);
         }
 
         separator = this.verifyEmpty(separator) ? ' ' : separator;

@@ -47,6 +47,13 @@ class UserBasicCanSeeStrategy implements GetDataStrategy<UserEntity, UserModelVi
 }
 
 export const UserAvailableContext = (role: string): GetDataStrategy<UserEntity, UserModelView> => {
+    if (RoleModel.ROLE_ADMINISTRATOR == role)
+        return new UserAdministratorAvailableStrategy();
+    if (RoleModel.ROLE_PROPIETARY == role)
+        return new UserPropietaryAvailableStrategy();
+    if (RoleModel.ROLE_MANAGER == role)
+        return new UserManagerAvailableStrategy();
+
     return null;
 }
 
