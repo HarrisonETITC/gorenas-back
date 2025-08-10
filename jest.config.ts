@@ -2,6 +2,7 @@ import { compilerOptions } from "./tsconfig.json"
 import { pathsToModuleNameMapper } from 'ts-jest';
 
 export default {
+  maxWorkers: 4,
   preset: 'ts-jest',
   testEnvironment: 'node',
   rootDir: 'src',

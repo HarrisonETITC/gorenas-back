@@ -17,7 +17,8 @@ import { PersonEntity } from "../entities/person.entity";
 import { BranchEntity } from "../entities/branch.entity";
 
 @Injectable()
-export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, SaleModelView, SaleTransformParams> implements GetAvailableCanSeePort<SaleModelView> {
+export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, SaleModelView, SaleTransformParams> implements 
+    GetAvailableCanSeePort<SaleModelView> {
     constructor(
         @Inject(DataSource)
         public source: DataSource,

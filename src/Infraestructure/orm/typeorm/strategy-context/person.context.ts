@@ -1,10 +1,21 @@
 import { GetDataStrategy } from "@Application/core/strategies/available.strategy"
 import { PersonEntity } from "../entities/person.entity"
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params"
-import { PersonRepository } from "../repositories/person.repository"
 import { RoleModel } from "@Domain/models/role.model"
 import { BranchEntity } from "../entities/branch.entity"
 import { PersonModelView } from "@Application/model-view/person.mv"
+import { PersonTransformParams } from "@Application/core/params/transform/person-transform.params"
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port"
+import { PersonModel } from "@Domain/models/person.model"
+import { GeneralRepository } from "../repositories/general.repository"
+import { PersonsPort } from "@Application/ports/persons/persons.port"
+import { DataSource } from "typeorm"
+
+type PersonRepository = GeneralRepository<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> &
+    GetAvailableCanSeePort<PersonModelView> &
+    PersonsPort & {
+        source: DataSource;
+    };
 
 export const PersonCanSeeContext = (role: string): GetDataStrategy<PersonEntity, PersonModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))

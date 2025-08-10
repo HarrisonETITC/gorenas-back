@@ -1,9 +1,15 @@
 import { GetDataStrategy } from "@Application/core/strategies/available.strategy";
 import { BranchEntity } from "../entities/branch.entity";
 import { RoleModel } from "@Domain/models/role.model";
-import { BranchRepository } from "../repositories/branch.repository";
 import { BranchSearchParams } from "@Application/core/params/search/branch-search.params";
 import { BranchModelView } from "@Application/model-view/branch.mv";
+import { BranchTransformParams } from "@Application/core/params/transform/branch-transform.params";
+import { BranchModel } from "@Domain/models/branch.model";
+import { GeneralRepository } from "../repositories/general.repository";
+import { ProcessFilterPort } from "../ports/process-filter.port";
+
+type BranchRepository = GeneralRepository<BranchModel, BranchEntity, BranchModelView, BranchTransformParams>
+    & ProcessFilterPort<BranchEntity>;
 
 export const BranchCanSeeContext = (role: string): GetDataStrategy<BranchEntity, BranchModelView> => {
     if ([RoleModel.ROLE_MANAGER, RoleModel.ROLE_CASHIER].includes(role))
@@ -32,6 +38,6 @@ export class AdministratorStrategy implements GetDataStrategy<BranchEntity, Bran
 
         await repository.processFilter(basicQuery, args);
 
-        return await basicQuery.getMany();;
+        return await basicQuery.getMany();
     }
 }

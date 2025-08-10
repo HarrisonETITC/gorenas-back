@@ -1,10 +1,15 @@
 import { GetDataStrategy } from "@Application/core/strategies/available.strategy";
 import { RoleEntity } from "../entities/role.entity";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
-import { RoleRepository } from "../repositories/role.repository";
 import { Like } from "typeorm";
 import { RoleModel } from "@Domain/models/role.model";
 import { RoleModelView } from "@Application/model-view/role.mv";
+import { RoleTransformParams } from "@Application/core/params/transform/role-transform.params";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { GeneralRepository } from "../repositories/general.repository";
+
+type RoleRepository = GeneralRepository<RoleModel, RoleEntity, RoleModelView, RoleTransformParams>
+    & GetAvailableCanSeePort<RoleModelView>;
 
 export const RoleCanSeeContext = (role: string): GetDataStrategy<RoleEntity, RoleModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))

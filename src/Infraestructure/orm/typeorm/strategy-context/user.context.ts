@@ -1,10 +1,20 @@
 import { GetDataStrategy } from "@Application/core/strategies/available.strategy";
 import { UserEntity } from "../entities/user.entity";
 import { RoleModel } from "@Domain/models/role.model";
-import { UserRepository } from "../repositories/user.repository";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { BranchEntity } from "../entities/branch.entity";
 import { UserModelView } from "@Application/model-view/user.mv";
+import { UserTransformParams } from "@Application/core/params/transform/users-transform.params";
+import { UsersPort } from "@Application/ports/users/users.port";
+import { UserModel } from "@Domain/models/user.model";
+import { GeneralRepository } from "../repositories/general.repository";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { DataSource } from "typeorm";
+
+type UserRepository = GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams> 
+    & GetAvailableCanSeePort<UserModelView>
+    & UsersPort
+    & { source: DataSource };
 
 export const UserCanSeeContext = (role: string): GetDataStrategy<UserEntity, UserModelView> => {
     if (RoleModel.ROLE_ADMINISTRATOR == role)

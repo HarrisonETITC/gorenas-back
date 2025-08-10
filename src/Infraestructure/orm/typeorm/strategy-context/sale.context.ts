@@ -1,10 +1,18 @@
 import { GetDataStrategy } from "@Application/core/strategies/available.strategy";
 import { SaleEntity } from "../entities/sale.entity";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
-import { SaleRepository } from "../repositories/sale.repository";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { RoleModel } from "@Domain/models/role.model";
 import { SaleModelView } from "@Application/model-view/sale.mv";
+import { SaleTransformParams } from "@Application/core/params/transform/sale-transform.params";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { SaleModel } from "@Domain/models/sale.model";
+import { GeneralRepository } from "../repositories/general.repository";
+import { DataSource } from "typeorm";
+
+type SaleRepository = GeneralRepository<SaleModel, SaleEntity, SaleModelView, SaleTransformParams>
+    & GetAvailableCanSeePort<SaleModelView>
+    & { source: DataSource };
 
 export const SaleCanSeeContext = (role: string): GetDataStrategy<SaleEntity, SaleModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY].includes(role))

@@ -9,17 +9,19 @@
 	],
 	"runArgs": [
 		"--name",
-		"Gorenas-Back"
+		"Gorenas-Back",
+		"--memory=6g",
+		"--memory-swap=6g"
 	],
 	"postCreateCommand": "git config --global core.autocrlf true"
-	// Features to add to the dev container. More info: https://containers.dev/features.
 	,
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"GitHub.copilot",
 				"GitHub.copilot-chat",
-				"SonarSource.sonarlint-vscode"
+				"SonarSource.sonarlint-vscode",
+				"firsttris.vscode-jest-runner"
 			]
 		}
 	}

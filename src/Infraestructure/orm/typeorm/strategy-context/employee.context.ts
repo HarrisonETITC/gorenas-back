@@ -1,10 +1,16 @@
 import { GetDataStrategy } from "@Application/core/strategies/available.strategy";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
-import { EmployeeRepository } from "../repositories/employee.repository";
 import { RoleModel } from "@Domain/models/role.model";
 import { Not, In } from "typeorm";
 import { EmployeeModelView } from "@Application/model-view/employee.mv";
+import { EmployeeTransformParams } from "@Application/core/params/transform/employee-transform.params";
+import { GeneralRepository } from "../repositories/general.repository";
+import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { EmployeeModel } from "@Domain/models/employee.model";
+
+type EmployeeRepository = GeneralRepository<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams>
+    & GetAvailableCanSeePort<EmployeeModelView>;
 
 export const EmployeeCanSeeContext = (role: string): GetDataStrategy<EmployeeEntity, EmployeeModelView> => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_MANAGER].includes(role))

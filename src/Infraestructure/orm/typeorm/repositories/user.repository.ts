@@ -18,7 +18,8 @@ import { UserCanSeeContext } from "../strategy-context/user.context";
 import { PermissionEntity } from "../entities/permission.entity";
 
 @Injectable()
-export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams> implements UsersPort, GetAvailableCanSeePort<UserModelView> {
+export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams> 
+    implements UsersPort, GetAvailableCanSeePort<UserModelView> {
     constructor(
         @Inject(DataSource)
         public source: DataSource,
