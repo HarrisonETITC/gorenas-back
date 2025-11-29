@@ -20,6 +20,8 @@ export class ValidationInterceptor implements NestInterceptor {
     ) { }
 
     async intercept(context: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
+        const validationExceptions = ['/api/auth'];
+
         const handler = context.getHandler();
         const req: Request = context.switchToHttp().getRequest();
         const user = (req.user as UserModelView);
@@ -29,10 +31,15 @@ export class ValidationInterceptor implements NestInterceptor {
         const total = [body, query, param];
         const names = [TYPED_BODY, TYPED_QUERY, TYPED_PARAM];
 
+        if (validationExceptions.some(prefix => req.originalUrl.startsWith(prefix)))
+            return next.handle();
+
         if (AppUtil.verifyEmpty(req.query))
             req.query = {};
-        req.query['role'] = user.role;
-        req.query['userId'] = `${user.id}`;
+        if (!AppUtil.verifyEmpty(user?.role))
+            req.query['role'] = user.role;
+        if (!AppUtil.verifyEmpty(user?.id))
+            req.query['userId'] = `${user.id}`;
 
         for (let i = 0; i < total.length; i++) {
             const types = total[i];

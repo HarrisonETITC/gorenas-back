@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 import { ValidationInterceptor } from '@Application/api/interceptors/validation.interceptor';
 import { VALIDATION_SERVICE } from '@Application/config/inject-tokens/auth.tokens';
 import { TransformDataInterceptor } from '@Application/api/interceptors/transform-data.interceptor';
+import { ParseQueryParamsMiddleware } from '@Application/api/middlewares/parse-query-params.middleware';
 
 config()
 async function bootstrap() {
@@ -14,7 +15,11 @@ async function bootstrap() {
   app.use(logs(process.env.LOGGER_TYPE ?? 'dev'))
   app.setGlobalPrefix('api');
   app.enableCors({ origin: ['http://localhost:4200', process.env.FRONTEND_URI] });
-  app.useGlobalInterceptors(new ValidationInterceptor(validationService, reflector), new TransformDataInterceptor(reflector));
+  app.useGlobalInterceptors(
+    new ValidationInterceptor(validationService, reflector),
+    new TransformDataInterceptor(reflector)
+  );
+  app.use(new ParseQueryParamsMiddleware().use);
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
