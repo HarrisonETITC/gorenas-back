@@ -29,6 +29,8 @@ export class EmployeeDtoMapper implements DtoMapperPort<EmployeeModel, EmployeeC
             .setId(null)
             .setSalary(create.salary ?? null)
             .setState(create.state ?? null)
+            .setBranchId(create.branch ?? null)
+            .setPersonId(create.person ?? null)
             .build();
     }
     fromUpdateToModel(update: EmployeeUpdateDto, params?: Map<string, string>): EmployeeModel {
@@ -36,6 +38,8 @@ export class EmployeeDtoMapper implements DtoMapperPort<EmployeeModel, EmployeeC
             .setId(update.id ?? null)
             .setSalary(update.salary ?? null)
             .setState(update.state ?? null)
+            .setBranchId(update.branch ?? null)
+            .setPersonId(update.person ?? null)
             .build();
     }
 }

@@ -20,6 +20,14 @@ export class EmployeeBuilder implements IBuilder<EmployeeModel> {
         this.employee.state = state;
         return this;
     }
+    setBranchId(branchId: string) {
+        this.employee.branchId = branchId;
+        return this;
+    }
+    setPersonId(personId: string) {
+        this.employee.personId = personId;
+        return this;
+    }
     build(): EmployeeModel {
         const builded = this.employee;
         this.reset();

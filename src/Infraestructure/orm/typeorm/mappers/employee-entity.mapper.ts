@@ -13,13 +13,17 @@ export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, Emp
             .setId(entity.id ?? null)
             .setSalary(entity.salary ?? null)
             .setState(entity.state ?? null)
+            .setBranchId(entity.branchId?.toString() ?? null)
+            .setPersonId(entity.personId?.toString() ?? null)
             .build();
     }
     fromDomainToEntity(domain: EmployeeModel): EmployeeEntity {
         return {
             id: domain.id ?? null,
             salary: domain.salary ?? null,
-            state: domain.state ?? null
+            state: domain.state ?? null,
+            branchId: domain.branchId ? +domain.branchId : null,
+            personId: domain.personId ? +domain.personId : null
         };
     }
     fromDomainToMv(domain: EmployeeModel, extra?: EmployeeTransformParams): EmployeeModelView {

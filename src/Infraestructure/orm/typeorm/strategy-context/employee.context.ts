@@ -12,7 +12,12 @@ import { EmployeeModel } from "@Domain/models/employee.model";
 type EmployeeRepository = GeneralRepository<EmployeeModel, EmployeeEntity, EmployeeModelView, EmployeeTransformParams>
     & GetAvailableCanSeePort<EmployeeModelView>;
 
-export const EmployeeCanSeeContext = (role: string): GetDataStrategy<EmployeeEntity, EmployeeModelView> => {
+// Interfaz local para las estrategias de Employee que usa el tipo específico de repositorio
+interface EmployeeDataStrategy {
+    getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]>;
+}
+
+export const EmployeeCanSeeContext = (role: string): EmployeeDataStrategy => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_MANAGER].includes(role))
         return new AdministratorStrategy();
     if (role == RoleModel.ROLE_MANAGER)
@@ -21,13 +26,13 @@ export const EmployeeCanSeeContext = (role: string): GetDataStrategy<EmployeeEnt
     return new BasicStrategy();
 }
 
-class AdministratorStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelView> {
+class AdministratorStrategy implements EmployeeDataStrategy {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
         return await repository.manager.findBy({ person: { role: Not(In([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_PROPIETARY])) } });
     }
 }
 
-class ManagerStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelView> {
+class ManagerStrategy implements EmployeeDataStrategy {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
         const manager = await repository.manager.findOneBy({ person: { userId: args.userId } });
 
@@ -35,13 +40,13 @@ class ManagerStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelVi
     }
 }
 
-class BasicStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelView> {
+class BasicStrategy implements EmployeeDataStrategy {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
         return await repository.manager.findBy({ person: { userId: args.userId } });
     }
 }
 
-export const EmployeeAvailableContext = (role: string): GetDataStrategy<EmployeeEntity, EmployeeModelView> => {
+export const EmployeeAvailableContext = (role: string): EmployeeDataStrategy => {
     if ([RoleModel.ROLE_ADMINISTRATOR, RoleModel.ROLE_MANAGER].includes(role))
         return new AdministratorAvailableStrategy();
     if (role == RoleModel.ROLE_MANAGER)
@@ -50,7 +55,7 @@ export const EmployeeAvailableContext = (role: string): GetDataStrategy<Employee
     return new BasicAvailableStrategy();
 }
 
-class AdministratorAvailableStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelView> {
+class AdministratorAvailableStrategy implements EmployeeDataStrategy {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
         return await repository.manager.createQueryBuilder("e")
             .innerJoinAndSelect("e.person", "p")
@@ -60,7 +65,7 @@ class AdministratorAvailableStrategy implements GetDataStrategy<EmployeeEntity, 
     }
 }
 
-class ManagerAvailableStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelView> {
+class ManagerAvailableStrategy implements EmployeeDataStrategy {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
         const manager = await repository.manager.findOneBy({ person: { userId: args.userId } });
         return await repository.manager.createQueryBuilder("e")
@@ -71,7 +76,7 @@ class ManagerAvailableStrategy implements GetDataStrategy<EmployeeEntity, Employ
     }
 }
 
-class BasicAvailableStrategy implements GetDataStrategy<EmployeeEntity, EmployeeModelView> {
+class BasicAvailableStrategy implements EmployeeDataStrategy {
     async getData(args: BasicSearchParams, repository: EmployeeRepository): Promise<EmployeeEntity[]> {
         return await repository.manager.findBy({ person: { userId: args.userId } });
     }

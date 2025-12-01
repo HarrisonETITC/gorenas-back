@@ -29,6 +29,87 @@ export class EmployeeRepository extends GeneralRepository<EmployeeModel, Employe
         super(source, EmployeeEntity, mapper);
     }
 
+    /**
+     * Sobrescribe el método create para buscar Person por nombre y Branch por dirección
+     * antes de insertar el empleado.
+     */
+    async create(obj: EmployeeModel): Promise<EmployeeModel> {
+        // Buscar Person por nombre (personId viene como texto "Nombre Apellido")
+        if (obj.personId && isNaN(+obj.personId)) {
+            const personName = obj.personId.trim();
+            const person = await this.source.getRepository(PersonEntity)
+                .createQueryBuilder("p")
+                .where("CONCAT(p.names, ' ', p.surnames) = :name", { name: personName })
+                .getOne();
+            
+            if (person) {
+                obj.personId = person.id.toString();
+            } else {
+                throw new Error(`No se encontró una persona con el nombre '${personName}'`);
+            }
+        }
+
+        // Buscar Branch por dirección (branchId viene como texto "-Dirección")
+        if (obj.branchId && isNaN(+obj.branchId)) {
+            let branchAddress = obj.branchId.trim();
+            // Remover el prefijo "-" si existe
+            if (branchAddress.startsWith('-')) {
+                branchAddress = branchAddress.substring(1).trim();
+            }
+            
+            const branch = await this.source.getRepository(BranchEntity)
+                .createQueryBuilder("b")
+                .where("b.address = :address", { address: branchAddress })
+                .getOne();
+            
+            if (branch) {
+                obj.branchId = branch.id.toString();
+            } else {
+                throw new Error(`No se encontró una sucursal con la dirección '${branchAddress}'`);
+            }
+        }
+
+        // Llamar al método create del padre con los IDs resueltos
+        const created = this.manager.create(this.mapper.fromDomainToEntity(obj));
+        const saved = await this.manager.save(created);
+        return this.mapper.fromEntityToDomain(saved);
+    }
+
+    /**
+     * Sobrescribe generateModelView para obtener los datos relacionados
+     * necesarios para construir el EmployeeModelView
+     */
+    async generateModelView(models: EmployeeModel[]): Promise<EmployeeModelView[]> {
+        if (!models || models.length === 0) return [];
+
+        const personIds = models.map(m => m.personId ? +m.personId : null).filter(id => id !== null);
+        const branchIds = models.map(m => m.branchId ? +m.branchId : null).filter(id => id !== null);
+
+        const persons = personIds.length > 0 
+            ? await this.source.getRepository(PersonEntity).findBy({ id: In(personIds) })
+            : [];
+        const users = persons.length > 0
+            ? await this.source.getRepository(UserEntity).findBy({ id: In(AppUtil.extractIds(persons, 'userId')) })
+            : [];
+        const branches = branchIds.length > 0
+            ? await this.source.getRepository(BranchEntity).findBy({ id: In(branchIds) })
+            : [];
+
+        return models.map(m => {
+            const branch = branches.find(b => b.id === (m.branchId ? +m.branchId : null));
+            const person = persons.find(p => p.id === (m.personId ? +m.personId : null));
+            const user = users.find(u => u.id === person?.userId);
+
+            return this.mapper.fromDomainToMv(m, {
+                branch: branch?.address ?? '',
+                name: person ? `${person.names} ${person.surnames}` : '',
+                sales: 0,
+                salesAmmounth: 0,
+                user: user?.email ?? ''
+            });
+        });
+    }
+
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
         const data = await EmployeeAvailableContext(params.role).getData(params, this);
         const persons = await this.source.getRepository(PersonEntity).findBy({ id: In(AppUtil.extractIds(data, 'personId')) });
@@ -67,15 +148,17 @@ export class EmployeeRepository extends GeneralRepository<EmployeeModel, Employe
             const user = users.find(u => u.id == person?.userId);
             const saleData = sales.find(s => s.id == e.id);
 
-            return this.mapper.fromDomainToMv(e, {
-                branch: branch.name ?? '',
-                name: `${person.names} ${person.surnames}`,
+            // Convertir entidad a modelo antes de pasar al mapper
+            const model = this.mapper.fromEntityToDomain(e);
+
+            return this.mapper.fromDomainToMv(model, {
+                branch: branch?.address ?? '',
+                name: `${person?.names ?? ''} ${person?.surnames ?? ''}`,
                 sales: +(saleData?.branchId ?? 0),
                 salesAmmounth: +(saleData?.personId ?? 0),
-                user: user.email
+                user: user?.email ?? ''
             })
         })
-
     }
     async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
         throw new Error("Method not implemented.");
