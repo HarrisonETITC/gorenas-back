@@ -29,49 +29,21 @@ export class EmployeeRepository extends GeneralRepository<EmployeeModel, Employe
         super(source, EmployeeEntity, mapper);
     }
 
-    /**
-     * Sobrescribe el método create para buscar Person por nombre y Branch por dirección
-     * antes de insertar el empleado.
-     */
     async create(obj: EmployeeModel): Promise<EmployeeModel> {
-        // Buscar Person por nombre (personId viene como texto "Nombre Apellido")
-        if (obj.personId && isNaN(+obj.personId)) {
-            const personName = obj.personId.trim();
-            const person = await this.source.getRepository(PersonEntity)
-                .createQueryBuilder("p")
-                .where("CONCAT(p.names, ' ', p.surnames) = :name", { name: personName })
-                .getOne();
-            
-            if (person) {
-                obj.personId = person.id.toString();
-            } else {
-                throw new Error(`No se encontró una persona con el nombre '${personName}'`);
-            }
-        }
-
-        // Buscar Branch por dirección (branchId viene como texto "-Dirección")
-        if (obj.branchId && isNaN(+obj.branchId)) {
-            let branchAddress = obj.branchId.trim();
-            // Remover el prefijo "-" si existe
-            if (branchAddress.startsWith('-')) {
-                branchAddress = branchAddress.substring(1).trim();
-            }
-            
-            const branch = await this.source.getRepository(BranchEntity)
-                .createQueryBuilder("b")
-                .where("b.address = :address", { address: branchAddress })
-                .getOne();
-            
-            if (branch) {
-                obj.branchId = branch.id.toString();
-            } else {
-                throw new Error(`No se encontró una sucursal con la dirección '${branchAddress}'`);
-            }
-        }
-
-        // Llamar al método create del padre con los IDs resueltos
         const created = this.manager.create(this.mapper.fromDomainToEntity(obj));
         const saved = await this.manager.save(created);
+        return this.mapper.fromEntityToDomain(saved);
+    }
+
+    /**
+     * Sobrescribe el método modify para buscar Person por nombre y Branch por dirección
+     * antes de actualizar el empleado.
+     */
+    async modify(id: number, obj: EmployeeModel): Promise<EmployeeModel> {
+        obj.id = id;
+
+        const entity = this.mapper.fromDomainToEntity(obj);
+        const saved = await this.manager.save(entity);
         return this.mapper.fromEntityToDomain(saved);
     }
 
@@ -85,7 +57,7 @@ export class EmployeeRepository extends GeneralRepository<EmployeeModel, Employe
         const personIds = models.map(m => m.personId ? +m.personId : null).filter(id => id !== null);
         const branchIds = models.map(m => m.branchId ? +m.branchId : null).filter(id => id !== null);
 
-        const persons = personIds.length > 0 
+        const persons = personIds.length > 0
             ? await this.source.getRepository(PersonEntity).findBy({ id: In(personIds) })
             : [];
         const users = persons.length > 0

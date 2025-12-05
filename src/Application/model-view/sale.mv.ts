@@ -3,6 +3,6 @@ export class SaleModelView {
     amount: number;
     employee: string;
     branch: string;
-    method: string;
+    paymenthMethod: string;
     created: Date;
 }

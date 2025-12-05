@@ -13,7 +13,7 @@ export class SaleDtoMapper implements DtoMapperPort<SaleModel, SaleCreateDto, Sa
             created: base.created ?? null,
             employee: params?.get('employee') ?? null,
             modified: base.modified ?? null,
-            paymentMethod: base.paymentMethod ?? null
+            paymenthMethod: base.paymenthMethod ?? null
         };
     }
     fromModelToUpdate(base: SaleModel, params?: Map<string, string>): SaleUpdateDto {
@@ -23,7 +23,7 @@ export class SaleDtoMapper implements DtoMapperPort<SaleModel, SaleCreateDto, Sa
             created: base.created ?? null,
             employee: params?.get('employee') ?? null,
             modified: base.modified ?? null,
-            paymenthMethod: base.paymentMethod ?? null
+            paymenthMethod: base.paymenthMethod ?? null
         }
     }
     fromCreateToModel(create: SaleCreateDto, params?: Map<string, string>): SaleModel {
@@ -32,7 +32,7 @@ export class SaleDtoMapper implements DtoMapperPort<SaleModel, SaleCreateDto, Sa
             .setAmount(create.amount ?? null)
             .setCreated(create.created ?? null)
             .setModified(create.modified ?? null)
-            .setPaymentMethod(create.paymentMethod ?? null)
+            .setPaymentMethod(create.paymenthMethod ?? null)
             .build();
     }
     fromUpdateToModel(update: SaleUpdateDto, params?: Map<string, string>): SaleModel {
@@ -42,6 +42,7 @@ export class SaleDtoMapper implements DtoMapperPort<SaleModel, SaleCreateDto, Sa
             .setCreated(update.created ?? null)
             .setModified(update.modified ?? null)
             .setPaymentMethod(update.paymenthMethod ?? null)
+            .setEmployeeId(update.employee ? +update.employee : null)
             .build();
     }
 }

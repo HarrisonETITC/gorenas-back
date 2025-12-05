@@ -1,6 +1,6 @@
 export class SaleCreateDto {
     amount: number;
-    paymentMethod: string;
+    paymenthMethod: string;
     created?: Date;
     modified?: Date;
     employee: string;

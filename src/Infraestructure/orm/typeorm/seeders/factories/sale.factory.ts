@@ -5,7 +5,7 @@ import { SaleModel } from "@Domain/models/sale.model";
 export const SaleFactory = setSeederFactory(SaleEntity, (faker) => {
     const sale = new SaleEntity();
     sale.amount = faker.number.int({ min: 10000, max: 100000 });
-    sale.paymentMethod = faker.helpers.arrayElement(SaleModel.PAYMENT_METHODS);
+    sale.paymenthMethod = faker.helpers.arrayElement(SaleModel.PAYMENT_METHODS);
 
     return sale;
 })

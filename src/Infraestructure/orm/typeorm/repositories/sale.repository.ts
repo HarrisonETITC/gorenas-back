@@ -17,7 +17,7 @@ import { PersonEntity } from "../entities/person.entity";
 import { BranchEntity } from "../entities/branch.entity";
 
 @Injectable()
-export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, SaleModelView, SaleTransformParams> implements 
+export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, SaleModelView, SaleTransformParams> implements
     GetAvailableCanSeePort<SaleModelView> {
     constructor(
         @Inject(DataSource)
@@ -26,6 +26,15 @@ export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, Sal
         protected mapper: EntityMapperPort<SaleModel, SaleEntity, SaleModelView, SaleTransformParams>
     ) {
         super(source, SaleEntity, mapper);
+    }
+
+    override async modify(id: number, obj: SaleModel): Promise<SaleModel> {
+        const original: SaleEntity = await this.manager.findOneBy({ id });
+        obj.created = original.created;
+        obj.modified = new Date();
+
+        const modified = await this.manager.save(this.mapper.fromDomainToEntity(obj));
+        return this.mapper.fromEntityToDomain(modified);
     }
 
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
@@ -39,16 +48,44 @@ export class SaleRepository extends GeneralRepository<SaleModel, SaleEntity, Sal
 
         return basicData.map(s => {
             const employee = employees.find(e => e.id == s.employeeId);
-            const person = persons.find(p => p.id == employee.personId);
-            const branch = branches.find(b => b.id == employee.branchId);
+            const person = persons.find(p => p.id == employee?.personId);
+            const branch = branches.find(b => b.id == employee?.branchId);
 
             return this.mapper.fromDomainToMv(s, {
-                branch: branch?.name ?? '',
+                branch: branch?.address ?? '',
                 employee: `${(person?.names ?? '')} ${(person?.surnames ?? '')}`
             })
         })
     }
     async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
         return [];
+    }
+    override async generateModelView(models: SaleModel[]): Promise<SaleModelView[]> {
+        if (!models || models.length === 0) return [];
+
+        const employeeIds = models
+            .map(m => m.employeeId)
+            .filter(id => id != null);
+
+        const employees = employeeIds.length > 0
+            ? await this.source.getRepository(EmployeeEntity).findBy({ id: In(employeeIds) })
+            : [];
+        const persons = employees.length > 0
+            ? await this.source.getRepository(PersonEntity).findBy({ id: In(AppUtil.extractIds(employees, 'personId')) })
+            : [];
+        const branches = employees.length > 0
+            ? await this.source.getRepository(BranchEntity).findBy({ id: In(AppUtil.extractIds(employees, 'branchId')) })
+            : [];
+
+        return models.map(sale => {
+            const employee = employees.find(e => e.id === sale.employeeId);
+            const person = persons.find(p => p.id === employee?.personId);
+            const branch = branches.find(b => b.id === employee?.branchId);
+
+            return this.mapper.fromDomainToMv(sale, {
+                branch: branch?.address ?? '',
+                employee: person ? `${person.names} ${person.surnames}` : ''
+            });
+        });
     }
 }

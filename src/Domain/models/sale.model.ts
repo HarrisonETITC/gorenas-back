@@ -20,7 +20,8 @@ export class SaleModel implements GeneralModel, CreatedModel, ModifiedModel {
 
     id: number;
     amount: number;
-    paymentMethod: string;
+    paymenthMethod: string;
     created: Date;
     modified: Date;
+    employeeId?: number;
 }

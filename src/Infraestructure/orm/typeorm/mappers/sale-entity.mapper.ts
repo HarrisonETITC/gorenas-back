@@ -12,18 +12,20 @@ export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity,
         return new SaleBuilder()
             .setId(entity.id ?? null)
             .setAmount(entity.amount ?? null)
-            .setPaymentMethod(entity.paymentMethod ?? null)
+            .setPaymentMethod(entity.paymenthMethod ?? null)
             .setCreated(entity.created ?? null)
             .setModified(entity.modified ?? null)
+            .setEmployeeId(entity.employeeId ?? null)
             .build();
     }
-    fromDomainToEntity(domain: SaleModel): SaleEntity {
+    fromDomainToEntity(domain: SaleModel, params: Map<string, string>): SaleEntity {
         return {
             id: domain.id ?? null,
             amount: domain.amount ?? null,
-            paymentMethod: domain.paymentMethod ?? null,
+            paymenthMethod: domain.paymenthMethod ?? null,
             created: domain.created ?? null,
-            modified: domain.modified ?? null
+            modified: domain.modified ?? null,
+            employeeId: domain.employeeId ?? null
         };
     }
     fromDomainToMv(domain: SaleModel, extra?: SaleTransformParams): SaleModelView {
@@ -32,7 +34,7 @@ export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity,
             amount: +domain.amount,
             employee: extra?.employee ?? '',
             branch: extra?.branch ?? '',
-            method: domain.paymentMethod,
+            paymenthMethod: domain.paymenthMethod,
             created: domain.created
         };
     }

@@ -13,8 +13,8 @@ export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, Emp
             .setId(entity.id ?? null)
             .setSalary(entity.salary ?? null)
             .setState(entity.state ?? null)
-            .setBranchId(entity.branchId?.toString() ?? null)
-            .setPersonId(entity.personId?.toString() ?? null)
+            .setBranchId(entity.branchId || null)
+            .setPersonId(entity.personId || null)
             .build();
     }
     fromDomainToEntity(domain: EmployeeModel): EmployeeEntity {
@@ -33,7 +33,9 @@ export class EmployeeEntityMapper implements EntityMapperPort<EmployeeModel, Emp
             user: extra?.user ?? null,
             branch: extra?.branch ?? null,
             sales: extra?.sales ?? null,
-            salesAmmounth: extra?.salesAmmounth ?? null
+            salesAmmounth: extra?.salesAmmounth ?? null,
+            salary: domain.salary ?? null,
+            state: domain.state ?? null
         };
     }
 }

@@ -14,7 +14,7 @@ export class SaleEntity extends GeneralEntity {
     amount: number;
 
     @Column({ name: 'paymenth_method', length: 30, nullable: true, default: SaleEntity.METHOD_CASH })
-    paymentMethod: string;
+    paymenthMethod: string;
 
     @CreateDateColumn({})
     created: Date;

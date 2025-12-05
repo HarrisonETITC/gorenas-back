@@ -17,7 +17,7 @@ export class SaleBuilder implements IBuilder<SaleModel> {
         return this;
     }
     setPaymentMethod(paymentMethod: string) {
-        this.sale.paymentMethod = paymentMethod;
+        this.sale.paymenthMethod = paymentMethod;
         return this;
     }
     setCreated(created: Date) {
@@ -26,6 +26,10 @@ export class SaleBuilder implements IBuilder<SaleModel> {
     }
     setModified(modified: Date) {
         this.sale.modified = modified;
+        return this;
+    }
+    setEmployeeId(employeeId: number) {
+        this.sale.employeeId = employeeId;
         return this;
     }
     build(): SaleModel {

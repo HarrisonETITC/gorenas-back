@@ -5,4 +5,8 @@ export class EmployeeModelView {
     branch: string;
     sales: number;
     salesAmmounth: number;
+
+    // Fields for edition
+    salary?: number;
+    state?: string;
 }

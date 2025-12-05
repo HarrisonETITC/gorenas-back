@@ -20,11 +20,11 @@ export class EmployeeBuilder implements IBuilder<EmployeeModel> {
         this.employee.state = state;
         return this;
     }
-    setBranchId(branchId: string) {
+    setBranchId(branchId: number) {
         this.employee.branchId = branchId;
         return this;
     }
-    setPersonId(personId: string) {
+    setPersonId(personId: number) {
         this.employee.personId = personId;
         return this;
     }
