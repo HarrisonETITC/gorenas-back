@@ -18,7 +18,7 @@ import { UserCanSeeContext } from "../strategy-context/user.context";
 import { PermissionEntity } from "../entities/permission.entity";
 
 @Injectable()
-export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams> 
+export class UserRepository extends GeneralRepository<UserModel, UserEntity, UserModelView, UserTransformParams>
     implements UsersPort, GetAvailableCanSeePort<UserModelView> {
     constructor(
         @Inject(DataSource)
@@ -29,6 +29,18 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
         super(source, UserEntity, userEntityMapper);
     }
 
+    override async modify(id: number, obj: UserModel): Promise<UserModel> {
+        const original = await this.source.getRepository(UserEntity).findOneBy({ id });
+        const entity = this.mapper.fromDomainToEntity(obj);
+
+        if (AppUtil.verifyEmpty(entity.password)) entity.password = original.password;
+        if (AppUtil.verifyEmpty(entity.created)) entity.created = original.created;
+
+        await this.manager.update({ id }, entity);
+        const updated = await this.manager.findOneBy({ id });
+
+        return this.mapper.fromEntityToDomain(updated);
+    }
     async findByEmail(email: string): Promise<UserModel> {
         const finded = await this.manager.findOneBy({ email });
 
@@ -56,8 +68,15 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
 
         return await this.generateModelView(data);
     }
-    async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
-        return [];
+    async getIdValueMany(ids: Array<number>): Promise<Array<IdValue>> {
+        const users = await this.manager.findBy({ id: In(ids) });
+
+        return users.map(u => {
+            return {
+                id: u.id,
+                value: u.email
+            }
+        });
     }
     override async generateModelView(models: UserModel[]): Promise<UserModelView[]> {
         const roles = await this.source.getRepository(RoleEntity).findBy({
@@ -72,8 +91,8 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
 
         return models.map(u => {
             const person = persons.find(p => p.userId == u.id);
-            const role = roles.find(r => person.roleId == r.id);
-            const perms = permissions.filter(p => p.roleId == role.id)?.map(p => p.name);
+            const role = roles.find(r => person?.roleId == r.id);
+            const perms = permissions.filter(p => p?.roleId == role.id)?.map(p => p.name);
 
             return this.mapper.fromDomainToMv(u, {
                 name: `${(person?.names ?? '')} ${(person?.surnames ?? '')}`,

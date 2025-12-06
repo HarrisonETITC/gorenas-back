@@ -48,6 +48,14 @@ export class PersonBuilder implements IBuilder<PersonModel> {
         this.person.created = created;
         return this;
     }
+    setUserId(userId: number) {
+        this.person.userId = userId;
+        return this;
+    }
+    setRoleId(roleId: number) {
+        this.person.roleId = roleId;
+        return this;
+    }
     build(): PersonModel {
         const builded = this.person;
         this.reset();

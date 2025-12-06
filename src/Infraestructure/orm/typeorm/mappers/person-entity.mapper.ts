@@ -20,6 +20,8 @@ export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonE
             .setAddress(entity.address ?? null)
             .setBorn(entity.born ?? null)
             .setCreated(entity.created ?? null)
+            .setUserId(entity.userId ?? null)
+            .setRoleId(entity.roleId ?? null)
             .build();
     }
     fromDomainToEntity(domain: PersonModel): PersonEntity {
@@ -34,6 +36,8 @@ export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonE
             address: domain.address ?? null,
             born: domain.born ?? null,
             created: domain.created ?? null,
+            userId: domain.userId ?? null,
+            roleId: domain.roleId ?? null
         }
 
         return entity;

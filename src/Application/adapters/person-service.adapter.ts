@@ -12,7 +12,7 @@ import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port
 import { PersonsPort } from "@Application/ports/persons/persons.port";
 
 @Injectable()
-export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView> implements 
+export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView> implements
     PersonsPort {
     constructor(
         @Inject(PERSON_REPOSITORY)
@@ -24,6 +24,10 @@ export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, Per
         private readonly personMapper: DtoMapperPort<PersonModel, PersonCreateDto, PersonUpdateDto>
     ) {
         super(personRepository, personMapper);
+    }
+
+    async getOriginalById(id: number): Promise<PersonModel> {
+        return await this.personRepository.getOriginalById(id);
     }
 
     async getByUserId(id: number): Promise<PersonModelView> {

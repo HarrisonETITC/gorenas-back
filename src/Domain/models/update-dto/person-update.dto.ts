@@ -8,6 +8,6 @@ export class PersonUpdateDto {
     rh?: string;
     address?: string;
     born?: Date;
-    rol?: string;
-    user?: string;
+    roleId?: number;
+    userId?: number;
 }

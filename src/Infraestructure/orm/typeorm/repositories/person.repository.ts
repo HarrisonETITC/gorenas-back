@@ -32,6 +32,27 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
         super(source, PersonEntity, personEntityMapper);
     }
 
+    override async modify(id: number, obj: PersonModel): Promise<PersonModel> {
+        const original = await this.source.getRepository(PersonEntity).findOneBy({ id });
+        const entity = this.mapper.fromDomainToEntity(obj);
+
+        if (AppUtil.verifyEmpty(entity.created)) entity.created = original.created;
+
+        await this.manager.update({ id }, entity);
+        const updated = await this.manager.findOneBy({ id });
+
+        return this.mapper.fromEntityToDomain(updated);
+    }
+
+    async getOriginalById(id: number): Promise<PersonModel> {
+        const finded = await this.manager.findOneBy({ id });
+
+        if (AppUtil.verifyEmpty(finded))
+            return null;
+
+        return this.mapper.fromEntityToDomain(finded);
+    }
+
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
         const baseData = await this.manager
             .createQueryBuilder("p")
@@ -114,7 +135,7 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
 
         return models.map(p => {
             return this.mapper.fromDomainToMv(p, {
-                branch: branches.find(s => s.id == employees.find(e => e.personId == p.id)?.branchId)?.name ?? '',
+                branch: branches.find(s => s.id == employees.find(e => e.personId == p.id)?.branchId)?.address ?? '',
                 email: users.find(u => u.id == p['userId'])?.email ?? '',
                 role: roles.find(r => r.id == p['roleId'])?.name ?? ''
             });

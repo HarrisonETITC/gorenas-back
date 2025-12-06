@@ -3,7 +3,7 @@ import { GeneralRepository } from "./general.repository";
 import { RoleModel } from "@Domain/models/role.model";
 import { RoleEntity } from "../entities/role.entity";
 import { RoleModelView } from "@Application/model-view/role.mv";
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { EntityMapperPort } from "@Application/ports/entity-mapper.port";
 import { ROLE_ENTITY_MAPPER } from "@Application/config/inject-tokens/role.tokens";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
@@ -24,7 +24,7 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
     ) {
         super(source, RoleEntity, mapper);
     }
-    
+
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
         const data = await RoleAvailableContext(params.role).getData(params, this);
 
@@ -48,13 +48,14 @@ export class RoleRepository extends GeneralRepository<RoleModel, RoleEntity, Rol
             })
         })
     }
-    async getIdValueMany(values: Array<string>): Promise<Array<IdValue>> {
-        const builder = this.manager.createQueryBuilder("r");
+    async getIdValueMany(values: Array<number>): Promise<Array<IdValue>> {
+        const roles = await this.manager.findBy({ id: In(values) });
 
-        for (const val of values) {
-            builder.orWhere("r.name = :name", { name: val });
-        }
-
-        return AppUtil.transformToIdValue((await builder.getMany()), 'id', ['name']);
+        return roles.map(r => {
+            return {
+                id: r.id,
+                value: r.name
+            }
+        });
     }
 }

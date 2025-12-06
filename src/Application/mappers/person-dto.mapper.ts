@@ -33,8 +33,8 @@ export class PersonDtoMapper implements DtoMapperPort<PersonModel, PersonCreateD
             rh: base.rh ?? null,
             address: base.address ?? null,
             born: base.born ?? null,
-            rol: params?.get('rol') ?? null,
-            user: params?.get('person') ?? null,
+            roleId: base.roleId ?? null,
+            userId: base.userId ?? null,
         };
         return update;
     }
@@ -64,6 +64,8 @@ export class PersonDtoMapper implements DtoMapperPort<PersonModel, PersonCreateD
             .setAddress(update.address ?? null)
             .setBorn(update.born ?? null)
             .setCreated(null)
+            .setUserId(update.userId ? Number(update.userId) : null)
+            .setRoleId(update.roleId ? Number(update.roleId) : null)
             .build();
     }
 }

@@ -42,4 +42,6 @@ export class PersonModel implements GeneralModel, CreatedModel {
     address: string;
     born: Date;
     created: Date;
+    userId?: number;
+    roleId?: number;
 }

@@ -13,6 +13,8 @@ import { PersonsPort } from "@Application/ports/persons/persons.port";
 import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decorator";
 import { UserIdStringDto } from "@Domain/models/general/dto/user-id-string.dto";
 import { DataResponse } from "@Domain/interfaces/data-response.interface";
+import { API_ID } from "@Application/api/endpoint-names";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 @Controller(ROUTE_PERSON)
 export class PersonController extends GeneralControllerAdapter(PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView) {
@@ -30,5 +32,15 @@ export class PersonController extends GeneralControllerAdapter(PersonModel, Pers
     @SetTypedQuery(UserIdStringDto)
     async getByUserId(@Query('userId') id: number): Promise<DataResponse<PersonModelView>> {
         return { data: (await this.personService.getByUserId(+id)) };
+    }
+
+    @Get(API_ID)
+    override async findById(id: string, @Query('edition') isEdition?: string): Promise<DataResponse<PersonModelView>> {
+        const finded = await this.personService.getOriginalById(Number(id));
+        const findedMV = (await this.personService.generateModelView([finded]))[0];
+
+        if (!AppUtil.verifyEmpty(isEdition) && isEdition === 'true') return { data: (finded as any) };
+
+        return { data: findedMV };
     }
 }
