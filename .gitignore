@@ -64,3 +64,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 **.properties
 
 **/.vscode/**
+**/.pnpm-store/**
+.pnpm-store
