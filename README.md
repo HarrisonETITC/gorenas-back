@@ -24,25 +24,88 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Gorenas Backend - Restaurant management system API built with [NestJS](https://github.com/nestjs/nest) framework.
+
+## Features
+
+- 🔐 JWT Authentication
+- 👥 User and Role Management
+- 🏢 Restaurant and Branch Management
+- 👨‍💼 Employee Management
+- 💰 Sales Tracking
+- 📋 Permission System
+- 📚 OpenAPI/Swagger Documentation
+- 🗄️ TypeORM with MySQL
+- 🔄 Clean Architecture (Hexagonal Architecture)
 
 ## Project setup
 
 ```bash
-$ npm install
+$ pnpm install
+```
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+PORT=3000
+LOGGER_TYPE=dev
+FRONTEND_URI=http://localhost:4200
+
+# Database
+DB_HOST=your_host
+DB_PORT=3306
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_NAME=gorenas1
+
+# JWT
+JWT_SECRET=your_secret_key
+JWT_EXPIRES_IN=1d
 ```
 
 ## Compile and run the project
 
 ```bash
 # development
-$ npm run start
+$ pnpm run start
 
 # watch mode
-$ npm run start:dev
+$ pnpm run start:dev
 
 # production mode
-$ npm run start:prod
+$ pnpm run start:prod
+```
+
+## API Documentation
+
+Once the application is running, you can access the Swagger documentation at:
+
+```
+http://localhost:3000/api/docs
+```
+
+The documentation provides:
+- Complete API endpoint reference
+- Request/Response schemas
+- Authentication flow
+- Try-it-out functionality for all endpoints
+
+## Database Migrations
+
+```bash
+# Generate a new migration
+$ pnpm run migration:generate:mysql
+
+# Run migrations
+$ pnpm run migration:run
+
+# Revert last migration
+$ pnpm run migration:revert
+
+# Run seeders
+$ pnpm run seed
 ```
 
 ## Run tests

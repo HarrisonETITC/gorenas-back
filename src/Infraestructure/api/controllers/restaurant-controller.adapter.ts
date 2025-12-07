@@ -8,7 +8,10 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { RESTAURANT_SERVICE } from "@Application/config/inject-tokens/restaurant.tokens";
 import { ROUTE_RESTAURANT } from "@Application/api/api.routes";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Restaurants')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_RESTAURANT)
 export class RestaurantController extends GeneralControllerAdapter(RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto, RestaurantModelView) {
     constructor(

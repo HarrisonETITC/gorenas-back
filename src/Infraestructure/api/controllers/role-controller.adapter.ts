@@ -8,7 +8,10 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { ROLE_SERVICE } from "@Application/config/inject-tokens/role.tokens";
 import { ROUTE_ROLE } from "@Application/api/api.routes";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Roles')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_ROLE)
 export class RoleController extends GeneralControllerAdapter(RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView) {
     constructor(

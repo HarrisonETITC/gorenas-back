@@ -1,4 +1,5 @@
 import { GeneralModel } from "@Domain/models/general/general.model";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class PermissionModelView extends GeneralModel {
     public static readonly MODULE_DASHBOARD = "dashboard";
@@ -35,6 +36,15 @@ export class PermissionModelView extends GeneralModel {
         this.ACTIONS.push(this.ACTION_DEACTIVATE);
     }
 
+    @ApiProperty({ 
+        description: 'Permission name in format module:action',
+        example: 'users:create'
+    })
     name: string;
+
+    @ApiProperty({ 
+        description: 'Role name',
+        example: 'Manager'
+    })
     role: string;
 }

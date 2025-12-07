@@ -8,7 +8,10 @@ import { EMPLOYEE_SERVICE } from "@Application/config/inject-tokens/employee.tok
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { ROUTE_EMPLOYEE } from "@Application/api/api.routes";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Employees')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_EMPLOYEE)
 export class EmployeeController extends GeneralControllerAdapter(EmployeeModel, EmployeeCreateDto, EmployeeUpdateDto, EmployeeModelView) {
     constructor(

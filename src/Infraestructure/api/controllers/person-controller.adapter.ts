@@ -14,7 +14,10 @@ import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decor
 import { UserIdStringDto } from "@Domain/models/general/dto/user-id-string.dto";
 import { DataResponse } from "@Domain/interfaces/data-response.interface";
 import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
+import { ApiTags, ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
 
+@ApiTags('Persons')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_PERSON)
 export class PersonController extends GeneralControllerAdapter(PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView) {
     constructor(
@@ -28,6 +31,7 @@ export class PersonController extends GeneralControllerAdapter(PersonModel, Pers
     }
 
     @Get('infoByUserId')
+    @ApiOperation({ summary: 'Get person information by user ID' })
     @SetTypedQuery(UserIdStringDto)
     async getByUserId(@Query('userId') id: number): Promise<DataResponse<PersonModelView>> {
         return { data: (await this.personService.getByUserId(+id)) };

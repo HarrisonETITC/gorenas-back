@@ -8,7 +8,10 @@ import { BRANCH_SERVICE } from "@Application/config/inject-tokens/branch.tokens"
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { ROUTE_BRANCH } from "@Application/api/api.routes";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Branches')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_BRANCH)
 export class BranchController extends GeneralControllerAdapter(BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView) {
     constructor(

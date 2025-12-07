@@ -17,7 +17,10 @@ import { SetTypedQuery } from "@Application/core/decorators/set-type-query.decor
 import { RoleModel } from "@Domain/models/role.model";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { DataResponse } from "@Domain/interfaces/data-response.interface";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Users')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_USER)
 @UseGuards(JwtGuard, RolesGuard)
 export class UserController extends GeneralControllerAdapter(UserModel, UserCreateDto, UserUpdateDto, UserModelView) {

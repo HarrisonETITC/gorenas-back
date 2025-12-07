@@ -20,6 +20,7 @@ import { ControllerAvailableCanSeePort } from "@Application/ports/controller-ava
 import { ValuesSearchParams } from "@Application/core/params/search/values-search.params";
 import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 import { AppUtil } from "@Application/core/utils/app.util";
+import { ApiOperation, ApiResponse, ApiQuery, ApiBody } from "@nestjs/swagger";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
     Type<GeneralControllerPort<T, U, K, J> & ControllerAvailableCanSeePort<J>> => {
@@ -32,11 +33,17 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         ) { }
 
         @Get(API_ALL)
+        @ApiOperation({ summary: 'Get all records' })
+        @ApiResponse({ status: 200, description: 'Returns all records' })
         async findAll(): Promise<DataResponse<Array<J>>> {
             return { data: (await this.service.generateModelView(await this.service.getAll())) };
         }
 
         @Get(API_ID)
+        @ApiOperation({ summary: 'Get record by ID' })
+        @ApiQuery({ name: 'id', required: true, type: String })
+        @ApiQuery({ name: 'edition', required: false, type: String, description: 'Set to "true" to get original model without transformation' })
+        @ApiResponse({ status: 200, description: 'Returns the record' })
         async findById(
             @Query('id') id: string,
             @Query('edition') isEdition?: string
@@ -50,6 +57,9 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Post(API_CREATE)
+        @ApiOperation({ summary: 'Create a new record' })
+        @ApiBody({ type: create })
+        @ApiResponse({ status: 201, description: 'Record created successfully' })
         @SetTypedBody(create)
         async create(@Body() data: U): Promise<DataResponse<J>> {
             const created = await this.service.create(data);
@@ -57,6 +67,9 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Put(API_MODIFY)
+        @ApiOperation({ summary: 'Update an existing record' })
+        @ApiBody({ type: modify })
+        @ApiResponse({ status: 200, description: 'Record updated successfully' })
         @SetTypedBody(modify)
         async modify(@Body() data: K): Promise<DataResponse<J>> {
             const modified = await this.service.modify(data['id'], data);
@@ -64,6 +77,9 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Delete(API_DELETE)
+        @ApiOperation({ summary: 'Delete a record' })
+        @ApiQuery({ name: 'id', required: true, type: String })
+        @ApiResponse({ status: 200, description: 'Record deleted successfully' })
         @SetTypedQuery(UserIdStringDto)
         async delete(@Query('id') id: string): Promise<MessageResponse> {
             await this.service.delete(Number(id));
@@ -71,6 +87,8 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Get('available')
+        @ApiOperation({ summary: 'Get available records for selection' })
+        @ApiResponse({ status: 200, description: 'Returns available records as id-value pairs' })
         @Roles(RoleModel.BASE_ROLES)
         @SetTypedQuery(BasicSearchParams)
         async getAvailable(@Query() params: BasicSearchParams): Promise<DataResponse<Array<IdValue>>> {
@@ -78,12 +96,16 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
         }
 
         @Get('can-see')
+        @ApiOperation({ summary: 'Get records that user can see based on permissions' })
+        @ApiResponse({ status: 200, description: 'Returns filtered records' })
         @SetTypedQuery(BasicSearchParams)
         async getCanSee(@Query() params: BasicSearchParams): Promise<DataResponse<Array<J>>> {
             return { data: (await this.service.getCanSee(params)) };
         }
 
         @Get('id-value')
+        @ApiOperation({ summary: 'Get multiple records by IDs as id-value pairs' })
+        @ApiResponse({ status: 200, description: 'Returns records as id-value pairs' })
         @SetTypedQuery(ValuesSearchParams)
         async getIdValueMany(@Query() params: ValuesSearchParams): Promise<DataResponse<Array<IdValue>>> {
             return { data: (await this.service.getIdValueMany(params.values)) };

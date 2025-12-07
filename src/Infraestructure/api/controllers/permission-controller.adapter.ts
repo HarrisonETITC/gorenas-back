@@ -16,7 +16,10 @@ import { Roles } from "@Application/core/decorators/role.decorator";
 import { RoleModel } from "@Domain/models/role.model";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Permissions')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_PERMISSION)
 export class PermissionController extends GeneralControllerAdapter(PermissionModel, PermissionCreateDto, PermissionUpdateDto, PermissionModelView) {
     constructor(

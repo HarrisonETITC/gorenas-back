@@ -8,7 +8,10 @@ import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GeneralServicePort } from "@Domain/ports/general-service.port";
 import { SALE_SERVICE } from "@Application/config/inject-tokens/sale.tokens";
 import { ROUTE_SALE } from "@Application/api/api.routes";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 
+@ApiTags('Sales')
+@ApiBearerAuth('JWT-auth')
 @Controller(ROUTE_SALE)
 export class SaleController extends GeneralControllerAdapter(SaleModel, SaleCreateDto, SaleUpdateDto, SaleModelView) {
     constructor(

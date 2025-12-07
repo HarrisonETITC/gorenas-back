@@ -9,7 +9,9 @@ import { UserModel } from "@Domain/models/user.model";
 import { AuthResponse } from "@Domain/types/auth-response.type";
 import { Controller, Get, Inject, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { Request } from "express";
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiQuery } from "@nestjs/swagger";
 
+@ApiTags('Auth')
 @Controller(ROUTE_AUTH)
 export class AuthController implements AuthControllerPort {
 
@@ -21,6 +23,24 @@ export class AuthController implements AuthControllerPort {
     ) { }
 
     @Post('authenticate')
+    @ApiOperation({ summary: 'Authenticate user and get JWT token' })
+    @ApiBody({ 
+        schema: {
+            type: 'object',
+            properties: {
+                email: { type: 'string', example: 'user@example.com' },
+                password: { type: 'string', example: 'password123' }
+            }
+        }
+    })
+    @ApiResponse({ status: 200, description: 'Authentication successful', schema: {
+        type: 'object',
+        properties: {
+            token: { type: 'string' },
+            userId: { type: 'number' }
+        }
+    }})
+    @ApiResponse({ status: 401, description: 'Invalid credentials' })
     @UseGuards(LocalGuard)
     async authenticate(@Req() req: Request): Promise<AuthResponse> {
         const user = (req.user as UserModelView);
@@ -32,6 +52,9 @@ export class AuthController implements AuthControllerPort {
     }
 
     @Get('get-hash')
+    @ApiOperation({ summary: 'Generate hash from plain text' })
+    @ApiQuery({ name: 'data', required: true, type: String, description: 'Plain text to hash' })
+    @ApiResponse({ status: 200, description: 'Hash generated successfully' })
     async getHash(
         @Query('data') data: string
     ) {
