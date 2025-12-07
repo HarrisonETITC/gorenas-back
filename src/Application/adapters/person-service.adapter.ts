@@ -10,6 +10,7 @@ import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { PERSON_DTO_MAPPER, PERSON_REPOSITORY } from "@Application/config/inject-tokens/person.tokens";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { PersonsPort } from "@Application/ports/persons/persons.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, PersonCreateDto, PersonUpdateDto, PersonModelView> implements
@@ -19,7 +20,7 @@ export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, Per
         private readonly personRepository: GeneralRepositoryPort<PersonModel, PersonModelView>
             & GenerateModelViewPort<PersonModel, PersonModelView>
             & GetAvailableCanSeePort<PersonModelView>
-            & PersonsPort,
+            & PersonsPort & GetOriginalByIdPort<PersonModel>,
         @Inject(PERSON_DTO_MAPPER)
         private readonly personMapper: DtoMapperPort<PersonModel, PersonCreateDto, PersonUpdateDto>
     ) {

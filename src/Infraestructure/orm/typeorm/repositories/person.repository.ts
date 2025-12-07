@@ -18,11 +18,12 @@ import { BranchEntity } from "../entities/branch.entity";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { PersonTransformParams } from "@Application/core/params/transform/person-transform.params";
 import { PersonsPort } from "@Application/ports/persons/persons.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class PersonRepository extends GeneralRepository<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> implements
     GetAvailableCanSeePort<PersonModelView>,
-    PersonsPort {
+    PersonsPort, GetOriginalByIdPort<PersonModel> {
     constructor(
         @Inject(DataSource)
         readonly source: DataSource,

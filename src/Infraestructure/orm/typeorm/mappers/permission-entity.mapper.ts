@@ -11,21 +11,23 @@ export class PermissionEntityMapper implements EntityMapperPort<PermissionModel,
         return {
             created: entity.created,
             id: entity.id,
-            name: entity.name
+            name: entity.name,
+            roleId: entity.roleId || null
         }
     }
     fromDomainToEntity(domain: PermissionModel): PermissionEntity {
         return {
             created: domain.created,
             id: domain.id,
-            name: domain.name
+            name: domain.name,
+            roleId: domain.roleId || null
         }
     }
     fromDomainToMv(domain: PermissionModel, extra?: PermissionTransformParams): PermissionModelView {
         return {
             id: domain.id,
             name: domain.name,
-            role: extra?.role ?? ''
+            role: extra?.role ?? null
         }
     }
 }

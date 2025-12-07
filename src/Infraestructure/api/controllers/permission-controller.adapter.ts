@@ -15,6 +15,9 @@ import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port
 import { Roles } from "@Application/core/decorators/role.decorator";
 import { RoleModel } from "@Domain/models/role.model";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
+import { API_ID } from "@Application/api/endpoint-names";
+import { AppUtil } from "@Application/core/utils/app.util";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Controller(ROUTE_PERMISSION)
 export class PermissionController extends GeneralControllerAdapter(PermissionModel, PermissionCreateDto, PermissionUpdateDto, PermissionModelView) {
@@ -22,9 +25,19 @@ export class PermissionController extends GeneralControllerAdapter(PermissionMod
         @Inject(PERMISSION_SERVICE)
         private readonly service: GeneralServicePort<PermissionModel, PermissionCreateDto, PermissionUpdateDto>
             & GenerateModelViewPort<PermissionModel, PermissionModelView>
-            & GetAvailableCanSeePort<PermissionModelView>
+            & GetAvailableCanSeePort<PermissionModelView> & GetOriginalByIdPort<PermissionModel>
     ) {
         super(service)
+    }
+
+    @Get(API_ID)
+    override async findById(id: string, @Query('edition') isEdition?: string): Promise<DataResponse<PermissionModelView>> {
+        const finded = await this.service.getOriginalById(Number(id));
+
+        if (!AppUtil.verifyEmpty(isEdition) && isEdition === 'true') return { data: (finded as any) };
+
+        const findedMV = (await this.service.generateModelView([finded]))[0];
+        return { data: findedMV };
     }
 
     @Get('can-see')
@@ -33,7 +46,6 @@ export class PermissionController extends GeneralControllerAdapter(PermissionMod
     override async getCanSee(@Query() params: PermissionSearchParams): Promise<DataResponse<Array<PermissionModelView>>> {
         return { data: (await this.service.getCanSee(params)) };
     }
-
 
     @Get('available')
     @Roles(RoleModel.BASE_ROLES)

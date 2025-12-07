@@ -1,5 +1,5 @@
 export class PermissionCreateDto {
     name: string;
-    role: string;
+    roleId: number;
     created?: Date;
 }

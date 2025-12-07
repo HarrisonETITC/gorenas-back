@@ -10,7 +10,7 @@ export class PermissionDtoMapper implements DtoMapperPort<PermissionModel, Permi
         return {
             name: base.name,
             created: base.created,
-            role: ''
+            roleId: base.roleId || null
         }
     }
     fromModelToUpdate(base: PermissionModel, params?: Map<string, string>): PermissionUpdateDto {
@@ -24,14 +24,16 @@ export class PermissionDtoMapper implements DtoMapperPort<PermissionModel, Permi
         return {
             id: null,
             name: create.name,
-            created: create.created
+            created: create.created,
+            roleId: create.roleId || null
         }
     }
     fromUpdateToModel(update: PermissionUpdateDto, params?: Map<string, string>): PermissionModel {
         return {
             id: update.id,
             name: update.name,
-            created: update.created
+            created: update.created,
+            roleId: update.roleId || null
         }
     }
 }
