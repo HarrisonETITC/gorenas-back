@@ -4,5 +4,5 @@ export class SaleUpdateDto {
     paymenthMethod?: string;
     created?: Date;
     modified?: Date;
-    employee?: string;
+    employeeId?: string;
 }

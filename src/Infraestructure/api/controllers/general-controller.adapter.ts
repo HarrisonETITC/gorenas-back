@@ -18,6 +18,8 @@ import { RoleModel } from "@Domain/models/role.model";
 import { DataResponse } from "@Domain/interfaces/data-response.interface";
 import { ControllerAvailableCanSeePort } from "@Application/ports/controller-available-cansee.port";
 import { ValuesSearchParams } from "@Application/core/params/search/values-search.params";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
+import { AppUtil } from "@Application/core/utils/app.util";
 
 export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J = T>(domain: Type<T>, create: Type<U>, modify: Type<K>, modelView: Type<J>):
     Type<GeneralControllerPort<T, U, K, J> & ControllerAvailableCanSeePort<J>> => {
@@ -26,7 +28,7 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
     class GeneralControllerAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralControllerPort<T, U, K, J>, ControllerAvailableCanSeePort<J> {
 
         constructor(
-            private readonly service: GeneralServicePort<T, U, K, J> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J>
+            private readonly service: GeneralServicePort<T, U, K, J> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J> & GetOriginalByIdPort<T>
         ) { }
 
         @Get(API_ALL)
@@ -36,10 +38,15 @@ export const GeneralControllerAdapter = <T extends GeneralModel, U = T, K = T, J
 
         @Get(API_ID)
         async findById(
-            @Query('id') id: string
+            @Query('id') id: string,
+            @Query('edition') isEdition?: string
         ): Promise<DataResponse<J>> {
-            const finded = await this.service.getById(Number(id));
-            return { data: finded };
+            const finded = await this.service.getOriginalById(Number(id));
+
+            if (!AppUtil.verifyEmpty(isEdition) && isEdition === 'true') return { data: (finded as any) };
+
+            const findedMV = (await this.service.generateModelView([finded]))[0];
+            return { data: findedMV };
         }
 
         @Post(API_CREATE)

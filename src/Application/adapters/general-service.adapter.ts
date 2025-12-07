@@ -8,12 +8,13 @@ import { AppUtil } from "@Application/core/utils/app.util";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> implements GeneralServicePort<T, U, K, J>, 
-    GenerateModelViewPort<T, J>, GetAvailableCanSeePort<J> {
+    GenerateModelViewPort<T, J>, GetAvailableCanSeePort<J>, GetOriginalByIdPort<T> {
 
     constructor(
-        protected readonly repository: GeneralRepositoryPort<T, J> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J>,
+        protected readonly repository: GeneralRepositoryPort<T, J> & GenerateModelViewPort<T, J> & GetAvailableCanSeePort<J> & GetOriginalByIdPort<T>,
         protected readonly mapper: DtoMapperPort<T, U, K>
     ) { }
 
@@ -50,5 +51,9 @@ export class GeneralServiceAdapter<T extends GeneralModel, U = T, K = T, J = T> 
     }
     async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
         return await this.repository.getIdValueMany(ids);
+    }
+
+    async getOriginalById(id: number): Promise<T> {
+        return await this.repository.getOriginalById(id);
     }
 }

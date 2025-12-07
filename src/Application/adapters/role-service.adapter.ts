@@ -9,6 +9,7 @@ import { ROLE_DTO_MAPPER, ROLE_REPOSITORY } from "@Application/config/inject-tok
 import { Inject, Injectable } from "@nestjs/common";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCreateDto, RoleUpdateDto, RoleModelView> {
@@ -16,7 +17,8 @@ export class RoleServiceAdapter extends GeneralServiceAdapter<RoleModel, RoleCre
         @Inject(ROLE_REPOSITORY)
         private readonly roleRepository: GeneralRepositoryPort<RoleModel>
             & GenerateModelViewPort<RoleModel, RoleModelView>
-            & GetAvailableCanSeePort<RoleModelView>,
+            & GetAvailableCanSeePort<RoleModelView>
+            & GetOriginalByIdPort<RoleModel>,
         @Inject(ROLE_DTO_MAPPER)
         private readonly roleMapper: DtoMapperPort<RoleModel, RoleCreateDto, RoleUpdateDto>
     ) {

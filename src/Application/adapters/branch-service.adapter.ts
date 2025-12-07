@@ -9,13 +9,16 @@ import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class BranchServiceAdapter extends GeneralServiceAdapter<BranchModel, BranchCreateDto, BranchUpdateDto, BranchModelView> {
     constructor(
         @Inject(BRANCH_REPOSITORY)
         private readonly branchRepository: GeneralRepositoryPort<BranchModel, BranchModelView>
-            & GenerateModelViewPort<BranchModel, BranchModelView> & GetAvailableCanSeePort<BranchModelView>,
+            & GenerateModelViewPort<BranchModel, BranchModelView>
+            & GetAvailableCanSeePort<BranchModelView>
+            & GetOriginalByIdPort<BranchModel>,
         @Inject(BRANCH_DTO_MAPPER)
         private readonly branchMapper: DtoMapperPort<BranchModel, BranchCreateDto, BranchUpdateDto>
     ) {

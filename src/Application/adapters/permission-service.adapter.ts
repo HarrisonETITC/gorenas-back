@@ -10,21 +10,16 @@ import { PermissionEntity } from "@Infraestructure/orm/typeorm/entities/permissi
 import { GeneralRepository } from "@Infraestructure/orm/typeorm/repositories/general.repository";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
-import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
-export class PermissionServiceAdapter extends GeneralServiceAdapter<PermissionModel, PermissionCreateDto, PermissionUpdateDto, PermissionModelView>
-    implements GetOriginalByIdPort<PermissionModel> {
+export class PermissionServiceAdapter extends GeneralServiceAdapter<PermissionModel, PermissionCreateDto, PermissionUpdateDto, PermissionModelView> {
     constructor(
         @Inject(PERMISSION_REPOSITORY)
         protected readonly repository: GeneralRepository<PermissionModel, PermissionEntity, PermissionModelView, PermissionTransformParams>
-            & GetAvailableCanSeePort<PermissionModelView> & GetOriginalByIdPort<PermissionModel>,
+            & GetAvailableCanSeePort<PermissionModelView>,
         @Inject(PERMISSION_DTO_MAPPER)
         private readonly dtoMapper: DtoMapperPort<PermissionModel, PermissionCreateDto, PermissionUpdateDto>
     ) {
         super(repository, dtoMapper);
-    }
-    async getOriginalById(id: number): Promise<PermissionModel> {
-        return await this.repository.getOriginalById(id);
     }
 }

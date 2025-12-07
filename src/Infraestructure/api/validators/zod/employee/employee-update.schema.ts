@@ -8,6 +8,6 @@ export const EmployeeUpdateSchema = z.object({
         .positive("El salario tiene que ser un número positivo")
         .optional(),
     state: stateField(StateModel.BASIC_STATES, true),
-    branch: relationStringField('sucursal', true),
-    person: relationStringField('persona', true)
+    branchId: z.number(({ message: "La sucursal tiene que ser un número" })),
+    personId: z.number(({ message: "La persona tiene que ser un número" }))
 })

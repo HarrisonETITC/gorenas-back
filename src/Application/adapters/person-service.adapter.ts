@@ -27,10 +27,6 @@ export class PersonServiceAdapter extends GeneralServiceAdapter<PersonModel, Per
         super(personRepository, personMapper);
     }
 
-    async getOriginalById(id: number): Promise<PersonModel> {
-        return await this.personRepository.getOriginalById(id);
-    }
-
     async getByUserId(id: number): Promise<PersonModelView> {
         return await this.personRepository.getByUserId(id);
     }

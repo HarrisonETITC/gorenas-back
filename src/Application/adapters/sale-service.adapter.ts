@@ -9,13 +9,16 @@ import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class SaleServiceAdapter extends GeneralServiceAdapter<SaleModel, SaleCreateDto, SaleUpdateDto, SaleModelView> {
     constructor(
         @Inject(SALE_REPOSITORY)
         private readonly saleRepository: GeneralRepositoryPort<SaleModel, SaleModelView>
-            & GenerateModelViewPort<SaleModel, SaleModelView> & GetAvailableCanSeePort<SaleModelView>,
+            & GenerateModelViewPort<SaleModel, SaleModelView>
+            & GetAvailableCanSeePort<SaleModelView>
+            & GetOriginalByIdPort<SaleModel>,
         @Inject(SALE_DTO_MAPPER)
         private readonly saleMapper: DtoMapperPort<SaleModel, SaleCreateDto, SaleUpdateDto>
     ) {

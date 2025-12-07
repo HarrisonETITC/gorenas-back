@@ -6,10 +6,9 @@ export class AppUtil {
         const uniques = new Set<number>();
 
         data.forEach(d => {
-            if (!AppUtil.verifyEmpty(field))
-                uniques.add(d[field])
-            else
-                uniques.add(d.id)
+            if (!AppUtil.verifyEmpty(field)) uniques.add(d[field])
+            else if (!this.verifyEmpty(d.id) && !this.verifyEmpty(Number(d.id))) uniques.add(d.id)
+            else if (!this.verifyEmpty(d) && !this.verifyEmpty(Number(d))) uniques.add(d as any);
         });
 
         return Array.from(uniques);

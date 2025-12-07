@@ -11,13 +11,17 @@ import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { UsersPort } from "@Application/ports/users/users.port";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class UserServiceAdapter extends GeneralServiceAdapter<UserModel, UserCreateDto, UserUpdateDto, UserModelView> implements UsersPort {
     constructor(
         @Inject(USER_REPOSITORY)
         private readonly userRepository: GeneralRepositoryPort<UserModel, UserModelView>
-            & GenerateModelViewPort<UserModel, UserModelView> & UsersPort & GetAvailableCanSeePort<UserModelView>,
+            & GenerateModelViewPort<UserModel, UserModelView>
+            & UsersPort
+            & GetAvailableCanSeePort<UserModelView>
+            & GetOriginalByIdPort<UserModel>,
         @Inject(USER_DTO_MAPPER)
         private readonly userMapper: DtoMapperPort<UserModel, UserCreateDto, UserUpdateDto>
     ) {

@@ -92,12 +92,12 @@ export class UserRepository extends GeneralRepository<UserModel, UserEntity, Use
         return models.map(u => {
             const person = persons.find(p => p.userId == u.id);
             const role = roles.find(r => person?.roleId == r.id);
-            const perms = permissions.filter(p => p?.roleId == role.id)?.map(p => p.name);
+            const perms = permissions.filter(p => p?.roleId == role?.id)?.map(p => p.name);
 
             return this.mapper.fromDomainToMv(u, {
                 name: `${(person?.names ?? '')} ${(person?.surnames ?? '')}`,
                 role: role?.name ?? '',
-                permissions: perms ?? []
+                permissions: perms?.length ?? 0
             })
         })
     }

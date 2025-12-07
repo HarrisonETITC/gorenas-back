@@ -18,12 +18,11 @@ import { BranchEntity } from "../entities/branch.entity";
 import { EmployeeEntity } from "../entities/employee.entity";
 import { PersonTransformParams } from "@Application/core/params/transform/person-transform.params";
 import { PersonsPort } from "@Application/ports/persons/persons.port";
-import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class PersonRepository extends GeneralRepository<PersonModel, PersonEntity, PersonModelView, PersonTransformParams> implements
     GetAvailableCanSeePort<PersonModelView>,
-    PersonsPort, GetOriginalByIdPort<PersonModel> {
+    PersonsPort {
     constructor(
         @Inject(DataSource)
         readonly source: DataSource,
@@ -43,15 +42,6 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
         const updated = await this.manager.findOneBy({ id });
 
         return this.mapper.fromEntityToDomain(updated);
-    }
-
-    async getOriginalById(id: number): Promise<PersonModel> {
-        const finded = await this.manager.findOneBy({ id });
-
-        if (AppUtil.verifyEmpty(finded))
-            return null;
-
-        return this.mapper.fromEntityToDomain(finded);
     }
 
     async getAvailable(params: BasicSearchParams): Promise<Array<IdValue>> {
@@ -101,7 +91,14 @@ export class PersonRepository extends GeneralRepository<PersonModel, PersonEntit
         });
     }
     async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
-        return [];
+        if (AppUtil.verifyEmpty(ids)) return [];
+
+        const data = await this.manager.find({
+            where: { id: In(AppUtil.extractIds(ids)) },
+            select: { id: true, names: true, surnames: true }
+        });
+
+        return AppUtil.transformToIdValue(data, 'id', ['names', 'surnames'], ' ');
     }
     async getByUserId(id: number): Promise<PersonModelView> {
         const finded = await this.manager.findOneBy({ userId: id });

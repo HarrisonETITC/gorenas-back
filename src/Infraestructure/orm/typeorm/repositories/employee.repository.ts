@@ -133,6 +133,16 @@ export class EmployeeRepository extends GeneralRepository<EmployeeModel, Employe
         })
     }
     async getIdValueMany(ids: Array<IdValue>): Promise<Array<IdValue>> {
-        throw new Error("Method not implemented.");
+        if (AppUtil.verifyEmpty(ids)) return [];
+
+        const data = await this.manager.find({
+            where: { id: In(AppUtil.extractIds(ids)) },
+            relations: ['person'],
+        });
+
+        return data.map(e => ({
+            id: e.id,
+            value: e.person ? `${e.person.names} ${e.person.surnames}` : ''
+        }));
     }
 }

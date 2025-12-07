@@ -9,6 +9,7 @@ import { DtoMapperPort } from "@Domain/ports/dto-mapper.port";
 import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GenerateModelViewPort } from "@Application/ports/generate-mv.por";
 import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class RestaurantServiceAdapter extends GeneralServiceAdapter<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto, RestaurantModelView> {
@@ -16,7 +17,8 @@ export class RestaurantServiceAdapter extends GeneralServiceAdapter<RestaurantMo
         @Inject(RESTAURANT_REPOSITORY)
         private readonly restaurantRepository: GeneralRepositoryPort<RestaurantModel, RestaurantModelView>
             & GenerateModelViewPort<RestaurantModel, RestaurantModelView>
-            & GetAvailableCanSeePort<RestaurantModelView>,
+            & GetAvailableCanSeePort<RestaurantModelView>
+            & GetOriginalByIdPort<RestaurantModel>,
         @Inject(RESTAURANT_DTO_MAPPER)
         private readonly restaurantMapper: DtoMapperPort<RestaurantModel, RestaurantCreateDto, RestaurantUpdateDto>
     ) {

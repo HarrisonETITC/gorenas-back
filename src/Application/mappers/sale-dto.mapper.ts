@@ -21,7 +21,7 @@ export class SaleDtoMapper implements DtoMapperPort<SaleModel, SaleCreateDto, Sa
             id: base.id ?? null,
             amount: base.amount ?? null,
             created: base.created ?? null,
-            employee: params?.get('employee') ?? null,
+            employeeId: params?.get('employee') ?? null,
             modified: base.modified ?? null,
             paymenthMethod: base.paymenthMethod ?? null
         }
@@ -42,7 +42,7 @@ export class SaleDtoMapper implements DtoMapperPort<SaleModel, SaleCreateDto, Sa
             .setCreated(update.created ?? null)
             .setModified(update.modified ?? null)
             .setPaymentMethod(update.paymenthMethod ?? null)
-            .setEmployeeId(update.employee ? +update.employee : null)
+            .setEmployeeId(update.employeeId ? +update.employeeId : null)
             .build();
     }
 }

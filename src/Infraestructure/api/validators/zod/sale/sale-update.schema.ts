@@ -13,5 +13,5 @@ export const SaleUpdateSchema = z.object({
         .optional(),
     created: createdField(true),
     modified: modifiedField(true),
-    employee: z.number({ message: "El ID del empleado tiene que ser un número" })
+    employeeId: z.number({ message: "El ID del empleado tiene que ser un número" })
 })

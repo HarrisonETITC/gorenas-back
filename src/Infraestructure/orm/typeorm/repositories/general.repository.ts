@@ -5,9 +5,10 @@ import { GeneralRepositoryPort } from "@Domain/ports/general-repository.port";
 import { GeneralEntity } from "@Infraestructure/orm/typeorm/entities/general/general.entity";
 import { AppUtil } from "@Application/core/utils/app.util";
 import { DataSource, EntityTarget, Repository } from "typeorm";
+import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity = T, J = T, K = T> implements
-    GeneralRepositoryPort<T, J>, GenerateModelViewPort<T, J> {
+    GeneralRepositoryPort<T, J>, GenerateModelViewPort<T, J>, GetOriginalByIdPort<T> {
     manager: Repository<U>;
 
     constructor(
@@ -43,5 +44,14 @@ export class GeneralRepository<T extends GeneralModel, U extends GeneralEntity =
     }
     async generateModelView(models: T[]): Promise<J[]> {
         return models.map((m) => this.mapper.fromDomainToMv(m));
+    }
+
+    async getOriginalById(id: number): Promise<T> {
+        const finded = await this.manager.findOneBy({ id: (id as any) });
+
+        if (AppUtil.verifyEmpty(finded))
+            return null;
+
+        return this.mapper.fromEntityToDomain(finded);
     }
 }

@@ -13,11 +13,10 @@ import { GetAvailableCanSeePort } from "@Application/ports/available-cansee.port
 import { BasicSearchParams } from "@Application/core/params/search/basic-search.params";
 import { IdValue } from "@Domain/interfaces/id-value.interface";
 import { PermissionSearchParams } from "@Application/core/params/search/permission-search.params";
-import { GetOriginalByIdPort } from "@Application/ports/get-original-byid.port";
 
 @Injectable()
 export class PermissionRepository extends GeneralRepository<PermissionModel, PermissionEntity, PermissionModelView, PermissionTransformParams>
-    implements GetAvailableCanSeePort<PermissionModelView>, GetOriginalByIdPort<PermissionModel> {
+    implements GetAvailableCanSeePort<PermissionModelView> {
     constructor(
         @Inject(DataSource)
         protected readonly source: DataSource,
@@ -27,14 +26,6 @@ export class PermissionRepository extends GeneralRepository<PermissionModel, Per
         super(source, PermissionEntity, mapper);
     }
 
-    async getOriginalById(id: number): Promise<PermissionModel> {
-        const finded = await this.manager.findOneBy({ id });
-
-        if (AppUtil.verifyEmpty(finded))
-            return null;
-
-        return this.mapper.fromEntityToDomain(finded);
-    }
     override async generateModelView(models: PermissionModel[]): Promise<PermissionModelView[]> {
         const roles = await this.source.getRepository(RoleEntity).findBy({ id: In(AppUtil.extractIds(models, 'roleId')) });
 
