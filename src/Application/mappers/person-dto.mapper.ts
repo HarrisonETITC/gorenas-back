@@ -33,8 +33,8 @@ export class PersonDtoMapper implements DtoMapperPort<PersonModel, PersonCreateD
             rh: base.rh ?? null,
             address: base.address ?? null,
             born: base.born ?? null,
-            roleId: base.roleId ?? null,
-            userId: base.userId ?? null,
+            roleId: base.roleId ? String(base.roleId) : null,
+            userId: base.userId ? String(base.userId) : null,
         };
         return update;
     }

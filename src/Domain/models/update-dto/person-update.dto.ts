@@ -27,8 +27,8 @@ export class PersonUpdateDto {
 
     @ApiPropertyOptional({ 
         description: 'Type of identification document',
-        example: 'CC',
-        enum: ['CC', 'TI', 'CE', 'PAS']
+        example: 'C.C',
+        enum: ['C.C', 'C.E', 'T.I']
     })
     typeIdentification?: string;
 
@@ -58,14 +58,14 @@ export class PersonUpdateDto {
     born?: Date;
 
     @ApiPropertyOptional({ 
-        description: 'Role ID',
-        example: 1
+        description: 'Role ID (as string)',
+        example: '1'
     })
-    roleId?: number;
+    roleId?: string;
 
     @ApiPropertyOptional({ 
-        description: 'User ID',
-        example: 1
+        description: 'User ID (as string)',
+        example: '1'
     })
-    userId?: number;
+    userId?: string;
 }

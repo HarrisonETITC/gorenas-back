@@ -16,8 +16,8 @@ export class SaleUpdateDto {
 
     @ApiPropertyOptional({ 
         description: 'Payment method used',
-        example: 'CASH',
-        enum: ['CASH', 'CARD', 'TRANSFER']
+        example: 'efectivo',
+        enum: ['debito', 'credito', 'transferencia', 'plataformas', 'efectivo']
     })
     paymenthMethod?: string;
 

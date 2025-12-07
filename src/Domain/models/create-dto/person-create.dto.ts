@@ -21,8 +21,8 @@ export class PersonCreateDto {
 
     @ApiProperty({ 
         description: 'Type of identification document',
-        example: 'CC',
-        enum: ['CC', 'TI', 'CE', 'PAS']
+        example: 'C.C',
+        enum: ['C.C', 'C.E', 'T.I']
     })
     typeIdentification: string;
 

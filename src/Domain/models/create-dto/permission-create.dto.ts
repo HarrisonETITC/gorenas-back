@@ -9,10 +9,10 @@ export class PermissionCreateDto {
     name: string;
 
     @ApiProperty({ 
-        description: 'Role ID to assign this permission',
-        example: 1
+        description: 'Role ID to assign this permission (as string)',
+        example: '1'
     })
-    roleId: number;
+    roleId: string;
 
     @ApiPropertyOptional({ 
         description: 'Permission creation date',

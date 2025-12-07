@@ -23,24 +23,49 @@ export class AuthController implements AuthControllerPort {
     ) { }
 
     @Post('authenticate')
-    @ApiOperation({ summary: 'Authenticate user and get JWT token' })
+    @ApiOperation({ 
+        summary: 'Authenticate user and get JWT token',
+        description: 'Authenticates a user using username (email) and password. Returns a JWT token for subsequent authenticated requests.'
+    })
     @ApiBody({ 
         schema: {
             type: 'object',
+            required: ['username', 'password'],
             properties: {
-                email: { type: 'string', example: 'user@example.com' },
-                password: { type: 'string', example: 'password123' }
+                username: { 
+                    type: 'string', 
+                    example: 'user@example.com',
+                    description: 'User email address (used as username)'
+                },
+                password: { 
+                    type: 'string', 
+                    example: 'password123',
+                    description: 'User password'
+                }
             }
         }
     })
-    @ApiResponse({ status: 200, description: 'Authentication successful', schema: {
-        type: 'object',
-        properties: {
-            token: { type: 'string' },
-            userId: { type: 'number' }
+    @ApiResponse({ 
+        status: 200, 
+        description: 'Authentication successful. Returns JWT token and user ID.', 
+        schema: {
+            type: 'object',
+            properties: {
+                token: { 
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                    description: 'JWT token for authentication'
+                },
+                userId: { 
+                    type: 'number',
+                    example: 1,
+                    description: 'ID of the authenticated user'
+                }
+            }
         }
-    }})
-    @ApiResponse({ status: 401, description: 'Invalid credentials' })
+    })
+    @ApiResponse({ status: 401, description: 'Invalid credentials. Username or password is incorrect.' })
+    @ApiResponse({ status: 400, description: 'Bad request. Missing username or password.' })
     @UseGuards(LocalGuard)
     async authenticate(@Req() req: Request): Promise<AuthResponse> {
         const user = (req.user as UserModelView);

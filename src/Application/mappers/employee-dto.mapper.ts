@@ -9,8 +9,8 @@ import { Injectable } from "@nestjs/common";
 export class EmployeeDtoMapper implements DtoMapperPort<EmployeeModel, EmployeeCreateDto, EmployeeUpdateDto> {
     fromModelToCreate(base: EmployeeModel, params?: Map<string, string>): EmployeeCreateDto {
         return {
-            branchId: Number(params?.get('branch')) ?? null,
-            personId: Number(params?.get('person')) ?? null,
+            branchId: params?.get('branch') ?? String(base.branchId) ?? null,
+            personId: params?.get('person') ?? String(base.personId) ?? null,
             salary: base.salary ?? null,
             state: base.state ?? null
         };
@@ -18,8 +18,8 @@ export class EmployeeDtoMapper implements DtoMapperPort<EmployeeModel, EmployeeC
     fromModelToUpdate(base: EmployeeModel, params?: Map<string, string>): EmployeeUpdateDto {
         return {
             id: base.id ?? null,
-            branchId: Number(params?.get('branch')) ?? null,
-            personId: Number(params?.get('person')) ?? null,
+            branchId: params?.get('branch') ?? String(base.branchId) ?? null,
+            personId: params?.get('person') ?? String(base.personId) ?? null,
             salary: base.salary ?? null,
             state: base.state ?? null
         }
@@ -29,8 +29,8 @@ export class EmployeeDtoMapper implements DtoMapperPort<EmployeeModel, EmployeeC
             .setId(null)
             .setSalary(create.salary ?? null)
             .setState(create.state ?? null)
-            .setBranchId(create.branchId ?? null)
-            .setPersonId(create.personId ?? null)
+            .setBranchId(create.branchId ? Number(create.branchId) : null)
+            .setPersonId(create.personId ? Number(create.personId) : null)
             .build();
     }
     fromUpdateToModel(update: EmployeeUpdateDto, params?: Map<string, string>): EmployeeModel {
@@ -38,8 +38,8 @@ export class EmployeeDtoMapper implements DtoMapperPort<EmployeeModel, EmployeeC
             .setId(update.id ?? null)
             .setSalary(update.salary ?? null)
             .setState(update.state ?? null)
-            .setBranchId(update.branchId ?? null)
-            .setPersonId(update.personId ?? null)
+            .setBranchId(update.branchId ? Number(update.branchId) : null)
+            .setPersonId(update.personId ? Number(update.personId) : null)
             .build();
     }
 }

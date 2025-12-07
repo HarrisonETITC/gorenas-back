@@ -21,14 +21,14 @@ export class EmployeeUpdateDto {
     state?: string;
 
     @ApiPropertyOptional({ 
-        description: 'Branch ID where employee works',
-        example: 1
+        description: 'Branch ID where employee works (as string)',
+        example: '1'
     })
-    branchId?: number;
+    branchId?: string;
 
     @ApiPropertyOptional({ 
-        description: 'Person ID associated with this employee',
-        example: 1
+        description: 'Person ID associated with this employee (as string)',
+        example: '1'
     })
-    personId?: number;
+    personId?: string;
 }
