@@ -7,6 +7,7 @@ export const ROUTE_RESTAURANT = 'restaurant';
 export const ROUTE_ROLE = 'role';
 export const ROUTE_SALE = 'sale';
 export const ROUTE_PERMISSION = 'permission';
+export const ROUTE_STATS = 'stats';
 
 export const API_ROUTES = [
     ROUTE_USER,
@@ -17,5 +18,6 @@ export const API_ROUTES = [
     ROUTE_RESTAURANT,
     ROUTE_ROLE,
     ROUTE_SALE,
-    ROUTE_PERMISSION
+    ROUTE_PERMISSION,
+    ROUTE_STATS
 ];

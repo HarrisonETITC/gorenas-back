@@ -13,6 +13,7 @@ import { RoleModule } from '@Infraestructure/api/modules/role.module';
 import { SaleModule } from '@Infraestructure/api/modules/sale.module';
 import { AuthModule } from '@Infraestructure/api/modules/auth.module';
 import { PermissionModule } from '@Infraestructure/api/modules/permission.module';
+import { StatsModule } from '@Infraestructure/api/modules/stats.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { PermissionModule } from '@Infraestructure/api/modules/permission.module
     SaleModule,
     UserModule,
     AuthModule,
-    PermissionModule
+    PermissionModule,
+    StatsModule
   ],
   controllers: [AppController],
   providers: [
