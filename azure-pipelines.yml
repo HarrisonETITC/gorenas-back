@@ -99,9 +99,11 @@ stages:
               steps:
                 - download: current
                   artifact: dist
+                  displayName: 'Download dist artifact'
 
                 - download: current
                   artifact: package-files
+                  displayName: 'Download package files artifact'
 
                 - script: |
                     cp $(Pipeline.Workspace)/package-files/package.json .
