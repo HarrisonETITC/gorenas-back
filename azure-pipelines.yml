@@ -1,8 +1,7 @@
 # Azure DevOps Pipeline para despliegue y seeding de base de datos
 # azure-pipelines.yml
 
-trigger:
-  - none
+trigger: none
 
 pool: 'Laptop-Agent-Pool'
 
@@ -29,9 +28,6 @@ stages:
                 pnpm -v
               fi
             displayName: 'Verify Nodejs & pnpm'
-          - script: |
-              npm install -g pnpm@$(pnpmVersion)
-            displayName: 'Install pnpm'
 
           - script: |
               pnpm install --frozen-lockfile
@@ -60,149 +56,154 @@ stages:
             condition: always()
             displayName: 'Publish code coverage'
 
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: 'dist'
-              ArtifactName: 'dist'
-            displayName: 'Publish dist artifact'
+          # - task: PublishBuildArtifacts@1
+          #   inputs:
+          #     PathtoPublish: 'dist'
+          #     ArtifactName: 'dist'
+          #   displayName: 'Publish dist artifact'
 
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: 'node_modules'
-              ArtifactName: 'node_modules'
-            displayName: 'Publish node_modules artifact'
+          # - task: PublishBuildArtifacts@1
+          #   inputs:
+          #     PathtoPublish: 'node_modules'
+          #     ArtifactName: 'node_modules'
+          #   displayName: 'Publish node_modules artifact'
 
-  # ============================================
-  # STAGE: Deploy to Development
-  # ============================================
-  - stage: DeployDev
-    displayName: 'Deploy to Development'
-    dependsOn: Build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-    variables:
-      - group: 'gorenas-dev-credentials'
-    jobs:
-      - deployment: DeployDevJob
-        displayName: 'Deploy to Dev Environment'
-        environment: 'development'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: dist
+          - script: |
+              echo "Cleaning up workspace..."
+              rm -rf $(Pipeline.Workspace)/*
+            displayName: 'Clean Workspace'
 
-                - download: current
-                  artifact: node_modules
+  # # ============================================
+  # # STAGE: Deploy to Development
+  # # ============================================
+  # - stage: DeployDev
+  #   displayName: 'Deploy to Development'
+  #   dependsOn: Build
+  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  #   variables:
+  #     - group: 'gorenas-dev-credentials'
+  #   jobs:
+  #     - deployment: DeployDevJob
+  #       displayName: 'Deploy to Dev Environment'
+  #       environment: 'development'
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - download: current
+  #                 artifact: dist
 
-                - task: NodeTool@0
-                  inputs:
-                    versionSpec: '$(nodeVersion)'
-                  displayName: 'Install Node.js'
+  #               - download: current
+  #                 artifact: node_modules
 
-                - script: |
-                    echo "🌱 Running database seeder for Development..."
-                    node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
-                  displayName: 'Seed Development Database'
-                  env:
-                    DB_HOST: $(DB_HOST)
-                    DB_PORT: $(DB_PORT)
-                    DB_USER: $(DB_USER)
-                    DB_PASS: $(DB_PASS)
-                    DB_NAME: $(DB_NAME)
-                    ENVIRONMENT: dev
-                    NODE_PATH: $(Pipeline.Workspace)/node_modules
+  #               - task: NodeTool@0
+  #                 inputs:
+  #                   versionSpec: '$(nodeVersion)'
+  #                 displayName: 'Install Node.js'
 
-  # ============================================
-  # STAGE: Deploy to Production
-  # ============================================
-  - stage: DeployProd
-    displayName: 'Deploy to Production'
-    dependsOn: Build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    variables:
-      - group: 'gorenas-prod-credentials'
-    jobs:
-      - deployment: DeployProdJob
-        displayName: 'Deploy to Production Environment'
-        environment: 'production'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: dist
+  #               - script: |
+  #                   echo "🌱 Running database seeder for Development..."
+  #                   node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
+  #                 displayName: 'Seed Development Database'
+  #                 env:
+  #                   DB_HOST: $(DB_HOST)
+  #                   DB_PORT: $(DB_PORT)
+  #                   DB_USER: $(DB_USER)
+  #                   DB_PASS: $(DB_PASS)
+  #                   DB_NAME: $(DB_NAME)
+  #                   ENVIRONMENT: dev
+  #                   NODE_PATH: $(Pipeline.Workspace)/node_modules
 
-                - download: current
-                  artifact: node_modules
+  # # ============================================
+  # # STAGE: Deploy to Production
+  # # ============================================
+  # - stage: DeployProd
+  #   displayName: 'Deploy to Production'
+  #   dependsOn: Build
+  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  #   variables:
+  #     - group: 'gorenas-prod-credentials'
+  #   jobs:
+  #     - deployment: DeployProdJob
+  #       displayName: 'Deploy to Production Environment'
+  #       environment: 'production'
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - download: current
+  #                 artifact: dist
 
-                - task: NodeTool@0
-                  inputs:
-                    versionSpec: '$(nodeVersion)'
-                  displayName: 'Install Node.js'
+  #               - download: current
+  #                 artifact: node_modules
 
-                # Aprobación manual antes de ejecutar seed en producción
-                - task: ManualValidation@0
-                  timeoutInMinutes: 60
-                  inputs:
-                    notifyUsers: |
-                      tu-email@ejemplo.com
-                    instructions: '¿Confirmas ejecutar el seeder en la base de datos de PRODUCCIÓN?'
-                    onTimeout: 'reject'
-                  displayName: 'Manual approval for Production seeding'
+  #               - task: NodeTool@0
+  #                 inputs:
+  #                   versionSpec: '$(nodeVersion)'
+  #                 displayName: 'Install Node.js'
 
-                - script: |
-                    echo "🌱 Running database seeder for Production..."
-                    node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
-                  displayName: 'Seed Production Database'
-                  env:
-                    DB_HOST: $(DB_HOST)
-                    DB_PORT: $(DB_PORT)
-                    DB_USER: $(DB_USER)
-                    DB_PASS: $(DB_PASS)
-                    DB_NAME: $(DB_NAME)
-                    ENVIRONMENT: prod
-                    NODE_PATH: $(Pipeline.Workspace)/node_modules
+  #               # Aprobación manual antes de ejecutar seed en producción
+  #               - task: ManualValidation@0
+  #                 timeoutInMinutes: 60
+  #                 inputs:
+  #                   notifyUsers: |
+  #                     tu-email@ejemplo.com
+  #                   instructions: '¿Confirmas ejecutar el seeder en la base de datos de PRODUCCIÓN?'
+  #                   onTimeout: 'reject'
+  #                 displayName: 'Manual approval for Production seeding'
 
-  # ============================================
-  # STAGE: Seed Only (Manual trigger)
-  # ============================================
-  - stage: SeedOnly
-    displayName: 'Seed Database Only (Manual)'
-    dependsOn: []
-    condition: eq(variables['Build.Reason'], 'Manual')
-    variables:
-      - group: 'gorenas-$(targetEnvironment)-credentials'
-    jobs:
-      - deployment: SeedOnlyJob
-        displayName: 'Seed Database'
-        environment: '$(targetEnvironment)'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
+  #               - script: |
+  #                   echo "🌱 Running database seeder for Production..."
+  #                   node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
+  #                 displayName: 'Seed Production Database'
+  #                 env:
+  #                   DB_HOST: $(DB_HOST)
+  #                   DB_PORT: $(DB_PORT)
+  #                   DB_USER: $(DB_USER)
+  #                   DB_PASS: $(DB_PASS)
+  #                   DB_NAME: $(DB_NAME)
+  #                   ENVIRONMENT: prod
+  #                   NODE_PATH: $(Pipeline.Workspace)/node_modules
 
-                - task: NodeTool@0
-                  inputs:
-                    versionSpec: '$(nodeVersion)'
-                  displayName: 'Install Node.js'
+  # # ============================================
+  # # STAGE: Seed Only (Manual trigger)
+  # # ============================================
+  # - stage: SeedOnly
+  #   displayName: 'Seed Database Only (Manual)'
+  #   dependsOn: []
+  #   condition: eq(variables['Build.Reason'], 'Manual')
+  #   variables:
+  #     - group: 'gorenas-$(targetEnvironment)-credentials'
+  #   jobs:
+  #     - deployment: SeedOnlyJob
+  #       displayName: 'Seed Database'
+  #       environment: '$(targetEnvironment)'
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - checkout: self
 
-                - script: |
-                    npm install -g pnpm@$(pnpmVersion)
-                    pnpm install --frozen-lockfile
-                    pnpm run build
-                  displayName: 'Build project'
+  #               - task: NodeTool@0
+  #                 inputs:
+  #                   versionSpec: '$(nodeVersion)'
+  #                 displayName: 'Install Node.js'
 
-                - script: |
-                    echo "🌱 Running database seeder..."
-                    chmod +x scripts/seed-database.sh
-                    ./scripts/seed-database.sh
-                  displayName: 'Seed Database'
-                  env:
-                    DB_HOST: $(DB_HOST)
-                    DB_PORT: $(DB_PORT)
-                    DB_USER: $(DB_USER)
-                    DB_PASS: $(DB_PASS)
-                    DB_NAME: $(DB_NAME)
-                    ENVIRONMENT: $(targetEnvironment)
+  #               - script: |
+  #                   npm install -g pnpm@$(pnpmVersion)
+  #                   pnpm install --frozen-lockfile
+  #                   pnpm run build
+  #                 displayName: 'Build project'
+
+  #               - script: |
+  #                   echo "🌱 Running database seeder..."
+  #                   chmod +x scripts/seed-database.sh
+  #                   ./scripts/seed-database.sh
+  #                 displayName: 'Seed Database'
+  #                 env:
+  #                   DB_HOST: $(DB_HOST)
+  #                   DB_PORT: $(DB_PORT)
+  #                   DB_USER: $(DB_USER)
+  #                   DB_PASS: $(DB_PASS)
+  #                   DB_NAME: $(DB_NAME)
+  #                   ENVIRONMENT: $(targetEnvironment)
