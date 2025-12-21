@@ -54,6 +54,7 @@ stages:
             displayName: 'Publish test results'
 
           - script: |
+              cd dist
               zip -r ../dist.zip .
             displayName: 'Zip dist folder for Publishment'
 
