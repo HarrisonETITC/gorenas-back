@@ -18,18 +18,22 @@ export class StatsRepository implements StatsRepositoryPort {
      * @returns Lista de empleados ordenados por monto total vendido
      */
     async getEmployeesWithMostAmountSold(limit: number = 10): Promise<EmployeeSalesStats[]> {
-        // TODO: Implementar query
-        // SELECT e.id, p.names, p.surnames, b.name as branch_name,
-        //        COUNT(s.id) as sales_count, SUM(s.amount) as total_amount,
-        //        AVG(s.amount) as average_ticket
-        // FROM employee e
-        // JOIN person p ON p.id = e.personId
-        // JOIN branch b ON b.id = e.branchId
-        // JOIN sales s ON s.employeeId = e.id
-        // GROUP BY e.id
-        // ORDER BY total_amount DESC
-        // LIMIT :limit
-        return [];
+        return this.dataSource
+            .createQueryBuilder()
+            .select('e.id', 'employeeId')
+            .addSelect("CONCAT(p.names, ' ', p.surnames)", 'fullName')
+            .addSelect('COUNT(s.id)', 'salesCount')
+            .addSelect('TRUNCATE(SUM(s.amount), 0)', 'totalAmount')
+            .addSelect('TRUNCATE(AVG(s.amount), 0)', 'averageTicket')
+            .from('employee', 'e')
+            .innerJoin('person', 'p', 'p.id = e.person_id')
+            .innerJoin('sale', 's', 's.employee_id = e.id')
+            .where('MONTH(s.created) = MONTH(NOW())')
+            .andWhere("e.state = 'A'")
+            .groupBy('e.id')
+            .orderBy('totalAmount', 'DESC')
+            .limit(limit)
+            .getRawMany();
     }
 
     /**
@@ -38,53 +42,59 @@ export class StatsRepository implements StatsRepositoryPort {
      * @returns Lista de empleados ordenados por número de ventas
      */
     async getEmployeesWithMostSales(limit: number = 10): Promise<EmployeeSalesStats[]> {
-        // TODO: Implementar query
-        // SELECT e.id, p.names, p.surnames, b.name as branch_name,
-        //        COUNT(s.id) as sales_count, SUM(s.amount) as total_amount,
-        //        AVG(s.amount) as average_ticket
-        // FROM employee e
-        // JOIN person p ON p.id = e.personId
-        // JOIN branch b ON b.id = e.branchId
-        // JOIN sales s ON s.employeeId = e.id
-        // GROUP BY e.id
-        // ORDER BY sales_count DESC
-        // LIMIT :limit
-        return [];
+        return this.dataSource
+            .createQueryBuilder()
+            .select('e.id', 'employeeId')
+            .addSelect("CONCAT(p.names, ' ', p.surnames)", 'fullName')
+            .addSelect('COUNT(s.id)', 'salesCount')
+            .addSelect('TRUNCATE(SUM(s.amount), 0)', 'totalAmount')
+            .addSelect('TRUNCATE(AVG(s.amount), 0)', 'averageTicket')
+            .from('employee', 'e')
+            .innerJoin('person', 'p', 'p.id = e.person_id')
+            .innerJoin('sale', 's', 's.employee_id = e.id')
+            .where('MONTH(s.created) = MONTH(NOW())')
+            .andWhere("e.state = 'A'")
+            .groupBy('e.id')
+            .orderBy('salesCount', 'DESC')
+            .limit(limit)
+            .getRawMany();
     }
 
     /**
      * Obtiene las sucursales con mayor cantidad de ventas
      * @param limit Cantidad máxima de resultados (default: 10)
-     * @returns Lista de sucursales ordenadas por monto/cantidad de ventas
+     * @returns Lista de sucursales ordenadas por monto de ventas
      */
     async getBranchesWithMostSales(limit: number = 10): Promise<BranchSalesStats[]> {
-        // TODO: Implementar query
-        // SELECT b.id, b.name, b.address,
-        //        COUNT(DISTINCT e.id) as employee_count,
-        //        COUNT(s.id) as sales_count, SUM(s.amount) as total_amount,
-        //        AVG(s.amount) as average_ticket
-        // FROM branch b
-        // JOIN employee e ON e.branchId = b.id
-        // JOIN sales s ON s.employeeId = e.id
-        // GROUP BY b.id
-        // ORDER BY total_amount DESC
-        // LIMIT :limit
-        return [];
+        return this.dataSource
+            .createQueryBuilder()
+            .select('b.id', 'branchId')
+            .addSelect('b.name', 'branchName')
+            .addSelect('b.address', 'branchAddress')
+            .addSelect('SUM(s.amount)', 'totalAmount')
+            .from('branch', 'b')
+            .innerJoin('employee', 'e', 'b.id = e.branch_id')
+            .innerJoin('sale', 's', 's.employee_id = e.id')
+            .groupBy('b.id')
+            .orderBy('totalAmount', 'DESC')
+            .limit(limit)
+            .getRawMany();
     }
 
     /**
      * Obtiene el porcentaje de ventas por método de pago
-     * @returns Lista con cada método de pago y su porcentaje del total
+     * @returns Estadísticas con porcentajes de cada método de pago
      */
     async getPercentageOfSalesByPaymentMethod(): Promise<PaymentMethodStats[]> {
-        // TODO: Implementar query
-        // SELECT s.paymenthMethod,
-        //        COUNT(s.id) as sales_count,
-        //        SUM(s.amount) as total_amount,
-        //        (SUM(s.amount) / (SELECT SUM(amount) FROM sales) * 100) as percentage
-        // FROM sales s
-        // GROUP BY s.paymenthMethod
-        // ORDER BY total_amount DESC
-        return [];
+        return this.dataSource
+            .createQueryBuilder()
+            .select('COUNT(s.id)', 'totalSales')
+            .addSelect("COUNT(CASE WHEN s.paymenth_method = 'debito' THEN 1 END) / COUNT(s.id) * 100", 'debitSalesRatio')
+            .addSelect("COUNT(CASE WHEN s.paymenth_method = 'plataformas' THEN 1 END) / COUNT(s.id) * 100", 'platformsSalesRatio')
+            .addSelect("COUNT(CASE WHEN s.paymenth_method = 'efectivo' THEN 1 END) / COUNT(s.id) * 100", 'cashSalesRatio')
+            .addSelect("COUNT(CASE WHEN s.paymenth_method = 'transferencia' THEN 1 END) / COUNT(s.id) * 100", 'transferenceSalesRatio')
+            .addSelect("COUNT(CASE WHEN s.paymenth_method = 'credito' THEN 1 END) / COUNT(s.id) * 100", 'creditSalesRatio')
+            .from('sale', 's')
+            .getRawMany();
     }
 }

@@ -1,31 +1,43 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 /**
- * Estadísticas de ventas por método de pago
+ * Estadísticas de porcentaje de ventas por método de pago
+ * Basado en la consulta: porcentaje de ventas según el método de pago
  */
 export class PaymentMethodStats {
     @ApiProperty({
-        description: 'Método de pago',
-        example: 'efectivo',
-        enum: ['debito', 'credito', 'transferencia', 'plataformas', 'efectivo']
+        description: 'Total number of sales',
+        example: 500
     })
-    paymentMethod: string;
+    totalSales: number;
 
     @ApiProperty({
-        description: 'Cantidad de ventas con este método',
-        example: 120
+        description: 'Debit card sales percentage (0-100)',
+        example: 25.5
     })
-    salesCount: number;
+    debitSalesRatio: number;
 
     @ApiProperty({
-        description: 'Monto total con este método de pago',
-        example: 3500000.00
+        description: 'Platform sales percentage (0-100)',
+        example: 15.0
     })
-    totalAmount: number;
+    platformsSalesRatio: number;
 
     @ApiProperty({
-        description: 'Porcentaje del total de ventas (0-100)',
-        example: 35.5
+        description: 'Cash sales percentage (0-100)',
+        example: 35.0
     })
-    percentage: number;
+    cashSalesRatio: number;
+
+    @ApiProperty({
+        description: 'Bank transfer sales percentage (0-100)',
+        example: 12.5
+    })
+    transferenceSalesRatio: number;
+
+    @ApiProperty({
+        description: 'Credit card sales percentage (0-100)',
+        example: 12.0
+    })
+    creditSalesRatio: number;
 }

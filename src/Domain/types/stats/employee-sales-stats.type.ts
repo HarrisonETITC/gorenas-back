@@ -2,41 +2,36 @@ import { ApiProperty } from "@nestjs/swagger";
 
 /**
  * Estadísticas de ventas por empleado
+ * Basado en la consulta: empleados con mayor monto/cantidad de ventas
  */
 export class EmployeeSalesStats {
     @ApiProperty({
-        description: 'ID del empleado',
+        description: 'Employee ID',
         example: 1
     })
     employeeId: number;
 
     @ApiProperty({
-        description: 'Nombre completo del empleado',
+        description: 'Employee full name (first name + last name)',
         example: 'Juan Pérez García'
     })
-    employeeName: string;
+    fullName: string;
 
     @ApiProperty({
-        description: 'Nombre de la sucursal donde trabaja',
-        example: 'Sucursal Centro'
-    })
-    branchName: string;
-
-    @ApiProperty({
-        description: 'Cantidad total de ventas realizadas',
+        description: 'Total number of sales',
         example: 150
     })
     salesCount: number;
 
     @ApiProperty({
-        description: 'Monto total vendido',
-        example: 2500000.50
+        description: 'Total amount sold (truncated to integer)',
+        example: 2500000
     })
     totalAmount: number;
 
     @ApiProperty({
-        description: 'Ticket promedio por venta',
-        example: 16666.67
+        description: 'Average ticket per sale (truncated to integer)',
+        example: 16666
     })
     averageTicket: number;
 }
