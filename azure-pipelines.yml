@@ -116,6 +116,9 @@ stages:
 
                 - script: |
                     ls -la
+
+                    cp $(Pipeline.Workspace)/dist/dist.zip .
+
                     unzip dist.zip -d dist
                   displayName: 'Unzip dist artifact'
 
