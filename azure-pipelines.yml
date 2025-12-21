@@ -85,9 +85,7 @@ stages:
   - stage: DeployDev
     displayName: 'Deploy to Development'
     dependsOn: Build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-    variables:
-      - group: 'gorenas-dev-credentials'
+    condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
     jobs:
       - deployment: DeployDevJob
         displayName: 'Deploy to Dev Environment'
