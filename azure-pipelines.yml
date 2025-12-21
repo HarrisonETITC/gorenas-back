@@ -53,6 +53,10 @@ stages:
             condition: always()
             displayName: 'Publish test results'
 
+          - script: |
+              zip -r ../dist.zip .
+            displayName: 'Zip dist folder for Publishment'
+
           # - task: PublishCodeCoverageResults@1
           #   inputs:
           #     codeCoverageTool: 'Cobertura'
@@ -64,9 +68,10 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: 'dist'
+              Artifa
+              PathtoPublish: 'dist.zip'
               ArtifactName: 'dist'
-            displayName: 'Publish dist artifact'
+            displayName: 'Publish dist.zip artifact'
 
           - task: CopyFiles@2
             inputs:
@@ -104,6 +109,12 @@ stages:
                 - download: current
                   artifact: package-files
                   displayName: 'Download package files artifact'
+
+                - script: |
+                    echo $pwd
+                    ls -la
+                    unzip $(Pipeline.Workspace)/dist.zip -d $(Pipeline.Workspace)/dist
+                  displayName: 'Unzip dist artifact|'
 
                 - script: |
                     cp $(Pipeline.Workspace)/package-files/package.json .
