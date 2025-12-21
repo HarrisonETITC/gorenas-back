@@ -87,16 +87,20 @@ stages:
               ArtifactName: 'package-files'
             displayName: 'Publish package files'
 
+          - script: |
+              rm -rf $(Pipeline.Workspace)/
+            displayName: 'Clean Workspace'
+
   # ============================================
   # STAGE: Deploy to Development
   # ============================================
   - stage: DeployDev
-    displayName: 'Deploy to Development'
+    displayName: 'Deploy Project'
     dependsOn: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
     jobs:
       - deployment: DeployDevJob
-        displayName: 'Deploy to Dev Environment'
+        displayName: 'Deploy to Development'
         environment: 'development'
         strategy:
           runOnce:
@@ -111,8 +115,6 @@ stages:
                   displayName: 'Download package files artifact'
 
                 - script: |
-                    pwd
-                    echo "$(Pipeline.Workspace)"
                     ls -la
                     unzip dist.zip -d dist
                   displayName: 'Unzip dist artifact'
