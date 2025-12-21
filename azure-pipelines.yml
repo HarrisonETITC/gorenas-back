@@ -1,0 +1,218 @@
+# Azure DevOps Pipeline para despliegue y seeding de base de datos
+# azure-pipelines.yml
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - README.md
+      - docs/**
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  nodeVersion: '20.x'
+  pnpmVersion: '8.x'
+
+stages:
+  # ============================================
+  # STAGE: Build
+  # ============================================
+  - stage: Build
+    displayName: 'Build Application'
+    jobs:
+      - job: BuildJob
+        displayName: 'Build and Test'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '$(nodeVersion)'
+            displayName: 'Install Node.js'
+
+          - script: |
+              npm install -g pnpm@$(pnpmVersion)
+            displayName: 'Install pnpm'
+
+          - script: |
+              pnpm install --frozen-lockfile
+            displayName: 'Install dependencies'
+
+          - script: |
+              pnpm run build
+            displayName: 'Build project'
+
+          - script: |
+              pnpm run test:cov
+            displayName: 'Run tests with coverage'
+            continueOnError: true
+
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '**/junit.xml'
+            condition: always()
+            displayName: 'Publish test results'
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+            condition: always()
+            displayName: 'Publish code coverage'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'dist'
+              ArtifactName: 'dist'
+            displayName: 'Publish dist artifact'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'node_modules'
+              ArtifactName: 'node_modules'
+            displayName: 'Publish node_modules artifact'
+
+  # ============================================
+  # STAGE: Deploy to Development
+  # ============================================
+  - stage: DeployDev
+    displayName: 'Deploy to Development'
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+    variables:
+      - group: 'gorenas-dev-credentials'
+    jobs:
+      - deployment: DeployDevJob
+        displayName: 'Deploy to Dev Environment'
+        environment: 'development'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: dist
+
+                - download: current
+                  artifact: node_modules
+
+                - task: NodeTool@0
+                  inputs:
+                    versionSpec: '$(nodeVersion)'
+                  displayName: 'Install Node.js'
+
+                - script: |
+                    echo "🌱 Running database seeder for Development..."
+                    node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
+                  displayName: 'Seed Development Database'
+                  env:
+                    DB_HOST: $(DB_HOST)
+                    DB_PORT: $(DB_PORT)
+                    DB_USER: $(DB_USER)
+                    DB_PASS: $(DB_PASS)
+                    DB_NAME: $(DB_NAME)
+                    ENVIRONMENT: dev
+                    NODE_PATH: $(Pipeline.Workspace)/node_modules
+
+  # ============================================
+  # STAGE: Deploy to Production
+  # ============================================
+  - stage: DeployProd
+    displayName: 'Deploy to Production'
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    variables:
+      - group: 'gorenas-prod-credentials'
+    jobs:
+      - deployment: DeployProdJob
+        displayName: 'Deploy to Production Environment'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: dist
+
+                - download: current
+                  artifact: node_modules
+
+                - task: NodeTool@0
+                  inputs:
+                    versionSpec: '$(nodeVersion)'
+                  displayName: 'Install Node.js'
+
+                # Aprobación manual antes de ejecutar seed en producción
+                - task: ManualValidation@0
+                  timeoutInMinutes: 60
+                  inputs:
+                    notifyUsers: |
+                      tu-email@ejemplo.com
+                    instructions: '¿Confirmas ejecutar el seeder en la base de datos de PRODUCCIÓN?'
+                    onTimeout: 'reject'
+                  displayName: 'Manual approval for Production seeding'
+
+                - script: |
+                    echo "🌱 Running database seeder for Production..."
+                    node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
+                  displayName: 'Seed Production Database'
+                  env:
+                    DB_HOST: $(DB_HOST)
+                    DB_PORT: $(DB_PORT)
+                    DB_USER: $(DB_USER)
+                    DB_PASS: $(DB_PASS)
+                    DB_NAME: $(DB_NAME)
+                    ENVIRONMENT: prod
+                    NODE_PATH: $(Pipeline.Workspace)/node_modules
+
+  # ============================================
+  # STAGE: Seed Only (Manual trigger)
+  # ============================================
+  - stage: SeedOnly
+    displayName: 'Seed Database Only (Manual)'
+    dependsOn: []
+    condition: eq(variables['Build.Reason'], 'Manual')
+    variables:
+      - group: 'gorenas-$(targetEnvironment)-credentials'
+    jobs:
+      - deployment: SeedOnlyJob
+        displayName: 'Seed Database'
+        environment: '$(targetEnvironment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: NodeTool@0
+                  inputs:
+                    versionSpec: '$(nodeVersion)'
+                  displayName: 'Install Node.js'
+
+                - script: |
+                    npm install -g pnpm@$(pnpmVersion)
+                    pnpm install --frozen-lockfile
+                    pnpm run build
+                  displayName: 'Build project'
+
+                - script: |
+                    echo "🌱 Running database seeder..."
+                    chmod +x scripts/seed-database.sh
+                    ./scripts/seed-database.sh
+                  displayName: 'Seed Database'
+                  env:
+                    DB_HOST: $(DB_HOST)
+                    DB_PORT: $(DB_PORT)
+                    DB_USER: $(DB_USER)
+                    DB_PASS: $(DB_PASS)
+                    DB_NAME: $(DB_NAME)
+                    ENVIRONMENT: $(targetEnvironment)
