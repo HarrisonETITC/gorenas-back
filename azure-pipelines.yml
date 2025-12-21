@@ -68,7 +68,6 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              Artifa
               PathtoPublish: 'dist.zip'
               ArtifactName: 'dist'
             displayName: 'Publish dist.zip artifact'
