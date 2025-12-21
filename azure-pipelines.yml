@@ -2,43 +2,33 @@
 # azure-pipelines.yml
 
 trigger:
-  branches:
-    include:
-      - main
-      - develop
-  paths:
-    exclude:
-      - README.md
-      - docs/**
+  - none
 
-pr:
-  branches:
-    include:
-      - main
-      - develop
-
-pool:
-  vmImage: 'ubuntu-latest'
+pool: 'Laptop-Agent-Pool'
 
 variables:
-  nodeVersion: '20.x'
-  pnpmVersion: '8.x'
+  - group: GENERAL
 
 stages:
-  # ============================================
-  # STAGE: Build
-  # ============================================
   - stage: Build
     displayName: 'Build Application'
     jobs:
       - job: BuildJob
         displayName: 'Build and Test'
         steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '$(nodeVersion)'
-            displayName: 'Install Node.js'
+          - checkout: self
+          - script: |
+              node -v
+              npm -v
+              if ! command -v pnpm &> /dev/null; then
+                echo "Instalando pnpm..."
+                npm install -g pnpm
+              else
+                echo "pnpm ya está instalado"
 
+                pnpm -v
+              fi
+            displayName: 'Verify Nodejs & pnpm'
           - script: |
               npm install -g pnpm@$(pnpmVersion)
             displayName: 'Install pnpm'
