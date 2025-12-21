@@ -68,16 +68,19 @@ stages:
               ArtifactName: 'dist'
             displayName: 'Publish dist artifact'
 
+          - task: CopyFiles@2
+            inputs:
+              Contents: |
+                package.json
+                pnpm-lock.yaml
+              TargetFolder: '$(Build.ArtifactStagingDirectory)/package-files'
+            displayName: 'Copy package files'
+
           - task: PublishBuildArtifacts@1
             inputs:
-              PathtoPublish: 'node_modules'
-              ArtifactName: 'node_modules'
-            displayName: 'Publish node_modules artifact'
-
-          - script: |
-              echo "Cleaning up workspace..."
-              rm -rf $(Pipeline.Workspace)/*
-            displayName: 'Clean Workspace'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/package-files'
+              ArtifactName: 'package-files'
+            displayName: 'Publish package files'
 
   # ============================================
   # STAGE: Deploy to Development
@@ -98,7 +101,13 @@ stages:
                   artifact: dist
 
                 - download: current
-                  artifact: node_modules
+                  artifact: package-files
+
+                - script: |
+                    cp $(Pipeline.Workspace)/package-files/package.json .
+                    cp $(Pipeline.Workspace)/package-files/pnpm-lock.yaml .
+                    pnpm install --frozen-lockfile --prod
+                  displayName: 'Install production dependencies'
 
                 - script: |
                     echo "🌱 Running database seeder for Development..."
@@ -115,7 +124,6 @@ stages:
                     DB_PASS: $(DB_PASS)
                     DB_NAME: $(DB_NAME)
                     ENVIRONMENT: dev
-                    NODE_PATH: $(Pipeline.Workspace)/node_modules
 
   # # ============================================
   # # STAGE: Deploy to Production
