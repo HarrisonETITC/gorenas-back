@@ -53,72 +53,71 @@ stages:
             condition: always()
             displayName: 'Publish test results'
 
-          - task: PublishCodeCoverageResults@1
+          # - task: PublishCodeCoverageResults@1
+          #   inputs:
+          #     codeCoverageTool: 'Cobertura'
+          #     summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+          #     reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+          #     failIfCoverageEmpty: false
+          #   condition: always()
+          #   displayName: 'Publish code coverage'
+
+          - task: PublishBuildArtifacts@1
             inputs:
-              codeCoverageTool: 'Cobertura'
-              summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-              reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
-              failIfCoverageEmpty: false
-            condition: always()
-            displayName: 'Publish code coverage'
+              PathtoPublish: 'dist'
+              ArtifactName: 'dist'
+            displayName: 'Publish dist artifact'
 
-          # - task: PublishBuildArtifacts@1
-          #   inputs:
-          #     PathtoPublish: 'dist'
-          #     ArtifactName: 'dist'
-          #   displayName: 'Publish dist artifact'
-
-          # - task: PublishBuildArtifacts@1
-          #   inputs:
-          #     PathtoPublish: 'node_modules'
-          #     ArtifactName: 'node_modules'
-          #   displayName: 'Publish node_modules artifact'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'node_modules'
+              ArtifactName: 'node_modules'
+            displayName: 'Publish node_modules artifact'
 
           - script: |
               echo "Cleaning up workspace..."
               rm -rf $(Pipeline.Workspace)/*
             displayName: 'Clean Workspace'
 
-  # # ============================================
-  # # STAGE: Deploy to Development
-  # # ============================================
-  # - stage: DeployDev
-  #   displayName: 'Deploy to Development'
-  #   dependsOn: Build
-  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-  #   variables:
-  #     - group: 'gorenas-dev-credentials'
-  #   jobs:
-  #     - deployment: DeployDevJob
-  #       displayName: 'Deploy to Dev Environment'
-  #       environment: 'development'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #               - download: current
-  #                 artifact: dist
+  # ============================================
+  # STAGE: Deploy to Development
+  # ============================================
+  - stage: DeployDev
+    displayName: 'Deploy to Development'
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+    variables:
+      - group: 'gorenas-dev-credentials'
+    jobs:
+      - deployment: DeployDevJob
+        displayName: 'Deploy to Dev Environment'
+        environment: 'development'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: dist
 
-  #               - download: current
-  #                 artifact: node_modules
+                - download: current
+                  artifact: node_modules
 
-  #               - task: NodeTool@0
-  #                 inputs:
-  #                   versionSpec: '$(nodeVersion)'
-  #                 displayName: 'Install Node.js'
-
-  #               - script: |
-  #                   echo "🌱 Running database seeder for Development..."
-  #                   node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
-  #                 displayName: 'Seed Development Database'
-  #                 env:
-  #                   DB_HOST: $(DB_HOST)
-  #                   DB_PORT: $(DB_PORT)
-  #                   DB_USER: $(DB_USER)
-  #                   DB_PASS: $(DB_PASS)
-  #                   DB_NAME: $(DB_NAME)
-  #                   ENVIRONMENT: dev
-  #                   NODE_PATH: $(Pipeline.Workspace)/node_modules
+                - script: |
+                    echo "🌱 Running database seeder for Development..."
+                    # node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
+                    echo $(DB_HOST)
+                    echo $(DB_PORT)
+                    echo $(DB_USER)
+                    echo $(DB_NAME)
+                  displayName: 'Seed Development Database'
+                  env:
+                    DB_HOST: $(DB_HOST)
+                    DB_PORT: $(DB_PORT)
+                    DB_USER: $(DB_USER)
+                    DB_PASS: $(DB_PASS)
+                    DB_NAME: $(DB_NAME)
+                    ENVIRONMENT: dev
+                    NODE_PATH: $(Pipeline.Workspace)/node_modules
 
   # # ============================================
   # # STAGE: Deploy to Production
