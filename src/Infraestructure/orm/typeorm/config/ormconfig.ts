@@ -41,7 +41,7 @@ export class TyepOrmConfig {
         },
         logging: ["error", "query"],
         synchronize: false,
-        migrationsRun: true,
+        migrationsRun: false,
         migrations: ['dist/src/Infraestructure/**/*-mysql.js'],
         dropSchema: false,
         migrationsTableName: 'migrations',
