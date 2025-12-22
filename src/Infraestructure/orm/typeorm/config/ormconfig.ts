@@ -36,7 +36,9 @@ export class TyepOrmConfig {
         port: Number(process.env.DB_PORT),
         connectTimeout: 60000,
         entities: ['dist/src/Infraestructure/**/*.entity.js'],
-        ssl: true,
+        ssl: {
+            rejectUnauthorized: false
+        },
         logging: ["error", "query"],
         synchronize: false,
         migrationsRun: true,

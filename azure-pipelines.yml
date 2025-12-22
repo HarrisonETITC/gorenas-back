@@ -125,6 +125,10 @@ stages:
                     cp $(Pipeline.Workspace)/dist/dist.zip .
 
                     unzip dist.zip -d dist
+
+                    ls -la
+
+                    pwd
                   displayName: 'Unzip dist artifact'
 
                 - script: |
@@ -140,7 +144,19 @@ stages:
                     echo "🌱 Copying initial data file to Migrations folder..."
                     cp $(MainDataDb.secureFilePath) $MIGRATIONS_FOLDER/data.sql
                     ls -la $MIGRATIONS_FOLDER
+
+                    echo "##vso[task.setvariable variable=MIGRATIONS_FOLDER]$MIGRATIONS_FOLDER"
                   displayName: 'Copy initial data file to MySQL Migrations folder'
+
+                - script: |
+                    echo "🌱 Migration folder is: $MIGRATIONS_FOLDER"
+                    echo "🌱 Database name is: $DB_NAME"
+                    echo "🌱 Seeding database name in data.sql file..."
+                    sed -i "s/database_name/$DB_NAME/g" $MIGRATIONS_FOLDER/data.sql
+                  displayName: 'Seed Database Name in data.sql file'
+                  env:
+                    MIGRATIONS_FOLDER: $(MIGRATIONS_FOLDER)
+                    DB_NAME: $(DB_NAME)
 
                 - script: |
                     echo "🌱 Executing database migration..."
