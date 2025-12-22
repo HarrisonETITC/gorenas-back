@@ -139,7 +139,7 @@ stages:
 
                 - script: |
                     echo "Searching MySQL migrations folder"
-                    MIGRATIONS_FOLDER = $(find . -type d -path "*/dist/*/migrations/mysql")
+                    MIGRATIONS_FOLDER=$(find . -type d -path "*/dist/*/migrations/mysql")
                     echo "Migrations folder found: $MIGRATIONS_FOLDER"
                     echo "🌱 Copying initial data file to Migrations folder..."
                     cp $(MainDataDb.secureFilePath) $MIGRATIONS_FOLDER/data.sql
