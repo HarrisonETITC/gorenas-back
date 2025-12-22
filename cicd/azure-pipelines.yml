@@ -42,7 +42,7 @@ stages:
               fi
 
               # Add GitHub as a remote
-              git remote add github https://$(GITHUB_TOKEN)@github.com/$GITHUB_REPO.git || git remote set-url github https://$(GITHUB_TOKEN)@github.com/$(GITHUB_REPO).git
+              git remote add github https://$(GITHUB_TOKEN)@github.com/$GITHUB_REPO.git || git remote set-url github https://$(GITHUB_TOKEN)@github.com/$GITHUB_REPO.git
               
               # Fetch all branches from GitHub
               git fetch github --all
