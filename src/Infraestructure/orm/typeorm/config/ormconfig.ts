@@ -11,17 +11,18 @@ export class TyepOrmConfig {
         database: process.env.DB_NAME,
         port: Number(process.env.DB_PORT),
         connectTimeout: 60000,
-        entities: ['dist/Infraestructure/**/*.entity.js'],
+        entities: ['dist/src/Infraestructure/**/*.entity.js'],
         ssl: true,
         extra: {
             ssl: {
                 rejectUnauthorized: false
-            }
+            },
+            multipleStatements: true
         },
         synchronize: false,
         logging: ["error", "query"],
-        migrationsRun: true,
-        migrations: ['dist/Infraestructure/**/*-mysql.js'],
+        migrationsRun: false,
+        migrations: ['dist/src/Infraestructure/**/*-mysql.js'],
         dropSchema: false,
         migrationsTableName: 'migrations'
     }
@@ -34,19 +35,17 @@ export class TyepOrmConfig {
         database: process.env.DB_NAME,
         port: Number(process.env.DB_PORT),
         connectTimeout: 60000,
-        entities: ['dist/Infraestructure/**/*.entity{.ts,.js}'],
+        entities: ['dist/src/Infraestructure/**/*.entity.js'],
         ssl: true,
-        extra: {
-            ssl: {
-                rejectUnauthorized: false
-            }
-        },
         logging: ["error", "query"],
         synchronize: false,
         migrationsRun: true,
-        migrations: ['dist/Infraestructure/**/*-mysql.js'],
+        migrations: ['dist/src/Infraestructure/**/*-mysql.js'],
         dropSchema: false,
-        migrationsTableName: 'migrations'
+        migrationsTableName: 'migrations',
+        extra: {
+            multipleStatements: true
+        }
     }
 
     public static getConfig() {

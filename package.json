@@ -16,6 +16,7 @@
     "migration:generate:mysql": "npm run typeorm -- migration:generate src/Infraestructure/orm/typeorm/migrations/mysql/mysql",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:revert:all": "node dist/scripts/revert-all-migrations.js",
     "typeorm": "npx typeorm -d dist/src/Infraestructure/orm/typeorm/config/dbconfig.js",
     "seed": "node dist/src/Infraestructure/orm/typeorm/seeders/config/seed.js",
     "seed:initial": "nest build && node dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js",
