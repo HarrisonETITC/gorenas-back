@@ -34,6 +34,7 @@ stages:
 
           - script: |
               echo "🔧 GitHub repo is: $GITHUB_REPO"
+              echo "🔧 Current branch: $(Build.SourceBranchName)"
 
               if [[  -z "$GITHUB_TOKEN" ]]; then
                 echo "❌ GITHUB_TOKEN is not set. Exiting."
@@ -43,18 +44,17 @@ stages:
               fi
 
               # Add GitHub as a remote
-              git remote set-url github https://$(GITHUB_TOKEN)@github.com/$GITHUB_USER/$GITHUB_REPO.git
+              git remote add github https://$(GITHUB_TOKEN)@github.com/$GITHUB_USER/$GITHUB_REPO.git 2>/dev/null || git remote set-url github https://$(GITHUB_TOKEN)@github.com/$GITHUB_USER/$GITHUB_REPO.git
               
-              # Fetch all branches from GitHub
-              git fetch github --all
+              # Get current branch name
+              BRANCH_NAME=$(Build.SourceBranchName)
               
-              # Push all branches to GitHub
-              git push github --all --force
+              echo "📤 Pushing branch $BRANCH_NAME to GitHub..."
               
-              # Push all tags to GitHub
-              git push github --tags --force
+              # Push only the current branch to GitHub
+              git push github HEAD:$BRANCH_NAME
               
-              echo "✅ Successfully synchronized all commits to GitHub"
+              echo "✅ Successfully synchronized branch $BRANCH_NAME to GitHub"
             displayName: 'Sync to GitHub'
             env:
               GITHUB_TOKEN: $(GITHUB_TOKEN)
