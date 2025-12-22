@@ -1,0 +1,51 @@
+trigger: 
+  branches:
+    include:
+      - main
+      - develop
+
+pool: 'Laptop-Agent-Pool'
+
+variables:
+  - group: GENERAL
+
+stages:
+  - stage: Synchronize
+    displayName: 'Synchronize Repositories'
+    jobs:
+      - job: SyncJob
+        displayName: 'Sync Job'
+        steps:
+          - checkout: self
+            persistCredentials: true
+            fetchDepth: 0  # Fetch all history for all branches
+
+          - script: |
+              echo "🔧 Git user is: $GITHUB_USER"
+              echo "🔧 Git email is: $GITHUB_EMAIL"
+
+              git config --global user.email "$GITHUB_EMAIL"
+              git config --global user.name "$GITHUB_USER"
+            displayName: 'Configure Git'
+            env:
+              GITHUB_USER: $(GITHUB_USER)
+              GITHUB_EMAIL: $(GITHUB_EMAIL)
+
+          - script: |
+              # Add GitHub as a remote
+              git remote add github https://$(GITHUB_TOKEN)@github.com/$(GITHUB_REPO).git || git remote set-url github https://$(GITHUB_TOKEN)@github.com/$(GITHUB_REPO).git
+              
+              # Fetch all branches from GitHub
+              git fetch github --all
+              
+              # Push all branches to GitHub
+              git push github --all --force
+              
+              # Push all tags to GitHub
+              git push github --tags --force
+              
+              echo "✅ Successfully synchronized all commits to GitHub"
+            displayName: 'Sync to GitHub'
+            env:
+              GITHUB_TOKEN: $(GITHUB_TOKEN)
+              GITHUB_REPO: $(Build.Repository.Name)
