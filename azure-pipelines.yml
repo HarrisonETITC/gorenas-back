@@ -170,17 +170,17 @@ stages:
                     DB_NAME: $(DB_NAME)
                     ENVIRONMENT: dev1
 
-                - script: |
-                    echo "🌱 Rolling back database migration to clean up initial data..."
-                    pnpm run migration:revert:all
-                  displayName: 'RollBack database migration'
-                  env:
-                    DB_HOST: $(DB_HOST)
-                    DB_PORT: $(DB_PORT)
-                    DB_USER: $(DB_USER)
-                    DB_PASS: $(DB_PASS)
-                    DB_NAME: $(DB_NAME)
-                    ENVIRONMENT: dev1
+                # - script: |
+                #     echo "🌱 Rolling back database migration to clean up initial data..."
+                #     pnpm run migration:revert:all
+                #   displayName: 'RollBack database migration'
+                #   env:
+                #     DB_HOST: $(DB_HOST)
+                #     DB_PORT: $(DB_PORT)
+                #     DB_USER: $(DB_USER)
+                #     DB_PASS: $(DB_PASS)
+                #     DB_NAME: $(DB_NAME)
+                #     ENVIRONMENT: dev1
 
                 - script: |
                     echo "🌱 Cleaning up initial data file from Migrations folder..."
