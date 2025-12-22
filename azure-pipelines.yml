@@ -149,7 +149,7 @@ stages:
                   displayName: 'Copy initial data file to MySQL Migrations folder'
 
                 - script: |
-                    echo "🌱 Migration folder is: $MIGRATIONS_FOLDER"
+                    echo "🌱 Migration folder is: $(MIGRATIONS_FOLDER)"
                     echo "🌱 Database name is: $DB_NAME"
                     echo "🌱 Seeding database name in data.sql file..."
                     sed -i "s/database_name/$DB_NAME/g" $MIGRATIONS_FOLDER/data.sql
