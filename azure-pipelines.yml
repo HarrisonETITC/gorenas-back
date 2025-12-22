@@ -114,6 +114,11 @@ stages:
                   artifact: package-files
                   displayName: 'Download package files artifact'
 
+                - task: DownloadSecureFile@1
+                  name: MainDataDb
+                  inputs:
+                    secureFile: 'database_init_data'
+
                 - script: |
                     ls -la
 
@@ -129,20 +134,35 @@ stages:
                   displayName: 'Install production dependencies'
 
                 - script: |
-                    echo "🌱 Running database seeder for Development..."
-                    # node $(Pipeline.Workspace)/dist/src/Infraestructure/orm/typeorm/seeders/config/run-seed.js
-                    echo $(DB_HOST)
-                    echo $(DB_PORT)
-                    echo $(DB_USER)
-                    echo $(DB_NAME)
-                  displayName: 'Seed Development Database'
+                    echo "Searching MySQL migrations folder"
+                    MIGRATIONS_FOLDER = $(find . -type d -path "*/dist/*/migrations/mysql")
+                    echo "Migrations folder found: $MIGRATIONS_FOLDER"
+                    echo "🌱 Copying initial data file to Migrations folder..."
+                    cp $(MainDataDb.secureFilePath) $MIGRATIONS_FOLDER/data.sql
+                    ls -la $MIGRATIONS_FOLDER
+                  displayName: 'Copy initial data file to MySQL Migrations folder'
+
+                - script: |
+                    echo "🌱 Executing database migration..."
+                    pnpm run migration:run
+                  displayName: 'Execute database migration'
                   env:
                     DB_HOST: $(DB_HOST)
                     DB_PORT: $(DB_PORT)
                     DB_USER: $(DB_USER)
                     DB_PASS: $(DB_PASS)
                     DB_NAME: $(DB_NAME)
-                    ENVIRONMENT: dev
+                    ENVIRONMENT: dev1
+
+                - script: |
+                    echo "🌱 Rolling back database migration to clean up initial data..."
+                    pnpm run migration:revert:all
+                  displayName: 'RollBack database migration'
+
+                - script: |
+                    echo "🌱 Cleaning up initial data file from Migrations folder..."
+                    rm -f $MIGRATIONS_FOLDER/data.sql
+                  displayName: 'Clean up initial data file from Migrations folder'
 
   # # ============================================
   # # STAGE: Deploy to Production
