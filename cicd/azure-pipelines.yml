@@ -1,8 +1,7 @@
 trigger: 
   branches:
     include:
-      - main
-      - develop
+      - master
 
 pool: 'Laptop-Agent-Pool'
 
@@ -61,6 +60,10 @@ stages:
               GITHUB_REPO: $(Build.Repository.Name)
               GITHUB_USER: $(GITHUB_USER)
 
+          - script: |
+              rm -rf $(Pipeline.Workspace)/
+            displayName: 'Clean Workspace'
+
       - job: UpdateDeployment
         displayName: 'Update Gorenas in Seenode'
         dependsOn: SyncJob
@@ -85,3 +88,7 @@ stages:
             env:
               SEENODE_API_TOKEN: $(SEENODE_API_TOKEN)
               SEENODE_APPLICATION_ID: $(SEENODE_APPLICATION_ID)
+
+          - script: |
+              rm -rf $(Pipeline.Workspace)/
+            displayName: 'Clean Workspace'
