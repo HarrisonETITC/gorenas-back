@@ -79,7 +79,7 @@ stages:
                 -H "Authorization: Bearer $SEENODE_API_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d '{"gitCommitSha": "$(Build.SourceVersion)"}' \
-                "https://api.seenode.com/v1/applications/$SEENODE_APPLICATION_ID/deployments"
+                "https://api.seenode.com/v1/applications/$SEENODE_APPLICATION_ID/deployments" 
             displayName: 'Trigger seenode Deployment'
             env:
               SEENODE_API_TOKEN: $(SEENODE_API_TOKEN)
