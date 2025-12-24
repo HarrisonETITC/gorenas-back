@@ -2,6 +2,7 @@ trigger:
   branches:
     include:
       - master
+      - develop
 
 pool: 'Laptop-Agent-Pool'
 
@@ -46,8 +47,8 @@ stages:
               BRANCH_NAME=$(Build.SourceBranchName)
 
               echo "🔄 Fetching latest changes from GitHub to avoid errors"
-              git fetch
-              git pull
+              git fetch github
+              git pull github
               
               echo "📤 Pushing branch $BRANCH_NAME to GitHub..."
               
