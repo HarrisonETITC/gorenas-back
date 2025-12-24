@@ -60,10 +60,6 @@ stages:
               GITHUB_REPO: $(Build.Repository.Name)
               GITHUB_USER: $(GITHUB_USER)
 
-          - script: |
-              rm -rf $(Pipeline.Workspace)/
-            displayName: 'Clean Workspace'
-
       - job: UpdateDeployment
         displayName: 'Update Gorenas in Seenode'
         dependsOn: SyncJob
@@ -88,7 +84,17 @@ stages:
             env:
               SEENODE_API_TOKEN: $(SEENODE_API_TOKEN)
               SEENODE_APPLICATION_ID: $(SEENODE_APPLICATION_ID)
-
+              
+  - stage: CleanUp
+    displayName: 'Clean Up'
+    dependsOn: [Synchronize]
+    jobs:
+      - job: CleanupJob
+        displayName: 'Clean Workspace'
+        condition: always()
+        steps:
           - script: |
-              rm -rf $(Pipeline.Workspace)/
-            displayName: 'Clean Workspace'
+              echo "Limpiando workspace completo..."
+              rm -rf $(Pipeline.Workspace)/*
+              echo "Limpieza completada"
+            displayName: 'Clean all workspace'
