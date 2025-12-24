@@ -49,7 +49,7 @@ stages:
               echo "📤 Pushing branch $BRANCH_NAME to GitHub (force push)..."
               
               # Force push to GitHub - Azure DevOps is the source of truth
-              git push --force-with-lease github HEAD:$BRANCH_NAME
+              git push --force github HEAD:$BRANCH_NAME
               
               echo "✅ Successfully synchronized branch $BRANCH_NAME to GitHub"
             displayName: 'Sync to GitHub'
