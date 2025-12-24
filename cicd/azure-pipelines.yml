@@ -45,15 +45,11 @@ stages:
               
               # Get current branch name
               BRANCH_NAME=$(Build.SourceBranchName)
-
-              echo "🔄 Fetching latest changes from GitHub to avoid errors"
-              git fetch github
-              git pull github $BRANCH_NAME --rebase
               
-              echo "📤 Pushing branch $BRANCH_NAME to GitHub..."
+              echo "📤 Pushing branch $BRANCH_NAME to GitHub (force push)..."
               
-              # Push only the current branch to GitHub
-              git push github HEAD:$BRANCH_NAME
+              # Force push to GitHub - Azure DevOps is the source of truth
+              git push --force-with-lease github HEAD:$BRANCH_NAME
               
               echo "✅ Successfully synchronized branch $BRANCH_NAME to GitHub"
             displayName: 'Sync to GitHub'
