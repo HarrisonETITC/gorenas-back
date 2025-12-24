@@ -44,6 +44,10 @@ stages:
               
               # Get current branch name
               BRANCH_NAME=$(Build.SourceBranchName)
+
+              echo "🔄 Fetching latest changes from GitHub to avoid errors"
+              git fetch
+              git pull
               
               echo "📤 Pushing branch $BRANCH_NAME to GitHub..."
               
