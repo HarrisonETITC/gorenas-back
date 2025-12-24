@@ -17,6 +17,8 @@ stages:
         displayName: 'Sync To GitHub'
         steps:
           - checkout: self
+            fetchDepth: 0
+            persistCredentials: true
 
           - script: |
               echo "🔧 Git user is: $GITHUB_USER"
