@@ -16,8 +16,6 @@ stages:
         displayName: 'Sync To GitHub'
         steps:
           - checkout: self
-            persistCredentials: true
-            fetchDepth: 0  # Fetch all history for all branches
 
           - script: |
               echo "🔧 Git user is: $GITHUB_USER"
