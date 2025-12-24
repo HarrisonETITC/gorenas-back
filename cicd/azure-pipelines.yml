@@ -47,9 +47,8 @@ stages:
               BRANCH_NAME=$(Build.SourceBranchName)
 
               echo "🔄 Fetching latest changes from GitHub to avoid errors"
-              git checkout github $BRANCH_NAME || git checkout -b $BRANCH_NAME
               git fetch github
-              git pull github
+              git pull github $BRANCH_NAME --rebase
               
               echo "📤 Pushing branch $BRANCH_NAME to GitHub..."
               
