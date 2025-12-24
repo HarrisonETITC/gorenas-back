@@ -13,7 +13,6 @@ stages:
     displayName: 'Synchronize Repositories'
     jobs:
       - job: SyncJob
-        container: 'harrison237/node-nest:v1'
         displayName: 'Sync To GitHub'
         steps:
           - checkout: self
