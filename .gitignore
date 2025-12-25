@@ -71,3 +71,5 @@ METRICAS_DASHBOARD.md
 .gitignore
 .env.test
 PRODUCT_DOCUMENTATION.md
+data.sql
+logs.txt

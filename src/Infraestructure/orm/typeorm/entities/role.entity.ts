@@ -12,10 +12,10 @@ export class RoleEntity extends GeneralEntity {
     @Column({ length: 1, default: StateModel.STATE_ACTIVE })
     state: string;
 
-    @CreateDateColumn({})
+    @CreateDateColumn({ type: 'datetime' })
     created: Date;
 
-    @UpdateDateColumn({})
+    @UpdateDateColumn({ type: 'datetime' })
     modified: Date;
 
     @OneToMany(() => PersonEntity, person => person.role)

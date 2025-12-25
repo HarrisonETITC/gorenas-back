@@ -19,14 +19,18 @@ export class SaleEntityMapper implements EntityMapperPort<SaleModel, SaleEntity,
             .build();
     }
     fromDomainToEntity(domain: SaleModel, params: Map<string, string>): SaleEntity {
-        return {
+        const entity: Partial<SaleEntity> = {
             id: domain.id ?? null,
             amount: domain.amount ?? null,
             paymenthMethod: domain.paymenthMethod ?? null,
-            created: domain.created ?? null,
-            modified: domain.modified ?? null,
             employeeId: domain.employeeId ?? null
         };
+        
+        // Solo incluir fechas si tienen valor
+        if (domain.created) entity.created = domain.created;
+        if (domain.modified) entity.modified = domain.modified;
+        
+        return entity as SaleEntity;
     }
     fromDomainToMv(domain: SaleModel, extra?: SaleTransformParams): SaleModelView {
         return {

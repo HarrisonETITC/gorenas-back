@@ -37,7 +37,7 @@ export class PersonEntity extends GeneralEntity {
     @Column({ nullable: true })
     born: Date;
 
-    @CreateDateColumn({})
+    @CreateDateColumn({ type: 'datetime' })
     created: Date;
 
     @Column({ name: 'user_id', nullable: true })

@@ -31,5 +31,5 @@ export class SaleCreateDto {
         description: 'Employee ID who made the sale',
         example: '1'
     })
-    employee: string;
+    employeeId: string;
 }

@@ -25,8 +25,10 @@ export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchE
         entity.name = domain.name ?? null;
         entity.address = domain.address ?? null;
         entity.earnings = domain.earnings ?? null;
-        entity.created = domain.created ?? null;
-        entity.modified = domain.modified ?? null;
+        
+        // Solo incluir fechas si tienen valor
+        if (domain.created) entity.created = domain.created;
+        if (domain.modified) entity.modified = domain.modified;
 
         return entity
     }

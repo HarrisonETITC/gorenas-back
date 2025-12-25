@@ -18,15 +18,17 @@ export class UserEntityMapper implements EntityMapperPort<UserModel, UserEntity,
             .build();
     }
     fromDomainToEntity(domain: UserModel): UserEntity {
-        const entity: UserEntity = {
+        const entity: Partial<UserEntity> = {
             id: domain.id ?? null,
             email: domain.email ?? null,
             password: domain.password ?? null,
-            state: domain.state ?? null,
-            created: domain.created ?? null
+            state: domain.state ?? null
         }
+        
+        // Solo incluir fecha si tiene valor
+        if (domain.created) entity.created = domain.created;
 
-        return entity;
+        return entity as UserEntity;
     }
     fromDomainToMv(domain: UserModel, extra?: UserTransformParams): UserModelView {
         const mv: UserModelView = {

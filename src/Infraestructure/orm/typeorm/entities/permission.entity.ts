@@ -8,7 +8,7 @@ export class PermissionEntity extends GeneralEntity {
     @Column({ length: 200, nullable: false })
     name: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({})
     created: Date;
 
     @Column({ name: 'role_id' })

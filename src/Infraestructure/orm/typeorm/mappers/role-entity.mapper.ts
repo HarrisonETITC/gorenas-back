@@ -20,10 +20,8 @@ export class RoleEntityMapper implements EntityMapperPort<RoleModel, RoleEntity,
         return {
             id: domain.id ?? null,
             name: domain.name ?? null,
-            state: domain.state ?? null,
-            created: null,
-            modified: null
-        };
+            state: domain.state ?? null
+        } as RoleEntity;
     }
     fromDomainToMv(domain: RoleModel, extra?: RoleTransformParams): RoleModelView {
         return {

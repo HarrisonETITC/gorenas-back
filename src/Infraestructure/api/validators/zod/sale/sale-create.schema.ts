@@ -10,5 +10,5 @@ export const SaleCreateSchema = z.object({
         .refine(s => SaleModel.PAYMENT_METHODS.includes(s), ValidationUtil.getStateErrorMessage("El método de pago tiene que ser uno de los siguientes valores: ", SaleModel.PAYMENT_METHODS)),
     created: createdField(true),
     modified: modifiedField(true),
-    employee: relationStringField('empleado')
+    employeeId: z.number(({ message: "El ID del empleado tiene que ser un número" }))
 })

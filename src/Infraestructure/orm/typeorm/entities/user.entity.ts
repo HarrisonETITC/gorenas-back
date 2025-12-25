@@ -14,7 +14,7 @@ export class UserEntity extends GeneralEntity {
     @Column({ length: 1, default: StateModel.STATE_ACTIVE })
     state: string;
 
-    @CreateDateColumn({})
+    @CreateDateColumn({ type: 'datetime' })
     created: Date;
 
     @OneToOne(() => PersonEntity, person => person.user)

@@ -16,12 +16,16 @@ export class PermissionEntityMapper implements EntityMapperPort<PermissionModel,
         }
     }
     fromDomainToEntity(domain: PermissionModel): PermissionEntity {
-        return {
-            created: domain.created,
+        const entity: Partial<PermissionEntity> = {
             id: domain.id,
             name: domain.name,
             roleId: domain.roleId || null
-        }
+        };
+        
+        // Solo incluir fecha si tiene valor
+        if (domain.created) entity.created = domain.created;
+        
+        return entity as PermissionEntity;
     }
     fromDomainToMv(domain: PermissionModel, extra?: PermissionTransformParams): PermissionModelView {
         return {

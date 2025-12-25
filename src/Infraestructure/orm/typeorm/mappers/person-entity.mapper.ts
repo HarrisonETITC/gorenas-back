@@ -25,7 +25,7 @@ export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonE
             .build();
     }
     fromDomainToEntity(domain: PersonModel): PersonEntity {
-        const entity: PersonEntity = {
+        const entity: Partial<PersonEntity> = {
             id: domain.id ?? null,
             names: domain.names ?? null,
             surnames: domain.surnames ?? null,
@@ -35,12 +35,14 @@ export class PersonEntityMapper implements EntityMapperPort<PersonModel, PersonE
             rh: domain.rh ?? null,
             address: domain.address ?? null,
             born: domain.born ?? null,
-            created: domain.created ?? null,
             userId: domain.userId ?? null,
             roleId: domain.roleId ?? null
         }
+        
+        // Solo incluir fecha si tiene valor
+        if (domain.created) entity.created = domain.created;
 
-        return entity;
+        return entity as PersonEntity;
     }
     fromDomainToMv(domain: PersonModel, extra?: PersonTransformParams): PersonModelView {
         const mv: PersonModelView = {

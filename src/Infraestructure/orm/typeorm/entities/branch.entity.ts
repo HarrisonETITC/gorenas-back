@@ -19,10 +19,10 @@ export class BranchEntity extends GeneralEntity {
     @Column({ type: 'decimal', precision: 16, scale: 2, nullable: true, default: 0 })
     earnings: number;
 
-    @CreateDateColumn({})
+    @CreateDateColumn({ type: 'datetime' })
     created: Date;
 
-    @UpdateDateColumn({})
+    @UpdateDateColumn({ type: 'datetime' })
     modified: Date;
 
     @Column({ name: 'restaurant_id', nullable: true })
