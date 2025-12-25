@@ -6,6 +6,6 @@ export const EmployeeCreateSchema = z.object({
     salary: z.number(({ message: "El salario tiene que ser un número" }))
         .positive("El salario tiene que ser un número positivo"),
     state: stateField(StateModel.BASIC_STATES, true),
-    branch: relationStringField('sucursal'),
-    person: relationStringField('persona')
+    branchId: z.number(({ message: "La sucursal tiene que ser un número" })),
+    personId: z.number(({ message: "La persona tiene que ser un número" })),
 })

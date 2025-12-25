@@ -58,14 +58,14 @@ export class PersonUpdateDto {
     born?: Date;
 
     @ApiPropertyOptional({ 
-        description: 'Role ID (as string)',
+        description: 'Role ID',
         example: '1'
     })
-    roleId?: string;
+    roleId?: number;
 
     @ApiPropertyOptional({ 
-        description: 'User ID (as string)',
+        description: 'User ID',
         example: '1'
     })
-    userId?: string;
+    userId?: number;
 }

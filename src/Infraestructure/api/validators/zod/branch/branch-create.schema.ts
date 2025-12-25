@@ -11,5 +11,7 @@ export const BranchCreateSchema = z.object({
         .positive("Las ganancias iniciales de la sucursal no pueden ser negativas")
         .optional(),
     state: stateField(StateModel.BASIC_STATES, true),
-    restaurant: relationStringField('restaurante')
+    restaurantId: z.number()
+        .int("El ID del restaurante debe ser un número entero")
+        .positive("El ID del restaurante debe ser un número positivo")
 })

@@ -52,14 +52,14 @@ export class PersonCreateDto {
     born?: Date;
 
     @ApiProperty({ 
-        description: 'Role ID as string',
+        description: 'Role ID',
         example: '1'
     })
-    role: string;
+    roleId: number;
 
     @ApiProperty({ 
-        description: 'User ID as string',
+        description: 'User ID',
         example: '1'
     })
-    user: string;
+    userId: number;
 }

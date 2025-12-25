@@ -11,4 +11,5 @@ export class BranchModel implements GeneralModel, StateModel, CreatedModel, Modi
     earnings: number;
     created: Date;
     modified: Date;
+    restaurantId?: number;
 }

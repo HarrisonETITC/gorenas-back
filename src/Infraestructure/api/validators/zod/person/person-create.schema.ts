@@ -19,8 +19,9 @@ export const PersonCreateSchema = z.object({
         .optional(),
     address: z.string(({ message: "La dirección tiene que ser una cadena de texto" }))
         .optional(),
-    born: z.date(({ message: "La fecha de nacimiento tiene que ser una fecha válida" }))
+    born: z.string(({ message: "La fecha enviada no es correcta" }))
+        .refine(d => !AppUtil.verifyEmpty(Date.parse(d)), "La fecha de nacimiento tiene que ser una fecha válida")
         .optional(),
-    role: z.number(({ message: "El rol tiene que ser un número" })),
-    user: z.number(({ message: "El usuario tiene que ser un número" })),
+    roleId: z.number(({ message: "El rol tiene que ser un número" })).positive(),
+    userId: z.number(({ message: "El usuario tiene que ser un número" })).positive()
 })

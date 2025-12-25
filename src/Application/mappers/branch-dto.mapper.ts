@@ -13,7 +13,7 @@ export class BranchDtoMapper implements DtoMapperPort<BranchModel, BranchCreateD
             address: base.address ?? null,
             state: base.state ?? null,
             earnings: base.earnings ?? null,
-            restaurant: params?.get('restaurant') ?? null
+            restaurantId: base.restaurantId ?? null
         };
     }
     fromModelToUpdate(base: BranchModel, params?: Map<string, string>): BranchUpdateDto {
@@ -23,7 +23,7 @@ export class BranchDtoMapper implements DtoMapperPort<BranchModel, BranchCreateD
             address: base.address ?? null,
             state: base.state ?? null,
             earnings: base.earnings ?? null,
-            restaurant: params?.get('restaurant') ?? null
+            restaurantId: base.restaurantId ?? null
         }
     }
     fromCreateToModel(create: BranchCreateDto, params?: Map<string, string>): BranchModel {

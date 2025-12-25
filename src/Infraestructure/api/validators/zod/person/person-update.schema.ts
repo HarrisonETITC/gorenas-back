@@ -24,6 +24,9 @@ export const PersonUpdateSchema = z.object({
         .optional(),
     address: z.string(({ message: "La dirección tiene que ser una cadena de texto" }))
         .optional(),
-    rol: relationStringField('rol', true),
-    user: relationStringField('usuario', true)
+    born: z.string(({ message: "La fecha enviada no es correcta" }))
+        .refine(d => !AppUtil.verifyEmpty(Date.parse(d)), "La fecha de nacimiento tiene que ser una fecha válida")
+        .optional(),
+    roleId: z.number(({ message: "El rol tiene que ser un número" })).positive(),
+    userId: z.number(({ message: "El usuario tiene que ser un número" })).positive()
 })

@@ -15,7 +15,8 @@ export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchE
             address: entity.address ?? null,
             earnings: entity.earnings ?? null,
             created: entity.created ?? null,
-            modified: entity.modified ?? null
+            modified: entity.modified ?? null,
+            restaurantId: entity.restaurantId ?? null
         }
     }
     fromDomainToEntity(domain: BranchModel): BranchEntity {
@@ -25,7 +26,8 @@ export class BranchEntityMapper implements EntityMapperPort<BranchModel, BranchE
         entity.name = domain.name ?? null;
         entity.address = domain.address ?? null;
         entity.earnings = domain.earnings ?? null;
-        
+        entity.restaurantId = domain.restaurantId ?? null;
+
         // Solo incluir fechas si tienen valor
         if (domain.created) entity.created = domain.created;
         if (domain.modified) entity.modified = domain.modified;

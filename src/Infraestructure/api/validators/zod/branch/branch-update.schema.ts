@@ -14,5 +14,7 @@ export const BranchUpdateSchema = z.object({
         .positive("Las ganancias no pueden ser negativas")
         .optional(),
     state: stateField(StateModel.BASIC_STATES, true),
-    restaurant: relationStringField('restaurante', true)
+    restaurantId: z.number()
+        .int("El ID del restaurante debe ser un número entero")
+        .positive("El ID del restaurante debe ser un número positivo")
 })

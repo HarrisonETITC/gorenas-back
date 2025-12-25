@@ -28,8 +28,8 @@ export class BranchCreateDto {
     state?: string;
 
     @ApiProperty({ 
-        description: 'Restaurant ID as string',
+        description: 'Restaurant ID',
         example: '1'
     })
-    restaurant: string;
+    restaurantId: number;
 }
