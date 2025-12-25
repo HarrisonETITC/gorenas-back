@@ -87,10 +87,6 @@ stages:
               ArtifactName: 'package-files'
             displayName: 'Publish package files'
 
-          - script: |
-              rm -rf $(Pipeline.Workspace)/
-            displayName: 'Clean Workspace'
-
   # ============================================
   # STAGE: Deploy to Development
   # ============================================
@@ -99,94 +95,133 @@ stages:
     dependsOn: Build
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
     jobs:
+      - job: DatabaseUpdate
+        displayName: 'Database Update Job'
+        steps:
+          - download: current
+            artifact: dist
+            displayName: 'Download dist artifact'
+
+          - download: current
+            artifact: package-files
+            displayName: 'Download package files artifact'
+
+          - task: DownloadSecureFile@1
+            name: MainDataDb
+            inputs:
+              secureFile: 'database_init_data'
+
+          - script: |
+              ls -la
+
+              cp $(Pipeline.Workspace)/dist/dist.zip .
+
+              unzip dist.zip -d dist
+
+              ls -la
+
+              pwd
+            displayName: 'Unzip dist artifact'
+
+          - script: |
+              cp $(Pipeline.Workspace)/package-files/package.json .
+              cp $(Pipeline.Workspace)/package-files/pnpm-lock.yaml .
+              pnpm install --frozen-lockfile --prod
+            displayName: 'Install production dependencies'
+
+          - script: |
+              echo "Searching MySQL migrations folder"
+              MIGRATIONS_FOLDER=$(find . -type d -path "*/dist/*/migrations/mysql")
+              echo "Migrations folder found: $MIGRATIONS_FOLDER"
+              echo "🌱 Copying initial data file to Migrations folder..."
+              cp $(MainDataDb.secureFilePath) $MIGRATIONS_FOLDER/data.sql
+              ls -la $MIGRATIONS_FOLDER
+
+              echo "##vso[task.setvariable variable=MIGRATIONS_FOLDER]$MIGRATIONS_FOLDER"
+            displayName: 'Copy initial data file to MySQL Migrations folder'
+
+          - script: |
+              echo "🌱 Migration folder is: $(MIGRATIONS_FOLDER)"
+              echo "🌱 Database name is: $DB_NAME"
+              echo "🌱 Seeding database name in data.sql file..."
+              sed -i "s/database_name/$DB_NAME/g" $MIGRATIONS_FOLDER/data.sql
+            displayName: 'Seed Database Name in data.sql file'
+            env:
+              MIGRATIONS_FOLDER: $(MIGRATIONS_FOLDER)
+              DB_NAME: $(DB_NAME)
+
+          - script: |
+              echo "🌱 Executing database migration..."
+              pnpm run migration:run
+            displayName: 'Execute database migration'
+            env:
+              DB_HOST: $(DB_HOST)
+              DB_PORT: $(DB_PORT)
+              DB_USER: $(DB_USER)
+              DB_PASS: $(DB_PASS)
+              DB_NAME: $(DB_NAME)
+              ENVIRONMENT: dev1
+
+          - script: |
+              echo "🌱 Cleaning up initial data file from Migrations folder..."
+              rm -f $MIGRATIONS_FOLDER/data.sql
+            displayName: 'Clean up initial data file from Migrations folder'
+
       - deployment: DeployDevJob
         displayName: 'Deploy to Development'
+        dependsOn: DatabaseUpdate
+        condition: and(not(canceled()), succeeded())
         environment: 'development'
         strategy:
           runOnce:
             deploy:
               steps:
-                - download: current
-                  artifact: dist
-                  displayName: 'Download dist artifact'
-
-                - download: current
-                  artifact: package-files
-                  displayName: 'Download package files artifact'
-
-                - task: DownloadSecureFile@1
-                  name: MainDataDb
-                  inputs:
-                    secureFile: 'database_init_data'
-
                 - script: |
-                    ls -la
+                    echo "🔧 Seenode Application ID is: $SEENODE_APPLICATION_ID"
 
-                    cp $(Pipeline.Workspace)/dist/dist.zip .
+                    if [[ -z "$SEENODE_API_TOKEN" ]]; then
+                      echo "❌ SEENODE_API_TOKEN is not set. Exiting."
+                      exit 1
+                    else
+                      echo "✅ SEENODE_API_TOKEN is set."
+                    fi
 
-                    unzip dist.zip -d dist
-
-                    ls -la
-
-                    pwd
-                  displayName: 'Unzip dist artifact'
-
-                - script: |
-                    cp $(Pipeline.Workspace)/package-files/package.json .
-                    cp $(Pipeline.Workspace)/package-files/pnpm-lock.yaml .
-                    pnpm install --frozen-lockfile --prod
-                  displayName: 'Install production dependencies'
-
-                - script: |
-                    echo "Searching MySQL migrations folder"
-                    MIGRATIONS_FOLDER=$(find . -type d -path "*/dist/*/migrations/mysql")
-                    echo "Migrations folder found: $MIGRATIONS_FOLDER"
-                    echo "🌱 Copying initial data file to Migrations folder..."
-                    cp $(MainDataDb.secureFilePath) $MIGRATIONS_FOLDER/data.sql
-                    ls -la $MIGRATIONS_FOLDER
-
-                    echo "##vso[task.setvariable variable=MIGRATIONS_FOLDER]$MIGRATIONS_FOLDER"
-                  displayName: 'Copy initial data file to MySQL Migrations folder'
-
-                - script: |
-                    echo "🌱 Migration folder is: $(MIGRATIONS_FOLDER)"
-                    echo "🌱 Database name is: $DB_NAME"
-                    echo "🌱 Seeding database name in data.sql file..."
-                    sed -i "s/database_name/$DB_NAME/g" $MIGRATIONS_FOLDER/data.sql
-                  displayName: 'Seed Database Name in data.sql file'
+                    echo "🔄 Updating Gorenas in Seenode..."
+                    curl -X POST \
+                      -H "Authorization: Bearer $SEENODE_API_TOKEN" \
+                      -H "Content-Type: application/json" \
+                      -d '{"gitCommitSha": "$(Build.SourceVersion)"}' \
+                      "https://api.seenode.com/v1/applications/$SEENODE_APPLICATION_ID/deployments"
+                  displayName: 'Send Deploy Trigger to Seenode'
                   env:
-                    MIGRATIONS_FOLDER: $(MIGRATIONS_FOLDER)
-                    DB_NAME: $(DB_NAME)
-
-                - script: |
-                    echo "🌱 Executing database migration..."
-                    pnpm run migration:run
-                  displayName: 'Execute database migration'
-                  env:
-                    DB_HOST: $(DB_HOST)
-                    DB_PORT: $(DB_PORT)
-                    DB_USER: $(DB_USER)
-                    DB_PASS: $(DB_PASS)
-                    DB_NAME: $(DB_NAME)
-                    ENVIRONMENT: dev1
-
-                # - script: |
-                #     echo "🌱 Rolling back database migration to clean up initial data..."
-                #     pnpm run migration:revert:all
-                #   displayName: 'RollBack database migration'
-                #   env:
-                #     DB_HOST: $(DB_HOST)
-                #     DB_PORT: $(DB_PORT)
-                #     DB_USER: $(DB_USER)
-                #     DB_PASS: $(DB_PASS)
-                #     DB_NAME: $(DB_NAME)
-                #     ENVIRONMENT: dev1
-
-                - script: |
-                    echo "🌱 Cleaning up initial data file from Migrations folder..."
-                    rm -f $MIGRATIONS_FOLDER/data.sql
-                  displayName: 'Clean up initial data file from Migrations folder'
-
-                - script: |
-                    rm -rf $(Pipeline.Workspace)/
-                  displayName: 'Clean Workspace'
+                    SEENODE_API_TOKEN: $(SEENODE_API_TOKEN)
+                    SEENODE_APPLICATION_ID: $(SEENODE_APPLICATION_ID)
+      - job: RollBackJob
+        displayName: 'Rollback Job'
+        condition: failed()
+        steps:
+          - script: |
+              echo "🌱 Rolling back database migration"
+              # pnpm run migration:revert
+            displayName: 'RollBack database migration'
+            env:
+              DB_HOST: $(DB_HOST)
+              DB_PORT: $(DB_PORT)
+              DB_USER: $(DB_USER)
+              DB_PASS: $(DB_PASS)
+              DB_NAME: $(DB_NAME)
+              ENVIRONMENT: dev1
+              
+  - stage: CleanUp
+    displayName: 'Clean Up'
+    dependsOn: [Build, DeployDev]
+    jobs:
+      - job: CleanupJob
+        displayName: 'Clean Workspace'
+        condition: always()
+        steps:
+          - script: |
+              echo "Limpiando workspace completo..."
+              rm -rf $(Pipeline.Workspace)/*
+              echo "Limpieza completada"
+            displayName: 'Clean all workspace'
