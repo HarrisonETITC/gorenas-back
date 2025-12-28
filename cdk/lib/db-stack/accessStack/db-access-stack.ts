@@ -2,7 +2,7 @@ import { Construct } from 'constructs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { AccessStackProps } from '../../models/AccessStackProps';
 
-export class AccessStack extends Construct {
+export class DbAccessStack extends Construct {
     constructor(scope: Construct, id: string, props?: AccessStackProps) {
         super(scope, id);
 

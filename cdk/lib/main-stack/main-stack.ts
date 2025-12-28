@@ -24,6 +24,9 @@ export class MainResourcesStack extends cdk.Stack {
                     effect: cdk.aws_iam.Effect.ALLOW,
                     actions: [
                         "sts:AssumeRole"
+                    ],
+                    resources: [
+                        `arn:aws:iam::${this.account}:role/database-access-bucket-role`
                     ]
                 })
             ]

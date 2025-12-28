@@ -2,8 +2,8 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { StackProps, NestedStack, RemovalPolicy, CfnOutput } from 'aws-cdk-lib';
 import { Bucket } from 'aws-cdk-lib/aws-s3'
-import { ACCOUNT, DB_BUCKET_NAME } from '../utils/constants';
 import { ArnPrincipal, Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { DB_BUCKET_NAME, ACCOUNT } from '../../utils/constants';
 
 export class BucketStack extends Construct {
     public readonly bucketArn: string;
