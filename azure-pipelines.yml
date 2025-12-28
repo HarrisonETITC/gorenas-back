@@ -198,6 +198,7 @@ stages:
                     SEENODE_APPLICATION_ID: $(SEENODE_APPLICATION_ID)
       - job: RollBackJob
         displayName: 'Rollback Job'
+        dependsOn: [DatabaseUpdate, DeployDevJob]
         condition: failed()
         steps:
           - script: |

@@ -21,4 +21,13 @@ export class JwtServiceAdapter implements AuthServicePort {
     async parseFromToken(token: string): Promise<UserModel> {
         throw new Error("Method not implemented.");
     }
+
+    async validateToken(token: string): Promise<boolean> {
+        try {
+            await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
 }

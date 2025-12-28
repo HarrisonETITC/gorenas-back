@@ -2,6 +2,7 @@ trigger:
   branches:
     include:
       - master
+      - develop
 
 pool: 'Laptop-Agent-Pool'
 

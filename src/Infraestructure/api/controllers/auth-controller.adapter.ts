@@ -86,6 +86,40 @@ export class AuthController implements AuthControllerPort {
         return { hashed: await this.encrypter.encrypt(data) }
     }
 
+    @Get('validate-token')
+    @ApiOperation({ 
+        summary: 'Validate JWT token',
+        description: 'Validates if a JWT token is still valid and not expired. Returns true if valid, false otherwise.'
+    })
+    @ApiQuery({ 
+        name: 'token', 
+        required: true, 
+        type: String, 
+        description: 'JWT token to validate',
+        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    })
+    @ApiResponse({ 
+        status: 200, 
+        description: 'Token validation result',
+        schema: {
+            type: 'object',
+            properties: {
+                valid: {
+                    type: 'boolean',
+                    example: true,
+                    description: 'True if token is valid and not expired, false otherwise'
+                }
+            }
+        }
+    })
+    @ApiResponse({ status: 400, description: 'Bad request. Token parameter is missing.' })
+    async validateToken(
+        @Query('token') token: string
+    ): Promise<{ valid: boolean }> {
+        const isValid = await this.authService.validateToken(token);
+        return { valid: isValid };
+    }
+
     createUser(newUser: UserModel): Promise<UserModelView> {
         throw new Error("Method not implemented.");
     }
