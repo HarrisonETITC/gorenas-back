@@ -85,8 +85,7 @@ def upload_to_s3(file_path):
         s3.upload_file(
             Filename=file_path,
             Bucket=S3_BUCKET_NAME,
-            Key=s3_file_key,
-            ExtraArgs=["ServerSideEncryption=AES256"]
+            Key=s3_file_key
         )
         logger.info(f"Uploaded {file_name} to {s3_file_key} in bucket {S3_BUCKET_NAME}")
     except ClientError as e:
