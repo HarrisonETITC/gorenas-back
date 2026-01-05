@@ -9,7 +9,7 @@ from mysql.connector import Error
 DB_HOST = os.environ['DB_HOST']
 DB_PORT = int(os.environ['DB_PORT'])
 DB_USER = os.environ['DB_USER']
-DB_PASSWORD = os.environ['DB_PASSWORD']
+DB_PASSWORD = os.environ['DB_PASS']
 DB_NAME = os.environ['DB_NAME']
 
 BACKUP_DIR = "./"
