@@ -1,6 +1,29 @@
 # Azure DevOps Pipeline para despliegue y seeding de base de datos
 # azure-pipelines.yml
 
+parameters:
+  - name: execTests
+    type: boolean
+    default: false
+    values:
+      - true
+      - false
+    
+  - name: execDbOperations
+    type: boolean
+    default: false
+    values:
+      - true
+      - false
+
+  - name: s3BucketName
+    type: string
+    default: 'database-backups-bucket-194722422628'
+
+  - name: s3BucketRoleArn
+    type: string
+    default: 'arn:aws:iam::194722422628:role/database-access-bucket-role'
+
 trigger: none
 
 pool: 'Laptop-Agent-Pool'
@@ -17,3 +40,4 @@ resources:
 
 stages:
   - template: backend/stages/ts/backend-ts-project.yml@cicd
+
