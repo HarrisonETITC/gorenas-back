@@ -46,13 +46,18 @@ def create_backup_file():
 
     command = [
         "mysqldump",
+        "--skip-opt",
+        "--single-transaction",
+        "--skip-lock-tables",
+        "--quick",
+        "--no-create-info",
+        "--no-tablespaces",
+        "--set-gtid-purged=OFF",
+        "--skip-triggers",
         "--host", DB_HOST,
+        "--port", str(DB_PORT),
         "--user", DB_USER,
         f"--password={DB_PASSWORD}",
-        "--no-create-info",
-        "--skip-triggers",
-        "--single-transaction",
-        "--quick",
         DB_NAME
     ]
 
