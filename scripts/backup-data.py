@@ -41,25 +41,29 @@ def verify_mysql_connection():
 
 def create_backup_file():
     verify_mysql_connection()
-    # timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    # backup_file = os.path.join(BACKUP_DIR, f"{DB_NAME}_data_{timestamp}.sql")
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    backup_file = os.path.join(BACKUP_DIR, f"{DB_NAME}_data_{timestamp}.sql")
 
-    # command = [
-    #     "mysqldump",
-    #     "--host", DB_HOST,
-    #     "--user", DB_USER,
-    #     f"--password={DB_PASSWORD}",
-    #     "--no-create-info",
-    #     "--skip-triggers",
-    #     "--single-transaction",
-    #     "--quick",
-    #     DB_NAME
-    # ]
+    command = [
+        "mysqldump",
+        "--host", DB_HOST,
+        "--user", DB_USER,
+        f"--password={DB_PASSWORD}",
+        "--no-create-info",
+        "--skip-triggers",
+        "--single-transaction",
+        "--quick",
+        DB_NAME
+    ]
 
-    # with open(backup_file, "w") as f:
-    #     subprocess.run(command, stdout=f, stderr=subprocess.PIPE, check=True)
+    with open(backup_file, "w") as f:
+        subprocess.run(command, stdout=f, stderr=subprocess.PIPE, check=True)
 
-    # print(f"[INFO] Backup file created at {backup_file}")
+    print(f"[INFO] Backup file created at {backup_file}")
+
+    with open(backup_file, "r") as f:
+        content = f.read()
+        print(content[:500])  # Print first 500 characters of the backup file
 
 if __name__ == "__main__":
     create_backup_file()
